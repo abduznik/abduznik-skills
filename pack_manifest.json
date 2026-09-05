@@ -12,6 +12,7 @@
         "testing",
         "scripts"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -23,6 +24,7 @@
         "containers",
         "updates"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -34,6 +36,7 @@
         "gofile",
         "expiring-links"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -45,6 +48,7 @@
         "reverse-proxy",
         "debugging"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -56,6 +60,7 @@
         "crash",
         "forensics"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -68,6 +73,7 @@
         "upstream",
         "attribution"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -79,6 +85,7 @@
         "code-review",
         "pull-requests"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -90,6 +97,7 @@
         "hardware",
         "windows"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -102,6 +110,7 @@
         "download",
         "403"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -114,6 +123,7 @@
         "electronics",
         "netlist"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -126,6 +136,7 @@
         "cmake",
         "sdl2"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -138,6 +149,7 @@
         "build",
         "apk"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -150,6 +162,7 @@
         "html",
         "pdf"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -162,6 +175,7 @@
         "authoring",
         "frontmatter"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -173,6 +187,7 @@
         "markdown",
         "workflow"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -184,6 +199,7 @@
         "debugpy",
         "debugging"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -196,6 +212,7 @@
         "flask",
         "webapp"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -207,6 +224,7 @@
         "cleanup",
         "ai-assisted"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -218,6 +236,7 @@
         "experimentation",
         "throwaway"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -229,6 +248,7 @@
         "subagents",
         "execution"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -240,6 +260,7 @@
         "testing",
         "red-green-refactor"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -251,6 +272,7 @@
         "docs",
         "implementation"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -263,6 +285,7 @@
         "slash-commands",
         "debugging"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -275,6 +298,7 @@
         "plugin",
         "release"
       ],
+      "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
@@ -286,6 +310,56 @@
         "gateway",
         "telegram",
         "slash-command"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "pdf-flatten",
+      "category": "software-development",
+      "tags": [
+        "pdf",
+        "rasterize",
+        "flatten",
+        "vision",
+        "pymupdf"
+      ],
+      "extra_files": [
+        "scripts/pdf_flatten.py",
+        "scripts/pdf_to_pages.py"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "google-oauth-file-poll",
+      "category": "devops",
+      "tags": [
+        "google",
+        "oauth",
+        "headless",
+        "api",
+        "token"
+      ],
+      "extra_files": [
+        "scripts/oauth_file_poll.py"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "jellyseerr-watch-suggestions",
+      "category": "media",
+      "tags": [
+        "jellyseerr",
+        "sonarr",
+        "radarr",
+        "media",
+        "suggestions"
+      ],
+      "extra_files": [
+        "scripts/watch_suggest.py"
       ],
       "license": "MIT",
       "author": "Hermes Agent"

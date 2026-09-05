@@ -83,7 +83,7 @@ Hermes loads skills from its skills directory (typically `~/.hermes/skills/` on
 Linux/macOS, or `<hermes-data>/skills/` in portable/profile setups). A skill is
 just a folder containing `SKILL.md`.
 
-1. Clone this repo: `git clone https://github.com/REPLACE_ME/hermes-skill-pack`
+1. Clone this repo: `git clone https://github.com/abduznik/hermes-skill-pack`
 2. Copy the skills you want:
    `cp -r skills/* ~/.hermes/skills/`
 3. Restart your Hermes session — the skills appear in the toolbox.
@@ -240,6 +240,23 @@ def run_scrub(text: str, where: str) -> list:
     return hits
 
 
+def _extra_for(name: str, rel: str, entry: dict, src: Path, errors: list) -> list:
+    """Validate and collect extra support files (scripts/ etc.) through the gate."""
+    extra = []
+    for ef in entry.get("extra_files", []):
+        ef_path = src / rel / ef
+        if not ef_path.is_file():
+            errors.append(f"missing extra file {ef} for {name}")
+            continue
+        ef_text = ef_path.read_text(encoding="utf-8", errors="replace")
+        hits = run_scrub(ef_text, f"{name}/{ef}")
+        if hits:
+            errors.append(f"SCRUB FAILURE in {name}/{ef}:\n" + "\n".join(hits))
+            continue
+        extra.append((ef, ef_text))
+    return extra
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--source", required=True, help="source Hermes skills dir")
@@ -260,7 +277,7 @@ def main() -> int:
     pack_names = {s["name"] for s in manifest["skills"]}
 
     # ---- Phase A: validate every source SKILL.md (scrub + frontmatter) -----
-    prepared = []  # (name, dest_rel, new_content)
+    prepared = []  # (name, dest_rel, new_content, extra_files)
     errors = []
     for entry in manifest["skills"]:
         name = entry["name"]
@@ -271,6 +288,7 @@ def main() -> int:
             cands = [p for p in src.rglob("SKILL.md") if p.parent.name == name]
             if len(cands) == 1:
                 skill_md = cands[0]
+                rel = skill_md.parent.relative_to(src).as_posix()
             else:
                 errors.append(f"missing SKILL.md for {name} (looked at {skill_md}, found {len(cands)} candidates by name)")
                 continue
@@ -321,7 +339,7 @@ def main() -> int:
         if hits:
             errors.append(f"SCRUB FAILURE (normalized) in {name}:\n" + "\n".join(hits))
             continue
-        prepared.append((name, new_content))
+        prepared.append((name, new_content, _extra_for(name, rel, entry, src, errors)))
 
     if errors:
         print("BUILD ABORTED — fail-closed gate:")
@@ -347,8 +365,12 @@ def main() -> int:
         name = entry["name"]
         skill_out = skills_dir / name
         skill_out.mkdir(parents=True, exist_ok=True)
-        content = next(c for n, c in prepared if n == name)
+        content = next(c for n, c, _x in prepared if n == name)
         (skill_out / "SKILL.md").write_text(content, encoding="utf-8")
+        for ef, ef_text in next(x for n, _c, x in prepared if n == name):
+            out_ef = skill_out / ef
+            out_ef.parent.mkdir(parents=True, exist_ok=True)
+            out_ef.write_text(ef_text, encoding="utf-8")
         desc = next(e["clean_val"] for e in parse_fm_lines(extract_frontmatter(content)[0]) if e["key"] == "description")
         desc_short = desc[:100]
         table_rows.append(f"| {entry['category']} | `{name}` | {desc_short} |")
@@ -364,6 +386,7 @@ def main() -> int:
                 "name": s["name"],
                 "category": s.get("category", "general"),
                 "tags": s.get("tags", []),
+                "extra_files": s.get("extra_files", []),
                 "license": PACK_LICENSE,
                 "author": PACK_AUTHOR,
             }
@@ -408,8 +431,9 @@ def main() -> int:
 
     # ---- Phase C: final rescan of everything written -----------------------
     final_hits = []
-    for p in sorted((skills_dir).rglob("*.md")):
-        final_hits += run_scrub(p.read_text(encoding="utf-8", errors="replace"), str(p.relative_to(dst)))
+    for p in sorted(skills_dir.rglob("*")):
+        if p.is_file():
+            final_hits += run_scrub(p.read_text(encoding="utf-8", errors="replace"), str(p.relative_to(dst)))
     for p in [dst / "README.md", dst / "pack_manifest.json"]:
         final_hits += run_scrub(p.read_text(encoding="utf-8", errors="replace"), str(p.relative_to(dst)))
     if final_hits:

@@ -16,6 +16,7 @@ not a hand-maintained copy.
 | devops | `ad-hoc-script-verification` | Use when verifying a script with no CI suite. |
 | devops | `docker-container-update-check` | Use when checking Docker containers for newer images. |
 | devops | `ephemeral-file-sharing` | Expiring public web links for files, CLI-only (gofile.io). |
+| devops | `google-oauth-file-poll` | Use when Google API OAuth needs a headless file-poll flow. |
 | devops | `reverse-proxy-websocket-debugging` | Use when WebSockets die behind a reverse proxy (close 1006). |
 | devops | `windows-crash-forensics` | PC crash/freeze forensics via event logs, blame attribution. |
 | github | `github-code-review` | Review PRs: diffs, inline comments via gh or REST. |
@@ -24,11 +25,13 @@ not a hand-maintained copy.
 | hermes | `debugging-hermes-tui-commands` | Debug Hermes TUI slash commands: Python, gateway, Ink UI. |
 | hermes | `hermes-agent-skill-authoring` | Author in-repo SKILL.md: frontmatter, validator, structure. |
 | hermes | `hermes-gateway-slash-command` | Add a gateway-available slash command with message tracking and batch deletion capabilities. Covers  |
+| media | `jellyseerr-watch-suggestions` | Use when suggesting watch picks filtered by your library. |
 | media | `yt-dlp-anti-bot` | When yt-dlp hits 403s, harden with impersonation + backoff. |
 | software-development | `circuit-design` | Design electrical circuits programmatically — SKiDL netlist generation, custom SVG schematic rendere |
 | software-development | `embedded-porting-patterns` | Porting C/C++ CMake+SDL2 applications to new embedded/handheld platforms (PSP, Vita, 3DS, etc.) by f |
 | software-development | `flutter-android-build` | Build Flutter APKs and modify Glance widgets. |
 | software-development | `flutter-content-rendering` | Show HTML/links/PDFs in Flutter — viewers, clickable URLs. |
+| software-development | `pdf-flatten` | Use when flattening PDFs to page images or raster PDFs. |
 | software-development | `plan` | Write a markdown plan to .hermes/plans/; no execution. |
 | software-development | `psp-prx-plugin-maintenance` | Use when building/debugging PSP prx kernel plugins. |
 | software-development | `python-debugpy` | Debug Python: pdb REPL + debugpy remote (DAP). |
