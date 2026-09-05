@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>google-oauth-file-poll // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">google-oauth-file-poll</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">devops</span>
+<span class='tag' style='border-color:#44ff77'>google</span><span class='tag' style='border-color:#44ff77'>oauth</span><span class='tag' style='border-color:#44ff77'>headless</span><span class='tag' style='border-color:#44ff77'>api</span><span class='tag' style='border-color:#44ff77'>token</span></div>
+<p style="color:#8affa8">Use when Google API OAuth needs a headless file-poll flow.</p>
+</header>
+<main>
+
+
+
+<h1>Google API OAuth: Headless File-Poll Flow</h1>
+
+<h2>Overview</h2>
+
+<p>Authorize Google API clients (YouTube, Drive, Gmail, Sheets, …) on machines</p>
+<p>with <strong>no browser</strong>: a script writes the consent URL to a file, the user opens</p>
+<p>it on ANY device, pastes the code into another file, and the script polls</p>
+<p>until it arrives, then stores the refreshable token. No browser on the box,</p>
+<p>no port forwarding, no interactive prompts. Works identically on headless</p>
+<p>servers, CI runners, and USB-portable environments.</p>
+
+<p>Ships <code>scripts/oauth_file_poll.py</code> — a complete, configurable implementation.</p>
+
+<h2>When to Use</h2>
+
+<ul>
+<li>Automating Google APIs from servers/containers without a display.</li>
+<li>Recurring upload/new-scope automation where the token expires and the</li>
+</ul>
+<p>re-auth dance happens repeatedly.</p>
+<ul>
+<li><strong>Don&#x27;t use for:</strong> interactive local development where a browser is fine —</li>
+</ul>
+<p><code>InstalledAppFlow.run_local_server()</code> is easier there.</p>
+
+<h2>The Flow</h2>
+
+<ul>
+<li>Have a Google Cloud OAuth <strong>desktop client</strong> (<code>client_secret.json</code>) with</li>
+</ul>
+<p>the needed scopes enabled.</p>
+<ul>
+<li>Run the script: it builds an <code>InstalledAppFlow</code>, sets the out-of-band</li>
+</ul>
+<p>redirect URI (<code>urn:ietf:wg:oauth:2.0:oob</code>), writes <code>auth_url.txt</code>, and</p>
+<p>prints the path. No browser is opened.</p>
+<ul>
+<li>The user opens the URL anywhere (phone/laptop), consents, and pastes the</li>
+</ul>
+<p>code into <code>auth_code.txt</code>.</p>
+<ul>
+<li>The script polls <code>auth_code.txt</code> (default 600s), exchanges the code,</li>
+</ul>
+<p>saves <code>token.json</code>, and deletes both temp files.</p>
+<ul>
+<li>Next runs reuse <code>token.json</code> and refresh automatically when expired:</li>
+</ul>
+
+<pre class='code'><code>from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
+creds = Credentials.from_authorized_user_file(&quot;token.json&quot;, SCOPES)
+if creds.expired and creds.refresh_token:
+    creds.refresh(Request())</code></pre>
+
+<p>Then build the API service: <code>googleapiclient.discovery.build(&quot;youtube&quot;, &quot;v3&quot;, credentials=creds)</code>.</p>
+
+<h2>Script Configuration</h2>
+
+<p>Edit the top of <code>scripts/oauth_file_poll.py</code>:</p>
+
+<ul>
+<li><code>CLIENT_SECRET</code> / <code>TOKEN_FILE</code> — paths (keep OUT of version control).</li>
+<li><code>SCOPES</code> — the exact scopes for the API you automate.</li>
+<li><code>TIMEOUT</code> — seconds to wait for the paste-back code (default 600).</li>
+</ul>
+
+<h2>Common Pitfalls</h2>
+
+<ul>
+<li><strong>PKCE handshake is finicky across separate processes</strong> — run the</li>
+</ul>
+<p>generate/URL + poll + exchange in ONE long-lived script, not in separate</p>
+<p>invocations with hand-carried state.</p>
+<ul>
+<li><strong><code>oob</code> redirect deprecation</strong> — some client types reject <code>oob</code>; if so,</li>
+</ul>
+<p>use a loopback redirect and read the code from the localhost URL.</p>
+<ul>
+<li><strong>Never commit <code>token.json</code> / <code>client_secret.json</code></strong> — add both to</li>
+</ul>
+<p><code>.gitignore</code>; a leaked client secret lets anyone mint tokens.</p>
+<ul>
+<li><strong>Expired refresh flow</strong> — a token whose refresh token is gone (revoked</li>
+</ul>
+<p>consent, scope change) requires a full re-consent; detect and restart the</p>
+<p>file-poll flow instead of erroring.</p>
+<ul>
+<li><strong>Timeout hygiene</strong> — always clean up <code>auth_url.txt</code>/<code>auth_code.txt</code> on</li>
+</ul>
+<p>success and on timeout; stale code files break the next attempt.</p>
+
+<h2>Verification Checklist</h2>
+
+<ul>
+<li>[ ] First run writes <code>auth_url.txt</code> and prints its path</li>
+<li>[ ] After code paste, <code>token.json</code> exists and temp files are deleted</li>
+<li>[ ] A second run completes WITHOUT prompting (token reuse/refresh)</li>
+<li>[ ] API call succeeds with the stored credentials</li>
+</ul>
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : google-oauth-file-poll // devops</div>
+<div>MIT — generated by tools/publish.py; source: skills/google-oauth-file-poll/SKILL.md</div>
+</footer>
+</body>
+</html>

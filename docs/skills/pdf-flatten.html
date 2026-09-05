@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pdf-flatten // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">pdf-flatten</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
+<span class='tag' style='border-color:#ff77cc'>pdf</span><span class='tag' style='border-color:#ff77cc'>rasterize</span><span class='tag' style='border-color:#ff77cc'>flatten</span><span class='tag' style='border-color:#ff77cc'>vision</span><span class='tag' style='border-color:#ff77cc'>pymupdf</span></div>
+<p style="color:#8affa8">Use when flattening PDFs to page images or raster PDFs.</p>
+</header>
+<main>
+
+
+
+<h1>PDF Flatten</h1>
+
+<h2>Overview</h2>
+
+<p>Flatten any PDF into a pixel-perfect raster form: either a set of per-page</p>
+<p>images (PNG/JPG) or a rebuilt PDF where every page is a high-DPI render.</p>
+<p>This kills the text layer intentionally — the result is exactly what a vision</p>
+<p>model or a human sees when they look at the page. Built for datasheet</p>
+<p>workflows, scanned-document archival, and feeding documents to image-based</p>
+<p>models.</p>
+
+<p>Two scripts ship with this skill (in <code>scripts/</code>):</p>
+
+<ul>
+<li><code>pdf_to_pages.py</code> — render pages to images: <code>--dpi</code> (default 250),</li>
+</ul>
+<p><code>--out</code>, <code>--format png|jpg</code>, <code>--quality</code>, <code>--pages 1-5</code> / <code>3,5,7-10</code>,</p>
+<p><code>--json</code> for machine-readable output.</p>
+<ul>
+<li><code>pdf_flatten.py</code> — rebuild the whole PDF from rendered pages.</li>
+</ul>
+
+<p>Both use PyMuPDF: <code>pip install pymupdf</code>.</p>
+
+<h2>When to Use</h2>
+
+<ul>
+<li>A PDF must be consumed as images (vision models, screenshots in a container).</li>
+<li>Vector/text artifacts break downstream tooling and you need &quot;what you see&quot;.</li>
+<li>Datasheets or scanned docs where the selectable-text layer is corrupt or</li>
+</ul>
+<p>missing.</p>
+<ul>
+<li><strong>Don&#x27;t use for:</strong> text extraction or search — this converts to pixels by</li>
+</ul>
+<p>design. Use extraction tooling instead when text matters.</p>
+
+<h2>Scanned PDF Detection (before flattening)</h2>
+
+<p>An image-only PDF has no text layer. Detect it cheaply with PyMuPDF — if all</p>
+<p>three return empty, it&#x27;s scanned and rasterization is the only path:</p>
+
+<pre class='code'><code>page = doc[i]
+text = page.get_text(&#x27;text&#x27;)     # &#x27;&#x27;
+blocks = page.get_text(&#x27;blocks&#x27;)  # []
+words = page.get_text(&#x27;words&#x27;)    # []</code></pre>
+
+<h2>Usage</h2>
+
+<pre class='code'><code># Every page as PNG at 250 DPI
+python3 scripts/pdf_to_pages.py input.pdf
+
+# Custom DPI + output dir
+python3 scripts/pdf_to_pages.py input.pdf --dpi 300 --out ./pages
+
+# JPEG with quality control
+python3 scripts/pdf_to_pages.py input.pdf --format jpg --quality 90
+
+# Page range (big documents)
+python3 scripts/pdf_to_pages.py input.pdf --pages 1-5
+
+# Rebuild a flat, raster-only PDF
+python3 scripts/pdf_flatten.py input.pdf -o flattened.pdf --dpi 250</code></pre>
+
+<h2>Batch / Pipeline Pattern</h2>
+
+<p>Chain both scripts for N documents in one pass: gather files, iterate,</p>
+<p>render each page, rebuild each PDF into a dated output folder. Keep the</p>
+<p>pipeline idempotent — skip already-rendered outputs.</p>
+
+<h2>Common Pitfalls</h2>
+
+<ul>
+<li><strong>Memory on large page counts</strong> — rendering 600+ pages at 300 DPI is</li>
+</ul>
+<p>heavy; process page ranges (<code>--pages</code>) or reduce <code>--dpi</code>.</p>
+<ul>
+<li><strong>The text layer is gone on purpose</strong> — do not &quot;flatten then extract</li>
+</ul>
+<p>text&quot;; flatten only when pixels are the deliverable.</p>
+<ul>
+<li><strong>Output dates/timestamps</strong> — write outputs to a dated folder so reruns</li>
+</ul>
+<p>don&#x27;t collide.</p>
+<ul>
+<li><strong>Rebuilt PDF size</strong> — 250 DPI PNG inside PDF can be large; JPEG with</li>
+</ul>
+<p><code>--quality 90</code> is a good compressor for photo-like pages.</p>
+<ul>
+<li><strong>PyMuPDF version drift</strong> — pin <code>pymupdf</code> in requirements; save/<code>doc.save</code></li>
+</ul>
+<p>keyword names changed across versions.</p>
+
+<h2>Verification Checklist</h2>
+
+<ul>
+<li>[ ] Rendered page count equals source page count (or the requested range)</li>
+<li>[ ] Rebuilt PDF opens and every page is an image (no selectable text)</li>
+<li>[ ] Output dimensions match source aspect ratio</li>
+<li>[ ] Spot-check 1-2 pages visually before distribution</li>
+</ul>
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : pdf-flatten // software-development</div>
+<div>MIT — generated by tools/publish.py; source: skills/pdf-flatten/SKILL.md</div>
+</footer>
+</body>
+</html>

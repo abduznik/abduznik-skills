@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jellyseerr-watch-suggestions // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">jellyseerr-watch-suggestions</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">media</span>
+<span class='tag' style='border-color:#55ddff'>jellyseerr</span><span class='tag' style='border-color:#55ddff'>sonarr</span><span class='tag' style='border-color:#55ddff'>radarr</span><span class='tag' style='border-color:#55ddff'>media</span><span class='tag' style='border-color:#55ddff'>suggestions</span></div>
+<p style="color:#8affa8">Use when suggesting watch picks filtered by your library.</p>
+</header>
+<main>
+
+
+
+<h1>Watch Suggestions Filtered by Your Library</h1>
+
+<h2>Overview</h2>
+
+<p>Generate watch recommendations that actually make sense for YOUR library:</p>
+<p>pull trending titles from a Jellyseerr instance, filter out everything you</p>
+<p>already own (Sonarr series / Radarr movies) and everything already requested</p>
+<p>(Jellyseerr requested/processing states), then rank the survivors by vote</p>
+<p>average. Great for a weekly &quot;what&#x27;s new worth watching&quot; digest — no</p>
+<p>duplicates, no &quot;suggest my own library back to me&quot;.</p>
+
+<p>Ships <code>scripts/watch_suggest.py</code> — a zero-dependency implementation</p>
+<p>(urllib only). All endpoints/credentials come from environment variables, so</p>
+<p>it runs anywhere and never hardcodes infrastructure.</p>
+
+<h2>When to Use</h2>
+
+<ul>
+<li>Weekly media digests (&quot;what should I watch this weekend&quot;).</li>
+<li>Automating discovery when the library is large enough that remembering what</li>
+</ul>
+<p>you own is hard.</p>
+<ul>
+<li><strong>Don&#x27;t use for:</strong> metadata browsing or request submission — this skill</li>
+</ul>
+<p>only filters and ranks.</p>
+
+<h2>Configuration (env vars)</h2>
+
+<table><thead><tr><th>Var</th><th>Meaning</th></tr></thead><tbody><tr><td><code>SEERR_URL</code></td><td>Jellyseerr base (default <code>http://localhost:5055</code>)</td></tr><tr><td><code>SONARR_URL</code> / <code>RADARR_URL</code></td><td>Sonarr/Radarr bases (defaults <code>localhost:8989</code> / <code>:7878</code>)</td></tr><tr><td><code>SONARR_API_KEY</code> / <code>RADARR_API_KEY</code></td><td>API keys for owned-library queries</td></tr><tr><td><code>SEERR_USER</code> / <code>SEERR_PASSWORD</code></td><td>Jellyseerr local auth for trending + request state</td></tr></tbody></table>
+
+<h2>Algorithm</h2>
+
+<ul>
+<li>Build owned sets: Sonarr <code>/api/v3/series</code> and Radarr <code>/api/v3/movie</code>,</li>
+</ul>
+<p>lowercase titles.</p>
+<ul>
+<li>Login to Jellyseerr once (keep the cookie jar), then:</li>
+<li>pending set: <code>/api/v1/media?filter=requested</code> and <code>filter=processing</code></li>
+</ul>
+<p>(<code>take=100</code>).</p>
+<ul>
+<li>trending: <code>/api/v1/discover/trending?page=1..3&amp;language=en</code> for both</li>
+</ul>
+<p><code>movie</code> and <code>tv</code> media types.</p>
+<ul>
+<li>Dedupe by lowercase title; skip anything owned or pending.</li>
+<li>Sort by <code>voteAverage</code>, print top N with year, type and a short overview.</li>
+</ul>
+
+<h2>Common Pitfalls</h2>
+
+<ul>
+<li><strong>Cookie jar must persist across requests</strong> — log in once and reuse the</li>
+</ul>
+<p>same opener; a fresh opener per request loses the session.</p>
+<ul>
+<li><strong>Title collisions across media types</strong> — a film and a show can share a</li>
+</ul>
+<p>name; dedupe within type or keep type in the key.</p>
+<ul>
+<li><strong>Pagination defaults</strong> — Jellyseerr <code>take</code> defaults are small; pass</li>
+</ul>
+<p><code>take=100&amp;skip=0</code> explicitly or you miss most of the catalog.</p>
+<ul>
+<li><strong>Credentials in code = instant leak</strong> — always env vars; the included</li>
+</ul>
+<p>script refuses to run without them.</p>
+<ul>
+<li><strong>Language param</strong> — <code>language=en</code> changes the discovery surface; match it</li>
+</ul>
+<p>to the user&#x27;s library language to avoid foreign-language noise.</p>
+
+<h2>Verification Checklist</h2>
+
+<ul>
+<li>[ ] Script runs without errors using only env-var config</li>
+<li>[ ] Owned titles from Sonarr/Radarr never appear in the output</li>
+<li>[ ] Titles in requested/processing state never appear</li>
+<li>[ ] Output sorted by vote average, top N printed with overviews</li>
+</ul>
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : jellyseerr-watch-suggestions // media</div>
+<div>MIT — generated by tools/publish.py; source: skills/jellyseerr-watch-suggestions/SKILL.md</div>
+</footer>
+</body>
+</html>

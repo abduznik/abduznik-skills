@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ephemeral-file-sharing // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">ephemeral-file-sharing</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">devops</span>
+<span class='tag' style='border-color:#44ff77'>file-sharing</span><span class='tag' style='border-color:#44ff77'>gofile</span><span class='tag' style='border-color:#44ff77'>expiring-links</span></div>
+<p style="color:#8affa8">Expiring public web links for files, CLI-only (gofile.io).</p>
+</header>
+<main>
+
+
+
+<h1>Ephemeral File Sharing</h1>
+
+<p>Give the user a public download link that expires on its own — no account, pure CLI. Use when they say &quot;upload X to the web&quot;, &quot;send someone a limited link&quot;, &quot;a link that expires in a week&quot;. Sibling of <code>homelab-file-hosting</code> (self-hosted permanent links); use THIS skill for external hosts with built-in expiry.</p>
+
+<h2>Golden rule: probe before committing</h2>
+
+<p>Never upload the real (possibly 1 GB+) file blind. Send a tiny probe (~50 bytes) to the candidate host and confirm you get a working JSON link back. Ephemeral hosts drift without warning:</p>
+
+<ul>
+<li><strong>file.io</strong> — root 301s to www.file.io, POST to either returns 405/Gatsby SPA (API gone as of Sep 2026). Old tutorials saying <code>curl -F &quot;file=@f&quot; https://file.io</code> are stale — do not trust them, probe.</li>
+<li><strong>tmpfiles.org</strong> — <code>/api/v1/upload</code> returned empty body.</li>
+<li><strong>transfer.pcloud.com</strong> — returned HTML page, not JSON (their API wants different params/endpoint).</li>
+<li><strong>gofile.io</strong> — verified working Sep 2026. Use it.</li>
+</ul>
+
+<h2>gofile.io recipe (verified Sep 2026)</h2>
+
+<h3>1. Upload (guest, no auth, ~1 GB fine)</h3>
+<pre class='code'><code>curl -s --max-time 5400 -F &quot;file=@/path/to/file&quot; &quot;https://upload.gofile.io/uploadfile&quot;</code></pre>
+<p>Response JSON fields to use:</p>
+<ul>
+<li><code>data.downloadPage</code> — the link to share (<code>https://gofile.io/d/XXXX</code>)</li>
+<li><code>data.size</code> + <code>data.md5</code> — server-computed; match <code>data.size</code> against local file size for integrity</li>
+<li><code>data.guestToken</code> / <code>data.code</code> / <code>data.id</code> — only needed for API management calls</li>
+</ul>
+
+<h3>2. Expiry semantics (free tier — report to user honestly)</h3>
+<ul>
+<li>Guest/standard uploads kept <strong>~10 days</strong>; the clock <strong>resets on every download</strong>, so active content lives longer, inactive files die at ~10 days. Premium = permanent.</li>
+<li>State this to the user when they ask for &quot;a week or so&quot;: &quot;kept ~10 days, resets each download.&quot;</li>
+</ul>
+
+<h3>3. Verify BEFORE handing over the link</h3>
+<pre class='code'><code>curl -s -o /dev/null -w &quot;%{http_code}\n&quot; --max-time 30 &quot;https://gofile.io/d/&lt;CODE&gt;&quot;   # expect 200</code></pre>
+<ul>
+<li>Do NOT hand-build the stream URL <code>https://{server}.gofile.io/download/{contentId}/{filename}</code> — it 301s to the download page. The <code>downloadPage</code> link is canonical.</li>
+<li><code>api.gofile.io/contents/{id}?wt=&lt;guestToken&gt;</code> may return <code>error-token</code> for guest tokens — expected, don&#x27;t chase it; the page 200 + size match is the real verification.</li>
+</ul>
+
+<h3>4. Pushing big files from the homelab</h3>
+<p>Stream from the server that holds the file — never copy 1 GB to the local box first:</p>
+<ul>
+<li>Run the ssh + curl upload as a <strong>background</strong> terminal with <code>notify_on_complete=true</code> (upload takes minutes on typical upstream).</li>
+<li>Keep the channel alive with <code>ssh -o ServerAliveInterval=30</code>.</li>
+<li><code>--max-time 5400</code> (~90 min) is a sane ceiling for 1 GB.</li>
+</ul>
+
+<h2>Pitfalls</h2>
+
+<ul>
+<li>Hosts drift: probe-first catches dead APIs before you burn a big upload. Re-probe any host older than a few months, even one documented here.</li>
+<li>Guest links are <strong>not revocable and not password-protected</strong> — for sensitive/durable shares use <code>homelab-file-hosting</code> (self-hosted, you control deletion) instead.</li>
+<li>gofile free tier has a download-speed cap for guests; fine for casual sharing, bad for many recipients.</li>
+<li>No LRU: an expiring link should still be flagged in the reply (&quot;dies ~10 days from upload unless downloaded&quot;) so the user isn&#x27;t surprised later.</li>
+</ul>
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : ephemeral-file-sharing // devops</div>
+<div>MIT — generated by tools/publish.py; source: skills/ephemeral-file-sharing/SKILL.md</div>
+</footer>
+</body>
+</html>

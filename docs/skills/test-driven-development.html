@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>test-driven-development // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">test-driven-development</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
+<span class='tag' style='border-color:#ff77cc'>testing</span><span class='tag' style='border-color:#ff77cc'>tdd</span><span class='tag' style='border-color:#ff77cc'>development</span><span class='tag' style='border-color:#ff77cc'>quality</span><span class='tag' style='border-color:#ff77cc'>red-green-refactor</span></div>
+<p style="color:#8affa8">TDD: enforce RED-GREEN-REFACTOR, tests before code.</p>
+</header>
+<main>
+
+
+
+<h1>Test-Driven Development (TDD)</h1>
+
+<h2>Overview</h2>
+
+<p>Write the test first. Watch it fail. Write minimal code to pass.</p>
+
+<p><strong>Core principle:</strong> If you didn&#x27;t watch the test fail, you don&#x27;t know if it tests the right thing.</p>
+
+<p><strong>Violating the letter of the rules is violating the spirit of the rules.</strong></p>
+
+<h2>When to Use</h2>
+
+<p><strong>Always:</strong></p>
+<ul>
+<li>New features</li>
+<li>Bug fixes</li>
+<li>Refactoring</li>
+<li>Behavior changes</li>
+</ul>
+
+<p><strong>Exceptions (ask the user first):</strong></p>
+<ul>
+<li>Throwaway prototypes</li>
+<li>Generated code</li>
+<li>Configuration files</li>
+</ul>
+
+<p>Thinking &quot;skip TDD just this once&quot;? Stop. That&#x27;s rationalization.</p>
+
+<h2>The Iron Law</h2>
+
+<pre class='code'><code>NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST</code></pre>
+
+<p>Write code before the test? Delete it. Start over.</p>
+
+<p><strong>No exceptions:</strong></p>
+<ul>
+<li>Don&#x27;t keep it as &quot;reference&quot;</li>
+<li>Don&#x27;t &quot;adapt&quot; it while writing tests</li>
+<li>Don&#x27;t look at it</li>
+<li>Delete means delete</li>
+</ul>
+
+<p>Implement fresh from tests. Period.</p>
+
+<h2>Red-Green-Refactor Cycle</h2>
+
+<h3>RED — Write Failing Test</h3>
+
+<p>Write one minimal test showing what should happen.</p>
+
+<p><strong>Good test:</strong></p>
+<pre class='code'><code>def test_retries_failed_operations_3_times():
+    attempts = 0
+    def operation():
+        nonlocal attempts
+        attempts += 1
+        if attempts &lt; 3:
+            raise Exception(&#x27;fail&#x27;)
+        return &#x27;success&#x27;
+
+    result = retry_operation(operation)
+
+    assert result == &#x27;success&#x27;
+    assert attempts == 3</code></pre>
+<p>Clear name, tests real behavior, one thing.</p>
+
+<p><strong>Bad test:</strong></p>
+<pre class='code'><code>def test_retry_works():
+    mock = MagicMock()
+    mock.side_effect = [Exception(), Exception(), &#x27;success&#x27;]
+    result = retry_operation(mock)
+    assert result == &#x27;success&#x27;  # What about retry count? Timing?</code></pre>
+<p>Vague name, tests mock not real code.</p>
+
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>One behavior per test</li>
+<li>Clear descriptive name (&quot;and&quot; in name? Split it)</li>
+<li>Real code, not mocks (unless truly unavoidable)</li>
+<li>Name describes behavior, not implementation</li>
+</ul>
+
+<h3>Verify RED — Watch It Fail</h3>
+
+<p><strong>MANDATORY. Never skip.</strong></p>
+
+<pre class='code'><code># Use terminal tool to run the specific test
+pytest tests/test_feature.py::test_specific_behavior -v</code></pre>
+
+<p>Confirm:</p>
+<ul>
+<li>Test fails (not errors from typos)</li>
+<li>Failure message is expected</li>
+<li>Fails because the feature is missing</li>
+</ul>
+
+<p><strong>Test passes immediately?</strong> You&#x27;re testing existing behavior. Fix the test.</p>
+
+<p><strong>Test errors?</strong> Fix the error, re-run until it fails correctly.</p>
+
+<h3>GREEN — Minimal Code</h3>
+
+<p>Write the simplest code to pass the test. Nothing more.</p>
+
+<p><strong>Good:</strong></p>
+<pre class='code'><code>def add(a, b):
+    return a + b  # Nothing extra</code></pre>
+
+<p><strong>Bad:</strong></p>
+<pre class='code'><code>def add(a, b):
+    result = a + b
+    logging.info(f&quot;Adding {a} + {b} = {result}&quot;)  # Extra!
+    return result</code></pre>
+
+<p>Don&#x27;t add features, refactor other code, or &quot;improve&quot; beyond the test.</p>
+
+<p><strong>Cheating is OK in GREEN:</strong></p>
+<ul>
+<li>Hardcode return values</li>
+<li>Copy-paste</li>
+<li>Duplicate code</li>
+<li>Skip edge cases</li>
+</ul>
+
+<p>We&#x27;ll fix it in REFACTOR.</p>
+
+<h3>Verify GREEN — Watch It Pass</h3>
+
+<p><strong>MANDATORY.</strong></p>
+
+<pre class='code'><code># Run the specific test
+pytest tests/test_feature.py::test_specific_behavior -v
+
+# Then run ALL tests to check for regressions
+pytest tests/ -q</code></pre>
+
+<p>Confirm:</p>
+<ul>
+<li>Test passes</li>
+<li>Other tests still pass</li>
+<li>Output pristine (no errors, warnings)</li>
+</ul>
+
+<p><strong>Test fails?</strong> Fix the code, not the test.</p>
+
+<p><strong>Other tests fail?</strong> Fix regressions now.</p>
+
+<h3>REFACTOR — Clean Up</h3>
+
+<p>After green only:</p>
+<ul>
+<li>Remove duplication</li>
+<li>Improve names</li>
+<li>Extract helpers</li>
+<li>Simplify expressions</li>
+</ul>
+
+<p>Keep tests green throughout. Don&#x27;t add behavior.</p>
+
+<p><strong>If tests fail during refactor:</strong> Undo immediately. Take smaller steps.</p>
+
+<h3>Repeat</h3>
+
+<p>Next failing test for next behavior. One cycle at a time.</p>
+
+<h2>Avoid Horizontal Slices</h2>
+
+<p>Do <strong>not</strong> write all tests first and then all implementation. That is horizontal slicing: RED becomes &quot;write a pile of imagined tests&quot; and GREEN becomes &quot;make the pile pass.&quot; It produces brittle tests because the tests are designed before the implementation has taught you what behavior and interface actually matter.</p>
+
+<p>Use vertical tracer bullets instead:</p>
+
+<pre class='code'><code>WRONG:
+  RED:   test1, test2, test3, test4
+  GREEN: impl1, impl2, impl3, impl4
+
+RIGHT:
+  RED→GREEN: test1→impl1
+  RED→GREEN: test2→impl2
+  RED→GREEN: test3→impl3</code></pre>
+
+<p>A tracer bullet is one end-to-end behavior slice. It proves the path works, teaches you about the interface, and keeps each next test grounded in what you just learned.</p>
+
+<h2>Why Order Matters</h2>
+
+<p><strong>&quot;I&#x27;ll write tests after to verify it works&quot;</strong></p>
+
+<p>Tests written after code pass immediately. Passing immediately proves nothing:</p>
+<ul>
+<li>Might test the wrong thing</li>
+<li>Might test implementation, not behavior</li>
+<li>Might miss edge cases you forgot</li>
+<li>You never saw it catch the bug</li>
+</ul>
+
+<p>Test-first forces you to see the test fail, proving it actually tests something.</p>
+
+<p><strong>&quot;I already manually tested all the edge cases&quot;</strong></p>
+
+<p>Manual testing is ad-hoc. You think you tested everything but:</p>
+<ul>
+<li>No record of what you tested</li>
+<li>Can&#x27;t re-run when code changes</li>
+<li>Easy to forget cases under pressure</li>
+<li>&quot;It worked when I tried it&quot; ≠ comprehensive</li>
+</ul>
+
+<p>Automated tests are systematic. They run the same way every time.</p>
+
+<p><strong>&quot;Deleting X hours of work is wasteful&quot;</strong></p>
+
+<p>Sunk cost fallacy. The time is already gone. Your choice now:</p>
+<ul>
+<li>Delete and rewrite with TDD (high confidence)</li>
+<li>Keep it and add tests after (low confidence, likely bugs)</li>
+</ul>
+
+<p>The &quot;waste&quot; is keeping code you can&#x27;t trust.</p>
+
+<p><strong>&quot;TDD is dogmatic, being pragmatic means adapting&quot;</strong></p>
+
+<p>TDD IS pragmatic:</p>
+<ul>
+<li>Finds bugs before commit (faster than debugging after)</li>
+<li>Prevents regressions (tests catch breaks immediately)</li>
+<li>Documents behavior (tests show how to use code)</li>
+<li>Enables refactoring (change freely, tests catch breaks)</li>
+</ul>
+
+<p>&quot;Pragmatic&quot; shortcuts = debugging in production = slower.</p>
+
+<p><strong>&quot;Tests after achieve the same goals — it&#x27;s spirit not ritual&quot;</strong></p>
+
+<p>No. Tests-after answer &quot;What does this do?&quot; Tests-first answer &quot;What should this do?&quot;</p>
+
+<p>Tests-after are biased by your implementation. You test what you built, not what&#x27;s required. Tests-first force edge case discovery before implementing.</p>
+
+<h2>Common Rationalizations</h2>
+
+<table><thead><tr><th>Excuse</th><th>Reality</th></tr></thead><tbody><tr><td>&quot;Too simple to test&quot;</td><td>Simple code breaks. Test takes 30 seconds.</td></tr><tr><td>&quot;I&#x27;ll test after&quot;</td><td>Tests passing immediately prove nothing.</td></tr><tr><td>&quot;Tests after achieve same goals&quot;</td><td>Tests-after = &quot;what does this do?&quot; Tests-first = &quot;what should this do?&quot;</td></tr><tr><td>&quot;Already manually tested&quot;</td><td>Ad-hoc ≠ systematic. No record, can&#x27;t re-run.</td></tr><tr><td>&quot;Deleting X hours is wasteful&quot;</td><td>Sunk cost fallacy. Keeping unverified code is technical debt.</td></tr><tr><td>&quot;Keep as reference, write tests first&quot;</td><td>You&#x27;ll adapt it. That&#x27;s testing after. Delete means delete.</td></tr><tr><td>&quot;Need to explore first&quot;</td><td>Fine. Throw away exploration, start with TDD.</td></tr><tr><td>&quot;Test hard = design unclear&quot;</td><td>Listen to the test. Hard to test = hard to use.</td></tr><tr><td>&quot;TDD will slow me down&quot;</td><td>TDD faster than debugging. Pragmatic = test-first.</td></tr><tr><td>&quot;Manual test faster&quot;</td><td>Manual doesn&#x27;t prove edge cases. You&#x27;ll re-test every change.</td></tr><tr><td>&quot;Existing code has no tests&quot;</td><td>You&#x27;re improving it. Add tests for the code you touch.</td></tr></tbody></table>
+
+<h2>Red Flags — STOP and Start Over</h2>
+
+<p>If you catch yourself doing any of these, delete the code and restart with TDD:</p>
+
+<ul>
+<li>Code before test</li>
+<li>Test after implementation</li>
+<li>Test passes immediately on first run</li>
+<li>Can&#x27;t explain why test failed</li>
+<li>Tests added &quot;later&quot;</li>
+<li>Rationalizing &quot;just this once&quot;</li>
+<li>&quot;I already manually tested it&quot;</li>
+<li>&quot;Tests after achieve the same purpose&quot;</li>
+<li>&quot;Keep as reference&quot; or &quot;adapt existing code&quot;</li>
+<li>&quot;Already spent X hours, deleting is wasteful&quot;</li>
+<li>&quot;TDD is dogmatic, I&#x27;m being pragmatic&quot;</li>
+<li>&quot;This is different because...&quot;</li>
+</ul>
+
+<p><strong>All of these mean: Delete code. Start over with TDD.</strong></p>
+
+<h2>Verification Checklist</h2>
+
+<p>Before marking work complete:</p>
+
+<ul>
+<li>[ ] Every new function/method has a test</li>
+<li>[ ] Watched each test fail before implementing</li>
+<li>[ ] Each test failed for expected reason (feature missing, not typo)</li>
+<li>[ ] Wrote minimal code to pass each test</li>
+<li>[ ] All tests pass</li>
+<li>[ ] Output pristine (no errors, warnings)</li>
+<li>[ ] Tests use real code (mocks only if unavoidable)</li>
+<li>[ ] Edge cases and errors covered</li>
+</ul>
+
+<p>Can&#x27;t check all boxes? You skipped TDD. Start over.</p>
+
+<h2>When Stuck</h2>
+
+<table><thead><tr><th>Problem</th><th>Solution</th></tr></thead><tbody><tr><td>Don&#x27;t know how to test</td><td>Write the wished-for API. Write the assertion first. Ask the user.</td></tr><tr><td>Test too complicated</td><td>Design too complicated. Simplify the interface.</td></tr><tr><td>Must mock everything</td><td>Code too coupled. Use dependency injection.</td></tr><tr><td>Test setup huge</td><td>Extract helpers. Still complex? Simplify the design.</td></tr></tbody></table>
+
+<h2>Hermes Agent Integration</h2>
+
+<h3>Running Tests</h3>
+
+<p>Use the <code>terminal</code> tool to run tests at each step:</p>
+
+<pre class='code'><code># RED — verify failure
+terminal(&quot;pytest tests/test_feature.py::test_name -v&quot;)
+
+# GREEN — verify pass
+terminal(&quot;pytest tests/test_feature.py::test_name -v&quot;)
+
+# Full suite — verify no regressions
+terminal(&quot;pytest tests/ -q&quot;)</code></pre>
+
+<h3>With delegate_task</h3>
+
+<p>When dispatching subagents for implementation, enforce TDD in the goal:</p>
+
+<pre class='code'><code>delegate_task(
+    goal=&quot;Implement [feature] using strict TDD&quot;,
+    context=&quot;&quot;&quot;
+    Follow test-driven-development skill:
+    1. Write failing test FIRST
+    2. Run test to verify it fails
+    3. Write minimal code to pass
+    4. Run test to verify it passes
+    5. Refactor if needed
+    6. Commit
+
+    Project test command: pytest tests/ -q
+    Project structure: [describe relevant files]
+    &quot;&quot;&quot;,
+    toolsets=[&#x27;terminal&#x27;, &#x27;file&#x27;]
+)</code></pre>
+
+<h3>With systematic-debugging</h3>
+
+<p>Bug found? Write failing test reproducing it. Follow TDD cycle. The test proves the fix and prevents regression.</p>
+
+<p>Never fix bugs without a test.</p>
+
+<h2>Testing Anti-Patterns</h2>
+
+<ul>
+<li><strong>Testing mock behavior instead of real behavior</strong> — mocks should verify interactions, not replace the system under test</li>
+<li><strong>Testing implementation details</strong> — test behavior/results, not internal method calls</li>
+<li><strong>Happy path only</strong> — always test edge cases, errors, and boundaries</li>
+<li><strong>Brittle tests</strong> — tests should verify behavior, not structure; refactoring shouldn&#x27;t break them</li>
+</ul>
+
+<h2>Final Rule</h2>
+
+<pre class='code'><code>Production code → test exists and failed first
+Otherwise → not TDD</code></pre>
+
+<p>No exceptions without the user&#x27;s explicit permission.</p>
+
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : test-driven-development // software-development</div>
+<div>MIT — generated by tools/publish.py; source: skills/test-driven-development/SKILL.md</div>
+</footer>
+</body>
+</html>

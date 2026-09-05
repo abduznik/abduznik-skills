@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docker-container-update-check // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">docker-container-update-check</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">devops</span>
+<span class='tag' style='border-color:#44ff77'>docker</span><span class='tag' style='border-color:#44ff77'>containers</span><span class='tag' style='border-color:#44ff77'>updates</span></div>
+<p style="color:#8affa8">Use when checking Docker containers for newer images.</p>
+</header>
+<main>
+
+
+
+<h1>Docker Container Update Check</h1>
+
+<h2>When to Use</h2>
+
+<ul>
+<li>User asks &quot;do any containers need updating?&quot; on a Docker host (homelab, VPS, desktop)</li>
+<li>Need a read-only update audit: which running containers have a newer image upstream</li>
+<li>Must NOT pull images or restart containers (a pure audit)</li>
+</ul>
+
+<h2>Core Approach</h2>
+
+<p>Compare the <strong>digest the running container was created from</strong> (local <code>RepoDigests</code>)</p>
+<p>against the <strong>registry&#x27;s current digest</strong> for the same tag (<code>manifest inspect</code>).</p>
+<p>No <code>docker pull</code>, no layer downloads, no container lifecycle impact.</p>
+
+<pre class='code'><code># Per-container:
+iid=$(docker inspect --format &quot;{{.Image}}&quot; &quot;$c&quot;)          # image ID of running container
+cur=$(docker image inspect --format &quot;{{range .RepoDigests}}{{.}}{{end}}&quot; &quot;$iid&quot; | sed &quot;s/.*@//&quot;)
+latest=$(docker manifest inspect --verbose &quot;$img&quot; | python3 -c &quot;...parse digest...&quot;)
+# cur == latest  -&gt; CURRENT ; differ -&gt; UPDATE</code></pre>
+
+<p>Run in parallel — a serial loop over 40+ containers times out (&gt;420s):</p>
+<pre class='code'><code>docker ps -q | xargs -P 10 -I {} /tmp/check_container_updates.sh {}</code></pre>
+
+<h2>Pitfalls</h2>
+
+<ul>
+<li><strong>Cron Python scripts must pin Git&#x27;s ssh.exe on exFAT drives</strong>: the target drive may be exFAT (no ACLs). Windows OpenSSH (<code>C:\Windows\System32\OpenSSH\ssh.exe</code>, first on system PATH) <strong>refuses any private key on exFAT/FAT</strong> with <code>UNPROTECTED PRIVATE KEY FILE / permissions too open</code>, while Git-bash&#x27;s ssh works fine. A script that shells out to <code>ssh</code> by name → cron no_agent runs resolve to System32 OpenSSH → setup fails. Fix: <code>SSH = r&quot;C:/Program Files/Git/usr/bin/ssh.exe&quot;</code> and use <code>[SSH, &quot;-i&quot;, KEY, ...]</code> in every subprocess call. Apply the same pattern to any watchdog script that needs ssh.</li>
+<li><strong>CRLF corrupts scripts deployed via SSH stdin</strong>: writing <code>check_container_updates.sh</code> through <code>ssh host &quot;cat &gt; /tmp/...&quot;</code> from Windows adds <code>\r</code>, producing <code>Syntax error: end of file unexpected (expecting &quot;fi&quot;)</code> and a SILENTLY BROKEN watchdog (all outputs empty). Fix on host: <code>sed -i &#x27;s/\r$//&#x27; /tmp/check_container_updates.sh &amp;&amp; bash -n ...</code> — always verify with <code>bash -n</code> after deploy.</li>
+<li><strong>Multi-arch manifest shape</strong>: <code>docker manifest inspect --verbose</code> returns a <strong>LIST</strong> of</li>
+</ul>
+<p>per-platform descriptors for multi-arch images, but a <strong>DICT</strong> <code>{&quot;Descriptor&quot;: {...}}</code></p>
+<p>for single-arch images. A parser that only handles one shape mislabels every result of</p>
+<p>the other kind. Handle both: <code>d[0][&#x27;Descriptor&#x27;][&#x27;digest&#x27;]</code> if list, <code>d[&#x27;Descriptor&#x27;][&#x27;digest&#x27;]</code> if dict.</p>
+<ul>
+<li><strong>Docker Hub anonymous rate limit</strong>: 100 pulls/6h per IP. When exhausted, `manifest</li>
+</ul>
+<p>inspect<code> fails with </code>toomanyrequests: You have reached your unauthenticated pull rate</p>
+<p>limit` and every docker.io image shows as CHECK_FAIL. **ghcr.io and lscr.io are NOT</p>
+<p>affected** — split results by registry to isolate the rate-limited ones, and re-check</p>
+<p>docker.io images after the window resets. A mass update the day before typically burns</p>
+<p>the quota.</p>
+<ul>
+<li><strong><code>latest</code>-tag churn is normal</strong>: linuxserver-style images rebuild daily. Containers</li>
+</ul>
+<p>updated 23h ago can already show a newer digest. Report it, don&#x27;t treat it as an alarm.</p>
+<ul>
+<li><strong>Per-image timeout</strong>: wrap manifest inspect in <code>timeout 25</code> so one slow registry</li>
+</ul>
+<p>doesn&#x27;t stall the batch.</p>
+<ul>
+<li><strong>Locally built images</strong> (no registry reference, e.g. <code>python_stack-bingbong</code>) and</li>
+</ul>
+<p>images with no <code>RepoDigests</code> show as CHECK_FAIL / DIGEST_UNKNOWN — they have no</p>
+<p>upstream to compare against; note them as &quot;local build, update = rebuild&quot;.</p>
+
+<h2>Verification</h2>
+
+<ul>
+<li>Cross-check a couple of results: <code>docker manifest inspect --verbose &lt;img&gt;</code> for one</li>
+</ul>
+<p>UPDATE and one CURRENT confirms the parser is comparing real digests, not garbage.</p>
+<ul>
+<li><code>unbound</code>-style single-arch images are a good CURRENT control (dict shape path).</li>
+</ul>
+
+<h2>Support Files</h2>
+
+<ul>
+<li><code>scripts/check_container_updates.sh</code> — the full per-container checker with the</li>
+</ul>
+<p>dual-shape parser baked in. Deploy to the host and run via xargs as above.</p>
+
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : docker-container-update-check // devops</div>
+<div>MIT — generated by tools/publish.py; source: skills/docker-container-update-check/SKILL.md</div>
+</footer>
+</body>
+</html>

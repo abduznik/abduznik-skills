@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>debugging-hermes-tui-commands // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">debugging-hermes-tui-commands</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">hermes</span>
+<span class='tag' style='border-color:#ff8844'>debugging</span><span class='tag' style='border-color:#ff8844'>hermes-agent</span><span class='tag' style='border-color:#ff8844'>tui</span><span class='tag' style='border-color:#ff8844'>slash-commands</span><span class='tag' style='border-color:#ff8844'>typescript</span><span class='tag' style='border-color:#ff8844'>python</span></div>
+<p style="color:#8affa8">Debug Hermes TUI slash commands: Python, gateway, Ink UI.</p>
+</header>
+<main>
+
+
+
+<h1>Debugging Hermes TUI Slash Commands</h1>
+
+<h2>Overview</h2>
+
+<p>Hermes slash commands span three layers — Python command registry, tui_gateway JSON-RPC bridge, and the Ink/TypeScript frontend. When a command misbehaves (missing from autocomplete, works in CLI but not TUI, config persists but UI doesn&#x27;t update), the bug is almost always one layer being out of sync with another.</p>
+
+<p>Use this skill when you encounter issues with slash commands in the Hermes TUI, particularly when commands aren&#x27;t showing in autocomplete, aren&#x27;t working properly in the TUI, or need to be added/updated.</p>
+
+<h2>When to Use</h2>
+
+<ul>
+<li>A slash command exists in one part of the codebase but doesn&#x27;t work fully</li>
+<li>A command needs to be added to both backend and frontend</li>
+<li>Command autocomplete isn&#x27;t working for specific commands</li>
+<li>Command behavior is inconsistent between CLI and TUI</li>
+<li>A command persists config but doesn&#x27;t apply live in the TUI</li>
+</ul>
+
+<h2>Architecture Overview</h2>
+
+<pre class='code'><code>Python backend (hermes_cli/commands.py)     &lt;- canonical COMMAND_REGISTRY
+       │
+       ▼
+TUI gateway (tui_gateway/server.py)         &lt;- slash.exec / command.dispatch
+       │
+       ▼
+TUI frontend (ui-tui/src/app/slash/)        &lt;- local handlers + fallthrough</code></pre>
+
+<p>Command definitions must be registered consistently across Python and TypeScript to work properly. The Python <code>COMMAND_REGISTRY</code> is the source of truth for: CLI dispatch, gateway help, Telegram BotCommand menu, Slack subcommand map, and autocomplete data shipped to Ink.</p>
+
+<h2>Investigation Steps</h2>
+
+<ul>
+<li><strong>Check if the command exists in the TUI frontend:</strong></li>
+</ul>
+<pre class='code'><code>   search_files --pattern &quot;/commandname&quot; --file_glob &quot;*.ts&quot; --path ui-tui/
+   search_files --pattern &quot;/commandname&quot; --file_glob &quot;*.tsx&quot; --path ui-tui/</code></pre>
+
+<ul>
+<li><strong>Examine the TUI command definition:</strong></li>
+</ul>
+<pre class='code'><code>   read_file ui-tui/src/app/slash/commands/core.ts
+   # If not there:
+   search_files --pattern &quot;commandname&quot; --path ui-tui/src/app/slash/commands --target files</code></pre>
+
+<ul>
+<li><strong>Check if the command exists in the Python backend:</strong></li>
+</ul>
+<pre class='code'><code>   search_files --pattern &quot;CommandDef&quot; --file_glob &quot;*.py&quot; --path hermes_cli/
+   search_files --pattern &quot;commandname&quot; --path hermes_cli/commands.py --context 3</code></pre>
+
+<ul>
+<li><strong>Examine the gateway implementation:</strong></li>
+</ul>
+<pre class='code'><code>   search_files --pattern &quot;complete.slash|slash.exec&quot; --path tui_gateway/</code></pre>
+
+<h2>Fix: Missing Command Autocomplete</h2>
+
+<p>If a command exists in the TUI but doesn&#x27;t show in autocomplete:</p>
+
+<ul>
+<li>Add a <code>CommandDef</code> entry to <code>COMMAND_REGISTRY</code> in <code>hermes_cli/commands.py</code>:</li>
+</ul>
+<pre class='code'><code>   CommandDef(&quot;commandname&quot;, &quot;Description of the command&quot;, &quot;Session&quot;,
+              cli_only=True, aliases=(&quot;alias&quot;,),
+              args_hint=&quot;[arg1|arg2|arg3]&quot;,
+              subcommands=(&quot;arg1&quot;, &quot;arg2&quot;, &quot;arg3&quot;)),</code></pre>
+
+<ul>
+<li>Pick <code>cli_only</code> vs gateway availability carefully:</li>
+<li><code>cli_only=True</code> — only in the interactive CLI/TUI</li>
+<li><code>gateway_only=True</code> — only in messaging platforms</li>
+<li>neither — available everywhere</li>
+<li><code>gateway_config_gate=&quot;display.foo&quot;</code> — config-gated availability in the gateway</li>
+</ul>
+
+<ul>
+<li>Ensure <code>subcommands</code> matches the expected tab-completion options shown by the TUI.</li>
+</ul>
+
+<ul>
+<li>If the command runs server-side, add a handler in <code>HermesCLI.process_command()</code> in <code>cli.py</code>:</li>
+</ul>
+<pre class='code'><code>   elif canonical == &quot;commandname&quot;:
+       self._handle_commandname(cmd_original)</code></pre>
+
+<ul>
+<li>For gateway-available commands, add a handler in <code>gateway/run.py</code>:</li>
+</ul>
+<pre class='code'><code>   if canonical == &quot;commandname&quot;:
+       return await self._handle_commandname(event)</code></pre>
+
+<h2>Common Issues</h2>
+
+<ul>
+<li><strong>Command shows in TUI but not in autocomplete.</strong> The command is defined in the TUI codebase but missing from <code>COMMAND_REGISTRY</code> in <code>hermes_cli/commands.py</code>. Autocomplete data ships from Python.</li>
+</ul>
+
+<ul>
+<li><strong>Command shows in autocomplete but doesn&#x27;t work.</strong> Check the command handler in <code>tui_gateway/server.py</code> and the frontend handler in <code>ui-tui/src/app/createSlashHandler.ts</code>. If the command is local-only in Ink, it must be handled in <code>app.tsx</code> built-in branch; otherwise it falls through to <code>slash.exec</code> and must have a Python handler.</li>
+</ul>
+
+<ul>
+<li><strong>Command behavior differs between CLI and TUI.</strong> The command might have different implementations. Check both <code>cli.py::process_command</code> and the TUI&#x27;s local handler. Local TUI handlers take precedence over gateway dispatch.</li>
+</ul>
+
+<ul>
+<li><strong>Command persists config but doesn&#x27;t apply live.</strong> For TUI-local commands, updating <code>config.set</code> is not enough. Also patch the relevant nanostore state immediately (usually <code>patchUiState(...)</code>) and pass any new state through rendering components. Example: <code>/details collapsed</code> must update live detail visibility, not just save <code>details_mode</code>; in-session global <code>/details &lt;mode&gt;</code> may need a separate command-override flag so live commands can override built-in section defaults while startup/config sync preserves default-expanded thinking/tools behavior.</li>
+</ul>
+
+<ul>
+<li><strong>Gateway dispatch silently ignores the command.</strong> The gateway only dispatches commands it knows about. Check <code>GATEWAY_KNOWN_COMMANDS</code> (derived from <code>COMMAND_REGISTRY</code> automatically) includes the canonical name. If the command is <code>cli_only</code> with a <code>gateway_config_gate</code>, verify the gated config value is truthy.</li>
+</ul>
+
+<h2>Debugging Tactics</h2>
+
+<p>When surface-level inspection doesn&#x27;t reveal the bug:</p>
+
+<ul>
+<li><strong>Python side hangs or misbehaves:</strong> use the <code>python-debugpy</code> skill to break inside <code>_SlashWorker.exec</code> or the command handler. <code>remote-pdb</code> set at the handler entry is the fastest path.</li>
+<li><strong>Ink side not reacting:</strong> use the <code>node-inspect-debugger</code> skill to break in <code>app.tsx</code>&#x27;s slash dispatch or the local command branch. <code>sb(&#x27;dist/app.js&#x27;, &lt;line&gt;)</code> after <code>npm run build</code>.</li>
+<li><strong>Registry mismatch / unclear which side is wrong:</strong> compare the canonical <code>COMMAND_REGISTRY</code> entry against the TUI&#x27;s local command list side-by-side.</li>
+</ul>
+
+<h2>Pitfalls</h2>
+
+<ul>
+<li>Don&#x27;t forget to set the appropriate category for the command in <code>CommandDef</code> (e.g., &quot;Session&quot;, &quot;Configuration&quot;, &quot;Tools &amp; Skills&quot;, &quot;Info&quot;, &quot;Exit&quot;)</li>
+<li>Make sure any aliases are properly registered in the <code>aliases</code> tuple — no other file changes are needed, everything downstream (Telegram menu, Slack mapping, autocomplete, help) derives from it</li>
+<li>For commands with subcommands, ensure the <code>subcommands</code> tuple in <code>CommandDef</code> matches what&#x27;s in the TUI code</li>
+<li><code>cli_only=True</code> commands won&#x27;t work in gateway/messaging platforms — unless you add a <code>gateway_config_gate</code> and the gate is truthy</li>
+<li>After adding live UI state, search every consumer of the old prop/helper and thread the new state through all render paths, not just the active streaming path. TUI detail rendering has at least two important paths: live <code>StreamingAssistant</code>/<code>ToolTrail</code> and transcript/pending <code>MessageLine</code> rows. A <code>/clean</code> pass should explicitly check both.</li>
+<li>Rebuild the TUI (<code>npm --prefix ui-tui run build</code>) before testing — tsx watch mode may lag on first launch</li>
+</ul>
+
+<h2>Verification</h2>
+
+<p>After fixing:</p>
+
+<ul>
+<li>Rebuild the TUI:</li>
+</ul>
+<pre class='code'><code>   cd /home/bb/hermes-agent &amp;&amp; npm --prefix ui-tui run build</code></pre>
+
+<ul>
+<li>Run the TUI and test the command:</li>
+</ul>
+<pre class='code'><code>   hermes --tui</code></pre>
+
+<ul>
+<li>Type <code>/</code> and verify the command appears in autocomplete suggestions with the expected description and args hint.</li>
+</ul>
+
+<ul>
+<li>Execute the command and confirm:</li>
+<li>Expected behavior fires</li>
+<li>Any persisted config updates correctly (<code>read_file ~/.hermes/config.yaml</code>)</li>
+<li>Live UI state reflects the change immediately (not just after restart)</li>
+</ul>
+
+<ul>
+<li>If the command is also gateway-available, test it from at least one messaging platform (or run the gateway tests: <code>scripts/run_tests.sh tests/gateway/</code>).</li>
+</ul>
+
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : debugging-hermes-tui-commands // hermes</div>
+<div>MIT — generated by tools/publish.py; source: skills/debugging-hermes-tui-commands/SKILL.md</div>
+</footer>
+</body>
+</html>

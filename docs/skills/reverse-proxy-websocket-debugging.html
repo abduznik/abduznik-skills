@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>reverse-proxy-websocket-debugging // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">reverse-proxy-websocket-debugging</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">devops</span>
+<span class='tag' style='border-color:#44ff77'>websocket</span><span class='tag' style='border-color:#44ff77'>reverse-proxy</span><span class='tag' style='border-color:#44ff77'>debugging</span></div>
+<p style="color:#8affa8">Use when WebSockets die behind a reverse proxy (close 1006).</p>
+</header>
+<main>
+
+
+
+<h1>Reverse-Proxy WebSocket Debugging</h1>
+
+<p>Symptom signature: pages load fine through the proxy, but WS-dependent features are dead. Browser console shows <code>WebSocket Error</code> then <code>Closed WebSocket ... code: 1006</code> with reconnect loops; apps show banners like &quot;This websocket connection has been closed. Are you using a reverse proxy?&quot; (Crafty) or just silently no live data. Note: dashboard numbers may still appear — they can be server-rendered at page load, not WS evidence.</p>
+
+<h2>Root cause checklist (in order of likelihood)</h2>
+
+<ul>
+<li><strong>Upstream Host header rewritten by the proxy</strong> — Caddy&#x27;s default for <code>reverse_proxy localhost:8443</code> is to send <code>Host: localhost:8443</code> upstream. Origin-checking backends (Tornado <code>check_origin</code>, Django Channels, Flask-SocketIO same-origin) compare the browser&#x27;s <code>Origin</code> (public domain) against the <code>Host</code> they see (now the dial address) → upgrade rejected with <code>403 Cross origin websockets not allowed</code> (Tornado). The browser turns the failed handshake into close <strong>1006</strong>.</li>
+<li>Caddy fix: <code>header_up Host {http.request.host}</code> inside the <code>reverse_proxy</code> block.</li>
+<li>Nginx fix: <code>proxy_set_header Host $http_host;</code> plus the upgrade headers below.</li>
+<li><strong>Upgrade headers not forwarded</strong> — Nginx needs explicit <code>proxy_http_version 1.1;</code>, <code>proxy_set_header Upgrade $http_upgrade;</code> + <code>Connection &quot;upgrade&quot;;</code> + <code>X-Forwarded-Proto https;</code> + <code>X-Forwarded-For ...;</code>. Caddy forwards upgrade headers automatically — if it still fails, suspect #1, not this.</li>
+<li><strong>Backend auth/origin policy</strong> — some apps validate a WS token cookie or require URL params; read the backend&#x27;s WS handler source to see exactly what it checks before guessing.</li>
+</ul>
+
+<h2>Diagnosis drill</h2>
+
+<ul>
+<li><strong>Get the real WS URL</strong>: open the app in a browser and pull the console (browser_console). Apps often log the target, e.g. Crafty: <code>new WebSocket(&#x27;wss://&#x27; + location.host + &#x27;/ws?...&#x27;)</code>. The frontend source is authoritative — grep it before blaming backend config.</li>
+<li><strong>Probe the handshake</strong> direct to the backend AND through the proxy with curl (no WS client library needed):</li>
+</ul>
+<pre class='code'><code>   # direct backend (adjust scheme/port/params): 101 = healthy
+   curl -sk -i --max-time 8 -H &quot;Connection: Upgrade&quot; -H &quot;Upgrade: websocket&quot; \
+     -H &quot;Sec-WebSocket-Version: 13&quot; -H &quot;Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==&quot; \
+     -H &quot;Origin: https://&lt;public-host&gt;&quot; &quot;https://localhost:&lt;backend-port&gt;/ws?&lt;params&gt;&quot;</code></pre>
+<p>Through-proxy variant: same headers plus <code>--resolve &lt;public-host&gt;:443:127.0.0.1</code> with the real URL. <strong>Always <code>--resolve</code> the real hostname</strong> — curling <code>https://localhost</code> through a vhost-charged proxy dies in TLS (no cert for SNI <code>localhost</code>; looks like the proxy ate the request but it never reached HTTP).</p>
+<ul>
+<li><strong>Isolate Host-rewrite</strong>: resend through the proxy with <code>-H &quot;Origin: https://localhost:&lt;backend-port&gt;&quot;</code>. If THAT returns <code>101 Switching Protocols</code>, the proxy is rewriting Host upstream and the real-Origin check is what fails → apply the <code>header_up Host</code> fix.</li>
+<li><strong>Re-verify after the fix</strong>: real-Origin probe through the proxy → <code>101</code>; browser console shows <code>opened WebSocket connection</code> and no reconnect spam.</li>
+</ul>
+
+<h2>Pitfalls</h2>
+
+<ul>
+<li><strong>SPA login forms corrupt automation typing</strong> (React/Vue controlled inputs): browser_type can leave garbage or truncated values (username field ended up holding a framework token, password had 5 of 63 chars). Fix — set values via native setter + dispatch <code>input</code>/<code>change</code> in one console JS line:</li>
+</ul>
+<pre class='code'><code>  const setVal=(el,v)=&gt;{const d=Object.getOwnPropertyDescriptor(Object.getPrototypeOf(el),&#x27;value&#x27;);d.set.call(el,v);el.dispatchEvent(new Event(&#x27;input&#x27;,{bubbles:true}));el.dispatchEvent(new Event(&#x27;change&#x27;,{bubbles:true}));};</code></pre>
+<p>Never treat an automated-browser login as credential proof — verify in a real browser or server-side (e.g. DB hash check).</p>
+<ul>
+<li><strong>Tornado XSRF on API login</strong> makes curl brute-forcing painful (cookie jar + <code>_xsrf</code> token dance); prefer browser or DB-backed verification.</li>
+<li><strong>Caddyfile edits</strong>: apply via write-through of the bind-mounted inode + <code>caddy validate</code> + <code>caddy reload</code> (inode trap — see homelab-server-admin).</li>
+<li><strong>Approval timeouts kill long sudo batches</strong>: if a mutating SSH batch times out at the approval gate, re-present the pending commands as a short plan instead of silently retrying.</li>
+</ul>
+
+<h2>Worked case</h2>
+
+<p>Crafty Controller + Caddy (Aug 2026): full capture — commands, outputs, Caddyfile diff — in <code>references/crafty-caddy-websocket.md</code>.</p>
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : reverse-proxy-websocket-debugging // devops</div>
+<div>MIT — generated by tools/publish.py; source: skills/reverse-proxy-websocket-debugging/SKILL.md</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>flutter-content-rendering // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">flutter-content-rendering</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
+<span class='tag' style='border-color:#ff77cc'>flutter</span><span class='tag' style='border-color:#ff77cc'>rendering</span><span class='tag' style='border-color:#ff77cc'>html</span><span class='tag' style='border-color:#ff77cc'>pdf</span></div>
+<p style="color:#8affa8">Show HTML/links/PDFs in Flutter — viewers, clickable URLs.</p>
+</header>
+<main>
+
+
+
+<h1>Flutter Content Rendering (HTML, links, PDFs, local files)</h1>
+
+<p>Package-level quirks for rendering dynamic content in Flutter apps (task</p>
+<p>descriptions, attachment viewers, rich text). Verified against the Vikunja</p>
+<p>Flutter app on Flutter 3.44.8 / Dart 3.12 / webview_flutter 4.13.</p>
+
+<h2>Clickable links inside rendered HTML</h2>
+
+<p><code>flutter_widget_from_html</code>&#x27;s <code>HtmlWidget</code>:</p>
+<ul>
+<li>Does <strong>NOT</strong> auto-linkify bare <code>https://</code> / <code>www.</code> URLs — they render as inert text.</li>
+<li><code>&lt;a href&gt;</code> tags are only tappable when <code>onTapUrl</code> is supplied.</li>
+<li><code>onTapUrl</code> signature: <code>FutureOr&lt;bool&gt; Function(String url)?</code> — return true = handled.</li>
+</ul>
+
+<p>Recipe (works for plain text or HTML strings):</p>
+<ul>
+<li>Linkify first: wrap bare URLs in <code>&lt;a href&gt;</code> (regex below), skipping URLs already inside an href attribute.</li>
+<li><code>HtmlWidget(linkifyHtml(desc), onTapUrl: (url) =&gt; launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication))</code> — <code>url_launcher</code>, already available in most apps.</li>
+<li><strong>AndroidManifest</strong>: add a <code>&lt;queries&gt;</code> block (VIEW intent, <code>http</code> + <code>https</code> schemes) for Android 11+ package visibility, or browser launch can fail silently.</li>
+</ul>
+
+<p>Copy-paste linkify (mind the raw-string trap — see below):</p>
+
+<pre class='code'><code>final RegExp _bareUrlPattern = RegExp(
+  r&#x27;(?&lt;![=&quot;])((?:https?://|www\.)[^\s&lt;&gt;]+)&#x27;,
+  caseSensitive: false,
+);
+final RegExp _trailingJunk = RegExp(r&#x27;[.,;:!?…)&quot;&#x27; r&quot;&#x27;]+$&quot;);
+
+String linkifyHtml(String input) =&gt; input.replaceAllMapped(_bareUrlPattern, (m) {
+  var url = m.group(1)!.replaceAll(_trailingJunk, &#x27;&#x27;);
+  if (url.isEmpty) return m.group(0)!;
+  final href = url.startsWith(&#x27;http&#x27;) ? url : &#x27;https://$url&#x27;;
+  return &#x27;&lt;a href=&quot;$href&quot;&gt;$url&lt;/a&gt;&#x27;;
+});</code></pre>
+
+<h2>WebView (webview_flutter 4.x)</h2>
+
+<ul>
+<li><code>loadFile()</code>: pass <code>&#x27;file://$path&#x27;</code>. The 4.x Android impl hands the string</li>
+</ul>
+<p>straight to <code>loadUrl</code> (no prefix added); the legacy impl prefixes <code>file://</code></p>
+<p>itself. The explicit prefix works for both, and the plugin sets</p>
+<p><code>setAllowFileAccess(true)</code> for you.</p>
+<ul>
+<li><code>setDomStorageEnabled</code> was REMOVED from the API — DOM storage is always on</li>
+</ul>
+<p>(AndroidWebViewController ctor enables it).</p>
+<ul>
+<li>Pinch zoom is ON by default (ctor: <code>setBuiltInZoomControls(true)</code>,</li>
+</ul>
+<p><code>setDisplayZoomControls(false)</code>) — no code needed.</p>
+<ul>
+<li>CDN-script pages (Tailwind etc.): <code>setJavaScriptMode(JavaScriptMode.unrestricted)</code>.</li>
+<li>Loading UX: <code>NavigationDelegate(onPageStarted/onPageFinished)</code> + spinner;</li>
+</ul>
+<p>WebView stays blank until the first frame.</p>
+<ul>
+<li>HTML in a WebView renders CSS/JS/RTL exactly like a browser; a plain</li>
+</ul>
+<p><code>HtmlWidget</code> view strips styles — choose per use case.</p>
+
+<h2>PDFs (flutter_pdfview)</h2>
+
+<ul>
+<li>Android native <code>PdfRenderer</code> → handles Hebrew/RTL PDFs and generated docs well.</li>
+<li>Needs a real local file path (app-private dirs like applicationSupport work).</li>
+<li>Default view: <code>PDFView(filePath: path, autoSpacing: true, pageFling: false)</code>;</li>
+</ul>
+<p>errors surface via <code>onError</code> / <code>onPageError</code>.</p>
+
+<h2>Local file download + cache (background_downloader)</h2>
+
+<ul>
+<li>Cache pattern: build the <code>DownloadTask</code> (same URL/headers as the download),</li>
+</ul>
+<p>call <code>task.filePath()</code> — returns <code>Future&lt;String&gt;</code> (<strong>non-nullable</strong>) — then</p>
+<p><code>File(path).existsSync()</code> to skip re-downloads.</p>
+<ul>
+<li>Open a cached local file in an external app:</li>
+</ul>
+<p><code>FileDownloader().openFile(filePath: path, mimeType: mime)</code> (exposes via</p>
+<p>content URI; plain <code>url_launcher</code> <code>Uri.file</code> does NOT work on Android 7+ for</p>
+<p>app-private files).</p>
+
+<h2>Dart raw strings — no escapes</h2>
+
+<ul>
+<li>In a raw string (<code>r&#x27;...&#x27;</code>), backslash escaping does NOT exist: <code>r&#x27;...\&#x27;...&#x27;</code></li>
+</ul>
+<p>terminates at the quote → parse error (this is NOT a regex bug).</p>
+<ul>
+<li>Include both quote types in one regex by concatenating adjacent raw literals</li>
+</ul>
+<p>with alternating quotes: <code>r&#x27;[.,;:!?…)&quot;&#x27; r&quot;&#x27;]+$&quot;</code>.</p>
+<ul>
+<li>The analyzer lint <code>prefer_adjacent_string_concatenation</code> demands adjacent</li>
+</ul>
+<p>literals (no <code>+</code> operator).</p>
+
+<h2>Verification</h2>
+
+<ul>
+<li><code>flutter analyze</code> must reach zero errors in touched files.</li>
+<li>After any multi-line edit: <code>dart format &lt;file&gt;</code> — it FAILS loudly on</li>
+</ul>
+<p>unbalanced braces, making it the fastest corruption detector.</p>
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : flutter-content-rendering // software-development</div>
+<div>MIT — generated by tools/publish.py; source: skills/flutter-content-rendering/SKILL.md</div>
+</footer>
+</body>
+</html>

@@ -48,7 +48,8 @@ Hermes loads skills from its skills directory (typically `~/.hermes/skills/` on
 Linux/macOS, or `<hermes-data>/skills/` in portable/profile setups). A skill is
 just a folder containing `SKILL.md`.
 
-1. Clone this repo: `git clone https://github.com/abduznik/hermes-skill-pack`
+1. Clone this repo — or fork it and clone your own copy:
+   `git clone <this-repo-url> hermes-skill-pack`
 2. Copy the skills you want:
    `cp -r skills/* ~/.hermes/skills/`
 3. Restart your Hermes session — the skills appear in the toolbox.

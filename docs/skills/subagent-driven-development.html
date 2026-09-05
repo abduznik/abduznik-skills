@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>subagent-driven-development // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">subagent-driven-development</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
+<span class='tag' style='border-color:#ff77cc'>delegation</span><span class='tag' style='border-color:#ff77cc'>subagent</span><span class='tag' style='border-color:#ff77cc'>implementation</span><span class='tag' style='border-color:#ff77cc'>workflow</span><span class='tag' style='border-color:#ff77cc'>parallel</span></div>
+<p style="color:#8affa8">Execute plans via delegate_task subagents (2-stage review).</p>
+</header>
+<main>
+
+
+
+<h1>Subagent-Driven Development</h1>
+
+<h2>Overview</h2>
+
+<p>Execute implementation plans by dispatching fresh subagents per task with systematic two-stage review.</p>
+
+<p><strong>Core principle:</strong> Fresh subagent per task + two-stage review (spec then quality) = high quality, fast iteration.</p>
+
+<h2>When to Use</h2>
+
+<p>Use this skill when:</p>
+<ul>
+<li>You have an implementation plan (from writing-plans skill or user requirements)</li>
+<li>Tasks are mostly independent</li>
+<li>Quality and spec compliance are important</li>
+<li>You want automated review between tasks</li>
+</ul>
+
+<p><strong>vs. manual execution:</strong></p>
+<ul>
+<li>Fresh context per task (no confusion from accumulated state)</li>
+<li>Automated review process catches issues early</li>
+<li>Consistent quality checks across all tasks</li>
+<li>Subagents can ask questions before starting work</li>
+</ul>
+
+<h2>The Process</h2>
+
+<h3>1. Read and Parse Plan</h3>
+
+<p>Read the plan file. Extract ALL tasks with their full text and context upfront. Create a todo list:</p>
+
+<pre class='code'><code># Read the plan
+read_file(&quot;docs/plans/feature-plan.md&quot;)
+
+# Create todo list with all tasks
+todo([
+    {&quot;id&quot;: &quot;task-1&quot;, &quot;content&quot;: &quot;Create User model with email field&quot;, &quot;status&quot;: &quot;pending&quot;},
+    {&quot;id&quot;: &quot;task-2&quot;, &quot;content&quot;: &quot;Add password hashing utility&quot;, &quot;status&quot;: &quot;pending&quot;},
+    {&quot;id&quot;: &quot;task-3&quot;, &quot;content&quot;: &quot;Create login endpoint&quot;, &quot;status&quot;: &quot;pending&quot;},
+])</code></pre>
+
+<p><strong>Key:</strong> Read the plan ONCE. Extract everything. Don&#x27;t make subagents read the plan file — provide the full task text directly in context.</p>
+
+<h3>2. Per-Task Workflow</h3>
+
+<p>For EACH task in the plan:</p>
+
+<p>#### Step 1: Dispatch Implementer Subagent</p>
+
+<p>Use <code>delegate_task</code> with complete context:</p>
+
+<pre class='code'><code>delegate_task(
+    goal=&quot;Implement Task 1: Create User model with email and password_hash fields&quot;,
+    context=&quot;&quot;&quot;
+    TASK FROM PLAN:
+    - Create: src/models/user.py
+    - Add User class with email (str) and password_hash (str) fields
+    - Use bcrypt for password hashing
+    - Include __repr__ for debugging
+
+    FOLLOW TDD:
+    1. Write failing test in tests/models/test_user.py
+    2. Run: pytest tests/models/test_user.py -v (verify FAIL)
+    3. Write minimal implementation
+    4. Run: pytest tests/models/test_user.py -v (verify PASS)
+    5. Run: pytest tests/ -q (verify no regressions)
+    6. Commit: git add -A &amp;&amp; git commit -m &quot;feat: add User model with password hashing&quot;
+
+    PROJECT CONTEXT:
+    - Python 3.11, Flask app in src/app.py
+    - Existing models in src/models/
+    - Tests use pytest, run from project root
+    - bcrypt already in requirements.txt
+    &quot;&quot;&quot;,
+    toolsets=[&#x27;terminal&#x27;, &#x27;file&#x27;]
+)</code></pre>
+
+<p>#### Step 2: Dispatch Spec Compliance Reviewer</p>
+
+<p>After the implementer completes, verify against the original spec:</p>
+
+<pre class='code'><code>delegate_task(
+    goal=&quot;Review if implementation matches the spec from the plan&quot;,
+    context=&quot;&quot;&quot;
+    ORIGINAL TASK SPEC:
+    - Create src/models/user.py with User class
+    - Fields: email (str), password_hash (str)
+    - Use bcrypt for password hashing
+    - Include __repr__
+
+    CHECK:
+    - [ ] All requirements from spec implemented?
+    - [ ] File paths match spec?
+    - [ ] Function signatures match spec?
+    - [ ] Behavior matches expected?
+    - [ ] Nothing extra added (no scope creep)?
+
+    OUTPUT: PASS or list of specific spec gaps to fix.
+    &quot;&quot;&quot;,
+    toolsets=[&#x27;file&#x27;]
+)</code></pre>
+
+<p><strong>If spec issues found:</strong> Fix gaps, then re-run spec review. Continue only when spec-compliant.</p>
+
+<p>#### Step 3: Dispatch Code Quality Reviewer</p>
+
+<p>After spec compliance passes:</p>
+
+<pre class='code'><code>delegate_task(
+    goal=&quot;Review code quality for Task 1 implementation&quot;,
+    context=&quot;&quot;&quot;
+    FILES TO REVIEW:
+    - src/models/user.py
+    - tests/models/test_user.py
+
+    CHECK:
+    - [ ] Follows project conventions and style?
+    - [ ] Proper error handling?
+    - [ ] Clear variable/function names?
+    - [ ] Adequate test coverage?
+    - [ ] No obvious bugs or missed edge cases?
+    - [ ] No security issues?
+
+    OUTPUT FORMAT:
+    - Critical Issues: [must fix before proceeding]
+    - Important Issues: [should fix]
+    - Minor Issues: [optional]
+    - Verdict: APPROVED or REQUEST_CHANGES
+    &quot;&quot;&quot;,
+    toolsets=[&#x27;file&#x27;]
+)</code></pre>
+
+<p><strong>If quality issues found:</strong> Fix issues, re-review. Continue only when approved.</p>
+
+<p>#### Step 4: Mark Complete</p>
+
+<pre class='code'><code>todo([{&quot;id&quot;: &quot;task-1&quot;, &quot;content&quot;: &quot;Create User model with email field&quot;, &quot;status&quot;: &quot;completed&quot;}], merge=True)</code></pre>
+
+<h3>3. Final Review</h3>
+
+<p>After ALL tasks are complete, dispatch a final integration reviewer:</p>
+
+<pre class='code'><code>delegate_task(
+    goal=&quot;Review the entire implementation for consistency and integration issues&quot;,
+    context=&quot;&quot;&quot;
+    All tasks from the plan are complete. Review the full implementation:
+    - Do all components work together?
+    - Any inconsistencies between tasks?
+    - All tests passing?
+    - Ready for merge?
+    &quot;&quot;&quot;,
+    toolsets=[&#x27;terminal&#x27;, &#x27;file&#x27;]
+)</code></pre>
+
+<h3>4. Verify and Commit</h3>
+
+<pre class='code'><code># Run full test suite
+pytest tests/ -q
+
+# Review all changes
+git diff --stat
+
+# Final commit if needed
+git add -A &amp;&amp; git commit -m &quot;feat: complete [feature name] implementation&quot;</code></pre>
+
+<h2>Task Granularity</h2>
+
+<p><strong>Each task = 2-5 minutes of focused work.</strong></p>
+
+<p><strong>Too big:</strong></p>
+<ul>
+<li>&quot;Implement user authentication system&quot;</li>
+</ul>
+
+<p><strong>Right size:</strong></p>
+<ul>
+<li>&quot;Create User model with email and password fields&quot;</li>
+<li>&quot;Add password hashing function&quot;</li>
+<li>&quot;Create login endpoint&quot;</li>
+<li>&quot;Add JWT token generation&quot;</li>
+<li>&quot;Create registration endpoint&quot;</li>
+</ul>
+
+<h2>Red Flags — Never Do These</h2>
+
+<ul>
+<li>Start implementation without a plan</li>
+<li>Skip reviews (spec compliance OR code quality)</li>
+<li>Proceed with unfixed critical/important issues</li>
+<li>Dispatch multiple implementation subagents for tasks that touch the same files</li>
+<li>Make subagent read the plan file (provide full text in context instead)</li>
+<li>Skip scene-setting context (subagent needs to understand where the task fits)</li>
+<li>Ignore subagent questions (answer before letting them proceed)</li>
+<li>Accept &quot;close enough&quot; on spec compliance</li>
+<li>Skip review loops (reviewer found issues → implementer fixes → review again)</li>
+<li>Let implementer self-review replace actual review (both are needed)</li>
+<li><strong>Start code quality review before spec compliance is PASS</strong> (wrong order)</li>
+<li>Move to next task while either review has open issues</li>
+</ul>
+
+<h2>Handling Issues</h2>
+
+<h3>If Subagent Asks Questions</h3>
+
+<ul>
+<li>Answer clearly and completely</li>
+<li>Provide additional context if needed</li>
+<li>Don&#x27;t rush them into implementation</li>
+</ul>
+
+<h3>If Reviewer Finds Issues</h3>
+
+<ul>
+<li>Implementer subagent (or a new one) fixes them</li>
+<li>Reviewer reviews again</li>
+<li>Repeat until approved</li>
+<li>Don&#x27;t skip the re-review</li>
+</ul>
+
+<h3>If Subagent Fails a Task</h3>
+
+<ul>
+<li>Dispatch a new fix subagent with specific instructions about what went wrong</li>
+<li>Don&#x27;t try to fix manually in the controller session (context pollution)</li>
+</ul>
+
+<h2>Efficiency Notes</h2>
+
+<p><strong>Why fresh subagent per task:</strong></p>
+<ul>
+<li>Prevents context pollution from accumulated state</li>
+<li>Each subagent gets clean, focused context</li>
+<li>No confusion from prior tasks&#x27; code or reasoning</li>
+</ul>
+
+<p><strong>Why two-stage review:</strong></p>
+<ul>
+<li>Spec review catches under/over-building early</li>
+<li>Quality review ensures the implementation is well-built</li>
+<li>Catches issues before they compound across tasks</li>
+</ul>
+
+<p><strong>Cost trade-off:</strong></p>
+<ul>
+<li>More subagent invocations (implementer + 2 reviewers per task)</li>
+<li>But catches issues early (cheaper than debugging compounded problems later)</li>
+</ul>
+
+<h2>Integration with Other Skills</h2>
+
+<h3>With writing-plans</h3>
+
+<p>This skill EXECUTES plans created by the writing-plans skill:</p>
+<ul>
+<li>User requirements → writing-plans → implementation plan</li>
+<li>Implementation plan → subagent-driven-development → working code</li>
+</ul>
+
+<h3>With test-driven-development</h3>
+
+<p>Implementer subagents should follow TDD:</p>
+<ul>
+<li>Write failing test first</li>
+<li>Implement minimal code</li>
+<li>Verify test passes</li>
+<li>Commit</li>
+</ul>
+
+<p>Include TDD instructions in every implementer context.</p>
+
+<h3>With requesting-code-review</h3>
+
+<p>The two-stage review process IS the code review. For final integration review, use the requesting-code-review skill&#x27;s review dimensions.</p>
+
+<h3>With systematic-debugging</h3>
+
+<p>If a subagent encounters bugs during implementation:</p>
+<ul>
+<li>Follow systematic-debugging process</li>
+<li>Find root cause before fixing</li>
+<li>Write regression test</li>
+<li>Resume implementation</li>
+</ul>
+
+<h2>Example Workflow</h2>
+
+<pre class='code'><code>[Read plan: docs/plans/auth-feature.md]
+[Create todo list with 5 tasks]
+
+--- Task 1: Create User model ---
+[Dispatch implementer subagent]
+  Implementer: &quot;Should email be unique?&quot;
+  You: &quot;Yes, email must be unique&quot;
+  Implementer: Implemented, 3/3 tests passing, committed.
+
+[Dispatch spec reviewer]
+  Spec reviewer: ✅ PASS — all requirements met
+
+[Dispatch quality reviewer]
+  Quality reviewer: ✅ APPROVED — clean code, good tests
+
+[Mark Task 1 complete]
+
+--- Task 2: Password hashing ---
+[Dispatch implementer subagent]
+  Implementer: No questions, implemented, 5/5 tests passing.
+
+[Dispatch spec reviewer]
+  Spec reviewer: ❌ Missing: password strength validation (spec says &quot;min 8 chars&quot;)
+
+[Implementer fixes]
+  Implementer: Added validation, 7/7 tests passing.
+
+[Dispatch spec reviewer again]
+  Spec reviewer: ✅ PASS
+
+[Dispatch quality reviewer]
+  Quality reviewer: Important: Magic number 8, extract to constant
+  Implementer: Extracted MIN_PASSWORD_LENGTH constant
+  Quality reviewer: ✅ APPROVED
+
+[Mark Task 2 complete]
+
+... (continue for all tasks)
+
+[After all tasks: dispatch final integration reviewer]
+[Run full test suite: all passing]
+[Done!]</code></pre>
+
+<h2>Remember</h2>
+
+<pre class='code'><code>Fresh subagent per task
+Two-stage review every time
+Spec compliance FIRST
+Code quality SECOND
+Never skip reviews
+Catch issues early</code></pre>
+
+<p><strong>Quality is not an accident. It&#x27;s the result of systematic process.</strong></p>
+
+<h2>Further reading (load when relevant)</h2>
+
+<p>When the orchestration involves significant context usage, long review loops, or complex validation checkpoints, load these references for the specific discipline:</p>
+
+<ul>
+<li><strong><code>references/context-budget-discipline.md</code></strong> — Four-tier context degradation model (PEAK / GOOD / DEGRADING / POOR), read-depth rules that scale with context window size, and early warning signs of silent degradation. Load when a run will clearly consume significant context (multi-phase plans, many subagents, large artifacts).</li>
+<li><strong><code>references/gates-taxonomy.md</code></strong> — The four canonical gate types (Pre-flight, Revision, Escalation, Abort) with behavior, recovery, and examples. Load when designing or reviewing any workflow that has validation checkpoints — use the vocabulary explicitly so each gate has defined entry, failure behavior, and resumption rules.</li>
+</ul>
+
+<p>Both references adapted from gsd-build/get-shit-done (MIT © 2025 Lex Christopherson).</p>
+
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : subagent-driven-development // software-development</div>
+<div>MIT — generated by tools/publish.py; source: skills/subagent-driven-development/SKILL.md</div>
+</footer>
+</body>
+</html>

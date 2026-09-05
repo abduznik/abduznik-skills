@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>maintained-fork-publishing // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">maintained-fork-publishing</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">github</span>
+<span class='tag' style='border-color:#aa88ff'>fork</span><span class='tag' style='border-color:#aa88ff'>github</span><span class='tag' style='border-color:#aa88ff'>gitea</span><span class='tag' style='border-color:#aa88ff'>upstream-pr</span><span class='tag' style='border-color:#aa88ff'>license</span><span class='tag' style='border-color:#aa88ff'>attribution</span><span class='tag' style='border-color:#aa88ff'>git</span></div>
+<p style="color:#8affa8">Publish/maintain OSS forks; contribute upstream via PRs.</p>
+</header>
+<main>
+
+
+
+<h1>Maintained Fork Publishing</h1>
+
+<p>Turn a private fork of an abandoned/slow upstream project into a public,</p>
+<p>properly-attributed maintained fork, and chip improvements back upstream as</p>
+<p>clean topical PRs. Use when the user asks &quot;how should I publish my fork&quot;,</p>
+<p>&quot;is it ethical to put this fork on GitHub&quot;, or wants to contribute additions</p>
+<p>upstream.</p>
+
+<h2>0. Fact-check BEFORE forking</h2>
+
+<p>The user&#x27;s premise may be wrong — verify before advising:</p>
+
+<ul>
+<li><strong>Releases vs branch activity:</strong> tagged releases can be dead for years while</li>
+</ul>
+<p><code>main</code> gets commits weekly. Check all three:</p>
+<ul>
+<li><code>git log origin/main --format=&#x27;%ci %s&#x27; -5</code> (in the clone)</li>
+<li><code>curl -s https://api.github.com/repos/&lt;owner&gt;/&lt;repo&gt; | jq &#x27;{pushed_at, archived}&#x27;</code></li>
+<li><code>curl -s .../releases?per_page=5</code> — compare release dates vs pushed_at</li>
+<li><strong>Did someone already build this feature?</strong> Scan forks before duplicating:</li>
+</ul>
+<p><code>curl -s &quot;.../forks?sort=newest&amp;per_page=30&quot;</code> → inspect <code>pushed_at</code>; active</p>
+<p>forks: list commits (<code>/commits?per_page=8</code>), scan the tree</p>
+<p>(<code>/git/trees/&lt;branch&gt;?recursive=1</code>) and deps (raw pubspec.yaml/package.json)</p>
+<p>for the feature. Pure-sync forks have <code>pushed_at == upstream pushed_at</code>.</p>
+<p>Also check open upstream PRs (<code>/pulls?state=open</code>).</p>
+
+<h2>1. The repo MUST be a true fork (gotcha #1)</h2>
+
+<p><code>gh repo create &lt;name&gt; --public</code> + push creates a repo that is NOT in the</p>
+<p>fork network — <code>gh pr create --repo &lt;upstream&gt;</code> then fails with</p>
+<p>&quot;Head sha can&#x27;t be blank / No commits between &lt;upstream&gt;:main and &lt;you&gt;:&lt;branch&gt;&quot;.</p>
+
+<p>Fix: recreate as a real fork (<code>gh repo fork &lt;up&gt;/&lt;repo&gt; --fork-name &lt;name&gt; --clone=false</code>)</p>
+<p>— also shows the GitHub &quot;forked from&quot; badge. If a wrong-name repo already</p>
+<p>exists and deletion is blocked (gh token lacks <code>delete_repo</code> scope), fork</p>
+<p>under <code>&lt;name&gt;-fork</code> and have the user delete the old repo in the GitHub UI</p>
+<p>(Settings → Danger Zone).</p>
+
+<h2>2. Push auth: <code>gh auth setup-git</code></h2>
+
+<p><code>gh</code> auth does NOT make <code>git push https://...</code> work. Run <code>gh auth setup-git</code></p>
+<p>once — git&#x27;s credential helper then feeds the gh token. Diagnostic: <code>gh api</code></p>
+<p>works while <code>git push</code> reports &quot;access rights / repository exists&quot;.</p>
+<p>Check the remote exists first too (<code>git remote add github &lt;url&gt;</code> may have been</p>
+<p>skipped inside a blocked command — verify <code>git remote -v</code>).</p>
+
+<h2>3. Fork hygiene before going public</h2>
+
+<ul>
+<li><strong>README fork banner</strong> at top: fork-of + upstream link, upstream release</li>
+</ul>
+<p>status, &quot;Changes vs upstream&quot; list, keep upstream LICENSE intact (MIT etc.),</p>
+<p>drop upstream&#x27;s release badges (they point at the official releases).</p>
+<ul>
+<li><strong>Identity rewrite before the first public push</strong> (safe — no shared refs):</li>
+</ul>
+<pre class='code'><code>  export GIT_AUTHOR_NAME=&lt;user&gt; GIT_AUTHOR_EMAIL=&lt;noreply&gt; \
+         GIT_COMMITTER_NAME=&lt;user&gt; GIT_COMMITTER_EMAIL=&lt;noreply&gt;
+  git rebase origin/main --exec &#x27;git commit --amend --reset-author --no-edit&#x27;</code></pre>
+<p>Rewrites SHAs — any mirror with the old SHAs needs a force-push (see §5).</p>
+<ul>
+<li>Commit the README banner with the identity env vars set.</li>
+</ul>
+
+<h2>4. Topical PR branches (cherry-pick, don&#x27;t dump your whole branch)</h2>
+
+<pre class='code'><code>git checkout -b pr/widget-refresh origin/main     # UPSTREAM base, not your branch
+git cherry-pick &lt;sha1&gt; &lt;sha2&gt;</code></pre>
+<ul>
+<li>Skip version-bump-only commits; resolve version-line conflicts keeping the</li>
+</ul>
+<p>UPSTREAM version (splice conflict markers with Python, <code>git add</code>,</p>
+<p><code>git cherry-pick --continue</code>).</p>
+<ul>
+<li>Commits from a long-lived branch often bundle sibling-feature hunks</li>
+</ul>
+<p>(context lines) → cherry-picks conflict; splice OUT the unrelated hunks.</p>
+<ul>
+<li><strong>Compile-check every PR branch locally</strong> — partial feature sets can</li>
+</ul>
+<p>reference helpers that only existed in sibling commits (real case:</p>
+<p><code>substringAfter</code> doesn&#x27;t exist in Dart at all; fix = <code>.split(&quot;x&quot;).last</code>).</p>
+<ul>
+<li><code>flutter analyze</code>/<code>pub get</code> rewrites <code>pubspec.lock</code>, the dirty file carries</li>
+</ul>
+<p>over on <code>git checkout -b</code> and aborts the next cherry-pick — fix:</p>
+<p><code>git checkout -- pubspec.lock</code>.</p>
+<ul>
+<li><code>grep -c</code> with 0 matches exits 1 and short-circuits <code>&amp;&amp;</code> chains.</li>
+</ul>
+
+<h2>5. Updating an internal mirror (Gitea) after a rewrite — snapshot first</h2>
+
+<pre class='code'><code>git fetch gitea
+git branch legacy-main gitea/main      # snapshot old SHAs
+git branch legacy-feat gitea/feat/...  # snapshot old feature branch
+git push gitea legacy-main:legacy-main &amp;&amp; git push gitea legacy-feat:legacy-feat
+git push gitea main --force            # confirm with user; tags untouched</code></pre>
+<p><code>git reset --hard</code> and force-push trigger approval gates. If a prompt times</p>
+<p>out the command is BLOCKED — report and wait, never rephrase/retry.</p>
+
+<h2>Pitfalls</h2>
+
+<ul>
+<li>Abandonware claims: distinguish &quot;releases dead&quot; from &quot;code dead&quot; — they</li>
+</ul>
+<p>differ and the fork README should state the truth.</p>
+<ul>
+<li>Licensing: MIT forks need the original notice retained; attribution in the</li>
+</ul>
+<p>README is the community norm; trademark-wise say &quot;community fork, not</p>
+<p>affiliated with the official project&quot;.</p>
+<ul>
+<li>Keep upstream as a remote (<code>origin</code>) + your public fork (<code>github</code>) + your</li>
+</ul>
+<p>private mirror (<code>gitea</code>) with distinct names — never push to upstream directly.</p>
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : maintained-fork-publishing // github</div>
+<div>MIT — generated by tools/publish.py; source: skills/maintained-fork-publishing/SKILL.md</div>
+</footer>
+</body>
+</html>

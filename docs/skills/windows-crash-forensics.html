@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>windows-crash-forensics // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">windows-crash-forensics</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">devops</span>
+<span class='tag' style='border-color:#44ff77'>Windows</span><span class='tag' style='border-color:#44ff77'>Crash</span><span class='tag' style='border-color:#44ff77'>Event-Log</span><span class='tag' style='border-color:#44ff77'>Kernel-Power</span><span class='tag' style='border-color:#44ff77'>BSOD</span><span class='tag' style='border-color:#44ff77'>Troubleshooting</span><span class='tag' style='border-color:#44ff77'>Forensics</span></div>
+<p style="color:#8affa8">PC crash/freeze forensics via event logs, blame attribution.</p>
+</header>
+<main>
+
+
+
+<h1>Windows Crash Forensics</h1>
+
+<p>Diagnose a &quot;my PC crashed / froze / rebooted&quot; report BEFORE blaming anything.</p>
+<p>Goal: classify the failure (BSOD vs hard freeze vs power loss), find the</p>
+<p>trigger, and attribute it correctly (our cron/scripts vs Windows apps vs</p>
+<p>hardware). Real case: the user reported &quot;you somehow crashed my PC&quot; —</p>
+<p>forensics showed a Google Drive File Stream shutdown hang minutes after the</p>
+<p>last scheduled job finished; attributing it wrong would have damaged trust.</p>
+
+<p>Real case detail + full query reference: see <code>references/crash-attribution-case.md</code>.</p>
+
+<h2>Step 1 — Was it a crash? What kind?</h2>
+
+<pre class='code'><code># Kernel-Power 41 events (unexpected reboot/shutdown) — these carry the verdict
+powershell.exe -NoProfile -Command &#x27;Get-WinEvent -FilterHashtable @{LogName=&quot;System&quot;; Id=41} -MaxEvents 8 2&gt;$null | ForEach-Object { &quot;{0} | Bugcheck {1} | PowerButton {2}&quot; -f $_.TimeCreated, $_.Properties[0].Value, $_.Properties[6].Value }&#x27;
+# Last boot time (did it come back on its own?):
+powershell.exe -NoProfile -Command &#x27;(Get-CimInstance Win32_OperatingSystem).LastBootUpTime&#x27;</code></pre>
+
+<p>Interpretation of Event 41 (Kernel-Power) properties:</p>
+<ul>
+<li><strong>Bugcheck 0 + PowerButton 0</strong> → hard freeze / system hang, NOT a BSOD</li>
+</ul>
+<p>(no bugcheck code) and NOT a power-button press. The system stopped</p>
+<p>responding and was rebooted.</p>
+<ul>
+<li><strong>Bugcheck != 0</strong> → real BSOD; the value is the stop code (0x1E, 0x133, ...).</li>
+<li><strong>PowerButton != 0</strong> → user or watchdog pressed power / reset.</li>
+</ul>
+
+<p>Corroborating evidence (query the same System log):</p>
+<ul>
+<li><strong>Event 6008</strong> → &quot;The previous system shutdown at &lt;time&gt; was unexpected.&quot;</li>
+</ul>
+<p>The timestamp IN THE MESSAGE is the exact freeze moment (event&#x27;s own</p>
+<p>TimeCreated is AFTER reboot).</p>
+<ul>
+<li><strong>Minidump dir</strong> (<code>C:\Windows\Minidump</code>) — non-empty = BSOD dumps; empty +</li>
+</ul>
+<p>event 41 = hang, not BSOD.</p>
+<ul>
+<li><strong>WHEA-Logger</strong> (<code>ProviderName=&quot;Microsoft-Windows-WHEA-Logger&quot;</code>) — any</li>
+</ul>
+<p>hardware errors (PCIe/CPU/memory)? Empty = no hardware fault signal.</p>
+<p><code>Get-WinEvent -FilterHashtable @{LogName=&quot;System&quot;; ProviderName=&quot;Microsoft-Windows-WHEA-Logger&quot;}</code></p>
+
+<h2>Step 2 — What happened in the minutes before? (the attribution window)</h2>
+
+<p>Pull ALL System events between the last healthy activity and the 6008</p>
+<p>timestamp. Filter for the high-signal IDs: <code>1,41,6008,1001,4101,6006,1074,7000</code>.</p>
+
+<pre class='code'><code>powershell.exe -NoProfile -Command &#x27;Get-WinEvent -FilterHashtable @{LogName=&quot;System&quot;; StartTime=&quot;&lt;DATE&gt; &lt;HH:MM&gt;&quot;; EndTime=&quot;&lt;DATE&gt; &lt;HH:MM&gt;&quot;} -ErrorAction SilentlyContinue | Where-Object {$_.Id -in 1,41,6008,1001,4101,6006,1074,7000} | ForEach-Object { &quot;{0} | ID {1} | {2} | {3}&quot; -f $_.TimeCreated, $_.Id, $_.ProviderName, ($_.Message -split &quot;`n&quot;)[0] }&#x27;</code></pre>
+
+<p>Key signals and what they mean:</p>
+
+<table><thead><tr><th>Signal</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>Event 1074 (User32 / RuntimeBroker)</strong></td><td>Something <em>initiated</em> the restart. Full message names the process: <code>RuntimeBroker.exe ... reason: Other (Unplanned)</code> = a Windows/UWP app flow requested restart — NOT an agent, NOT the user clicking. <code>Explorer.exe</code>/user-initiated = a person did it.</td></tr><tr><td>*<em>googledrivefs</em> flood: &quot;Unmounting due to keepalive close&quot;, G: mount-entry removal, CldFlt filter events**</td><td><strong>Google Drive File Stream</strong> disconnecting. Known Win10 hang trigger — its cloud-filter driver deadlocks during unmount/shutdown. Strongest single suspect when present.</td></tr><tr><td><strong>COM+ Event System &quot;timed out firing the Logoff method&quot; (180s timeout)</strong></td><td>Shutdown started but a subscriber (often Explorer) hung — system is STUCK IN shutdown, not crashed mid-work.</td></tr><tr><td><strong>Winlogon &quot;notification subscriber &lt;Sens&gt; taking long (Logoff)&quot;</strong></td><td>Same shutdown hang, logoff phase.</td></tr><tr><td><strong>Windows Search protocol host force-terminated</strong></td><td>SearchIndexer wedged — secondary contributor.</td></tr><tr><td><strong>ID 10010 DistributedCOM</strong></td><td>A COM server didn&#x27;t register in time — part of the hang pattern.</td></tr><tr><td><strong>DNS-Client 1014, SCM 7040</strong></td><td>Normal teardown noise — ignore.</td></tr></tbody></table>
+
+<p>A shutdown hang reads as: 1074/initiator → unmount/teardown storm → COM+/Sens</p>
+<p>timeouts → 6008 (dead) → 41 on boot. If most of the window is normal activity</p>
+<p>then a dead stop with NO shutdown sequence, that&#x27;s a different animal (watchdog,</p>
+<p>power, or a kernel deadlock).</p>
+
+<h2>Step 3 — Check OUR side before claiming innocence</h2>
+
+<p>Never tell the user &quot;not ours&quot; without running this checklist:</p>
+
+<ul>
+<li><strong>Our scheduled jobs</strong>: <code>cronjob action=list</code> — what ran in the window?</li>
+</ul>
+<p>Check <code>last_run_at</code>; verify heavy jobs (TTS servers, encodes, video</p>
+<p>downloads) FINISHED before the freeze, not during it.</p>
+<ul>
+<li><strong>No shutdown commands in our code</strong>: grep the script dir for</li>
+</ul>
+<p><code>shutdown|Restart-Computer|Stop-Computer|reboot</code> — expect zero matches.</p>
+<ul>
+<li><strong>No lingering heavy processes</strong>: <code>netstat -ano | findstr &quot;:9872&quot;</code></li>
+</ul>
+<p>(GPT-SoVITS TTS server must be killed after use — VRAM) and</p>
+<p><code>Get-Process python<em>,ffmpeg</em></code> for strays.</p>
+<ul>
+<li><strong>Session correlation</strong>: <code>session_search</code> for what we were doing that hour</li>
+</ul>
+<p>and what commands ran.</p>
+
+<p>Only when 1-3 are clean do you present &quot;not ours&quot; — with the evidence trail.</p>
+
+<h2>Step 4 — Report</h2>
+
+<p>Compact summary (~150-200 words): freeze timestamp, event-41 classification,</p>
+<p>the 1074 initiator, the hang sequence (e.g. googledrivefs → Explorer/Sens</p>
+<p>logoff timeout), our-jobs-were-idle evidence, and the practical fix suggestion</p>
+<p>(e.g. update/pause Google Drive File Stream). State what the log proves and</p>
+<p>what it doesn&#x27;t — don&#x27;t over-claim.</p>
+
+<h2>Pitfalls</h2>
+
+<ul>
+<li><strong>PowerShell one-liners from Git Bash get mangled</strong> (<code>terminal()</code> runs bash):</li>
+<li><code>$_</code> → bash expands it to the previous command&#x27;s last arg</li>
+<li><code>2&gt;$null</code> → bash eats the redirect → &quot;Missing file specification&quot;</li>
+<li><code>-f</code> format strings → MSYS path-mangles <code>/c/Users/...</code> tokens</li>
+</ul>
+<p>**Fix: wrap the entire <code>powershell.exe -NoProfile -Command</code> payload in</p>
+<p>SINGLE quotes** so bash passes it verbatim. Never double-quote PS payloads</p>
+<p>from bash.</p>
+<ul>
+<li><strong>Event 6008&#x27;s TimeCreated is post-reboot</strong> — read the timestamp inside the</li>
+</ul>
+<p>message for the actual freeze moment. Getting this wrong misleads the whole</p>
+<p>window search.</p>
+<ul>
+<li><strong>Don&#x27;t conflate &quot;crash while I was working&quot; with &quot;crash caused by me&quot;</strong> —</li>
+</ul>
+<p>correlation by clock is not causation; the 1074 initiator + our-job idle</p>
+<p>times are what actually attribute.</p>
+<ul>
+<li><strong>No minidump ≠ no crash</strong> — hangs leave no dump. Event 41 + empty Minidump +</li>
+</ul>
+<p>bugcheck 0 IS the hang signature.</p>
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : windows-crash-forensics // devops</div>
+<div>MIT — generated by tools/publish.py; source: skills/windows-crash-forensics/SKILL.md</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>github-code-review // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">github-code-review</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">github</span>
+<span class='tag' style='border-color:#aa88ff'>GitHub</span><span class='tag' style='border-color:#aa88ff'>Code-Review</span><span class='tag' style='border-color:#aa88ff'>Pull-Requests</span><span class='tag' style='border-color:#aa88ff'>Git</span><span class='tag' style='border-color:#aa88ff'>Quality</span></div>
+<p style="color:#8affa8">Review PRs: diffs, inline comments via gh or REST.</p>
+</header>
+<main>
+
+
+
+<h1>GitHub Code Review</h1>
+
+<p>Perform code reviews on local changes before pushing, or review open PRs on GitHub. Most of this skill uses plain <code>git</code> — the <code>gh</code>/<code>curl</code> split only matters for PR-level interactions.</p>
+
+<h2>User Preferences (this user)</h2>
+
+<ul>
+<li><strong>No emojis in PR reviews or code comments</strong> — use plain text labels (Critical, Warning, Suggestion, Looks Good) instead of emoji icons. The user considers emojis in technical communication &quot;AI slop.&quot; All examples below reflect this style.</li>
+<li><strong>Minimal verbosity</strong> — present findings directly without decorative language.</li>
+</ul>
+
+<h2>Prerequisites</h2>
+
+<ul>
+<li>Authenticated with GitHub (see <code>github-auth</code> skill)</li>
+<li>Inside a git repository</li>
+</ul>
+
+<h3>Setup (for PR interactions)</h3>
+
+<pre class='code'><code>if command -v gh &amp;&gt;/dev/null &amp;&amp; gh auth status &amp;&gt;/dev/null; then
+  AUTH=&quot;gh&quot;
+else
+  AUTH=&quot;git&quot;
+  if [ -z &quot;$GITHUB_TOKEN&quot; ]; then
+    if [ -f ~/.hermes/.env ] &amp;&amp; grep -q &quot;^GITHUB_TOKEN=&quot; ~/.hermes/.env; then
+      GITHUB_TOKEN=$(grep &quot;^GITHUB_TOKEN=&quot; ~/.hermes/.env | head -1 | cut -d= -f2 | tr -d &#x27;\n\r&#x27;)
+    elif grep -q &quot;github.com&quot; ~/.git-credentials 2&gt;/dev/null; then
+      GITHUB_TOKEN=$(grep &quot;github.com&quot; ~/.git-credentials 2&gt;/dev/null | head -1 | sed &#x27;s|https://[^:]*:\([^@]*\)@.*|\1|&#x27;)
+    fi
+  fi
+fi
+
+REMOTE_URL=$(git remote get-url origin)
+OWNER_REPO=$(echo &quot;$REMOTE_URL&quot; | sed -E &#x27;s|.*github\.com[:/]||; s|\.git$||&#x27;)
+OWNER=$(echo &quot;$OWNER_REPO&quot; | cut -d/ -f1)
+REPO=$(echo &quot;$OWNER_REPO&quot; | cut -d/ -f2)</code></pre>
+
+<hr>
+
+<h2>1. Reviewing Local Changes (Pre-Push)</h2>
+
+<p>This is pure <code>git</code> — works everywhere, no API needed.</p>
+
+<h3>Get the Diff</h3>
+
+<pre class='code'><code># Staged changes (what would be committed)
+git diff --staged
+
+# All changes vs main (what a PR would contain)
+git diff main...HEAD
+
+# File names only
+git diff main...HEAD --name-only
+
+# Stat summary (insertions/deletions per file)
+git diff main...HEAD --stat</code></pre>
+
+<h3>Review Strategy</h3>
+
+<ul>
+<li><strong>Get the big picture first:</strong></li>
+</ul>
+
+<pre class='code'><code>git diff main...HEAD --stat
+git log main..HEAD --oneline</code></pre>
+
+<ul>
+<li><strong>Review file by file</strong> — use <code>read_file</code> on changed files for full context, and the diff to see what changed:</li>
+</ul>
+
+<pre class='code'><code>git diff main...HEAD -- src/auth/login.py</code></pre>
+
+<ul>
+<li><strong>Check for common issues:</strong></li>
+</ul>
+
+<pre class='code'><code># Debug statements, TODOs, console.logs left behind
+git diff main...HEAD | grep -n &quot;print(\|console\.log\|TODO\|FIXME\|HACK\|XXX\|debugger&quot;
+
+# Large files accidentally staged
+git diff main...HEAD --stat | sort -t&#x27;|&#x27; -k2 -rn | head -10
+
+# Secrets or credential patterns
+git diff main...HEAD | grep -in &quot;password\|secret\|api_key\|token.*=\|private_key&quot;
+
+# Merge conflict markers
+git diff main...HEAD | grep -n &quot;&lt;&lt;&lt;&lt;&lt;&lt;\|&gt;&gt;&gt;&gt;&gt;&gt;\|=======&quot;</code></pre>
+
+<ul>
+<li><strong>Present structured feedback</strong> to the user.</li>
+</ul>
+
+<h3>Review Output Format</h3>
+
+<p>When reviewing local changes, present findings in this structure:</p>
+
+<pre class='code'><code>## Code Review Summary
+
+### Critical
+- **src/auth.py:45** — SQL injection: user input passed directly to query.
+  Suggestion: Use parameterized queries.
+
+### Warnings
+- **src/models/user.py:23** — Password stored in plaintext. Use bcrypt or argon2.
+- **src/api/routes.py:112** — No rate limiting on login endpoint.
+
+### Suggestions
+- **src/utils/helpers.py:8** — Duplicates logic in `src/core/utils.py:34`. Consolidate.
+- **tests/test_auth.py** — Missing edge case: expired token test.
+
+### Looks Good
+- Clean separation of concerns in the middleware layer
+- Good test coverage for the happy path</code></pre>
+
+<hr>
+
+<h2>2. Reviewing a Pull Request on GitHub</h2>
+
+<h3>View PR Details</h3>
+
+<p><strong>With gh:</strong></p>
+
+<pre class='code'><code>gh pr view 123
+gh pr diff 123
+gh pr diff 123 --name-only</code></pre>
+
+<p><strong>With git + curl:</strong></p>
+
+<pre class='code'><code>PR_NUMBER=123
+
+# Get PR details
+curl -s \
+  -H &quot;Authorization: token $GITHUB_TOKEN&quot; \
+  https://api.github.com/repos/$OWNER/$REPO/pulls/$PR_NUMBER \
+  | python3 -c &quot;
+import sys, json
+pr = json.load(sys.stdin)
+print(f\&quot;Title: {pr[&#x27;title&#x27;]}\&quot;)
+print(f\&quot;Author: {pr[&#x27;user&#x27;][&#x27;login&#x27;]}\&quot;)
+print(f\&quot;Branch: {pr[&#x27;head&#x27;][&#x27;ref&#x27;]} -&gt; {pr[&#x27;base&#x27;][&#x27;ref&#x27;]}\&quot;)
+print(f\&quot;State: {pr[&#x27;state&#x27;]}\&quot;)
+print(f\&quot;Body:\n{pr[&#x27;body&#x27;]}\&quot;)&quot;
+
+# List changed files
+curl -s \
+  -H &quot;Authorization: token $GITHUB_TOKEN&quot; \
+  https://api.github.com/repos/$OWNER/$REPO/pulls/$PR_NUMBER/files \
+  | python3 -c &quot;
+import sys, json
+for f in json.load(sys.stdin):
+    print(f\&quot;{f[&#x27;status&#x27;]:10} +{f[&#x27;additions&#x27;]:-4} -{f[&#x27;deletions&#x27;]:-4}  {f[&#x27;filename&#x27;]}\&quot;)&quot;</code></pre>
+
+<h3>Check Out PR Locally for Full Review</h3>
+
+<p>This works with plain <code>git</code> — no <code>gh</code> needed:</p>
+
+<pre class='code'><code># Fetch the PR branch and check it out
+git fetch origin pull/123/head:pr-123
+git checkout pr-123
+
+# Now you can use read_file, search_files, run tests, etc.
+
+# View diff against the base branch
+git diff main...pr-123</code></pre>
+
+<p><strong>With gh (shortcut):</strong></p>
+
+<pre class='code'><code>gh pr checkout 123</code></pre>
+
+<h3>Leave Comments on a PR</h3>
+
+<p><strong>General PR comment — with gh:</strong></p>
+
+<pre class='code'><code>gh pr comment 123 --body &quot;Overall looks good, a few suggestions below.&quot;</code></pre>
+
+<p><strong>General PR comment — with curl:</strong></p>
+
+<pre class='code'><code>curl -s -X POST \
+  -H &quot;Authorization: token $GITHUB_TOKEN&quot; \
+  https://api.github.com/repos/$OWNER/$REPO/issues/$PR_NUMBER/comments \
+  -d &#x27;{&quot;body&quot;: &quot;Overall looks good, a few suggestions below.&quot;}&#x27;</code></pre>
+
+<h3>Leave Inline Review Comments</h3>
+
+<p><strong>Single inline comment — with gh (via API):</strong></p>
+
+<pre class='code'><code>HEAD_SHA=$(gh pr view 123 --json headRefOid --jq &#x27;.headRefOid&#x27;)
+
+gh api repos/$OWNER/$REPO/pulls/123/comments \
+  --method POST \
+  -f body=&quot;This could be simplified with a list comprehension.&quot; \
+  -f path=&quot;src/auth/login.py&quot; \
+  -f commit_id=&quot;$HEAD_SHA&quot; \
+  -f line=45 \
+  -f side=&quot;RIGHT&quot;</code></pre>
+
+<p><strong>Single inline comment — with curl:</strong></p>
+
+<pre class='code'><code># Get the head commit SHA
+HEAD_SHA=$(curl -s \
+  -H &quot;Authorization: token $GITHUB_TOKEN&quot; \
+  https://api.github.com/repos/$OWNER/$REPO/pulls/$PR_NUMBER \
+  | python3 -c &quot;import sys,json; print(json.load(sys.stdin)[&#x27;head&#x27;][&#x27;sha&#x27;])&quot;)
+
+curl -s -X POST \
+  -H &quot;Authorization: token $GITHUB_TOKEN&quot; \
+  https://api.github.com/repos/$OWNER/$REPO/pulls/$PR_NUMBER/comments \
+  -d &quot;{
+    \&quot;body\&quot;: \&quot;This could be simplified with a list comprehension.\&quot;,
+    \&quot;path\&quot;: \&quot;src/auth/login.py\&quot;,
+    \&quot;commit_id\&quot;: \&quot;$HEAD_SHA\&quot;,
+    \&quot;line\&quot;: 45,
+    \&quot;side\&quot;: \&quot;RIGHT\&quot;
+  }&quot;</code></pre>
+
+<h3>Submit a Formal Review (Approve / Request Changes)</h3>
+
+<p><strong>With gh:</strong></p>
+
+<pre class='code'><code>gh pr review 123 --approve --body &quot;LGTM!&quot;
+gh pr review 123 --request-changes --body &quot;See inline comments.&quot;
+gh pr review 123 --comment --body &quot;Some suggestions, nothing blocking.&quot;</code></pre>
+
+<p><strong>With curl — multi-comment review submitted atomically:</strong></p>
+
+<pre class='code'><code>HEAD_SHA=$(curl -s \
+  -H &quot;Authorization: token $GITHUB_TOKEN&quot; \
+  https://api.github.com/repos/$OWNER/$REPO/pulls/$PR_NUMBER \
+  | python3 -c &quot;import sys,json; print(json.load(sys.stdin)[&#x27;head&#x27;][&#x27;sha&#x27;])&quot;)
+
+curl -s -X POST \
+  -H &quot;Authorization: token $GITHUB_TOKEN&quot; \
+  https://api.github.com/repos/$OWNER/$REPO/pulls/$PR_NUMBER/reviews \
+  -d &quot;{
+    \&quot;commit_id\&quot;: \&quot;$HEAD_SHA\&quot;,
+    \&quot;event\&quot;: \&quot;COMMENT\&quot;,
+    \&quot;body\&quot;: \&quot;Code review from Hermes Agent\&quot;,
+    \&quot;comments\&quot;: [
+      {\&quot;path\&quot;: \&quot;src/auth.py\&quot;, \&quot;line\&quot;: 45, \&quot;body\&quot;: \&quot;Use parameterized queries to prevent SQL injection.\&quot;},
+      {\&quot;path\&quot;: \&quot;src/models/user.py\&quot;, \&quot;line\&quot;: 23, \&quot;body\&quot;: \&quot;Hash passwords with bcrypt before storing.\&quot;},
+      {\&quot;path\&quot;: \&quot;tests/test_auth.py\&quot;, \&quot;line\&quot;: 1, \&quot;body\&quot;: \&quot;Add test for expired token edge case.\&quot;}
+    ]
+  }&quot;</code></pre>
+
+<p>Event values: <code>&quot;APPROVE&quot;</code>, <code>&quot;REQUEST_CHANGES&quot;</code>, <code>&quot;COMMENT&quot;</code></p>
+
+<p>The <code>line</code> field refers to the line number in the <em>new</em> version of the file. For deleted lines, use <code>&quot;side&quot;: &quot;LEFT&quot;</code>.</p>
+
+<hr>
+
+<h2>3. Review Checklist</h2>
+
+<p>When performing a code review (local or PR), systematically check:</p>
+
+<h3>Correctness</h3>
+<ul>
+<li>Does the code do what it claims?</li>
+<li>Edge cases handled (empty inputs, nulls, large data, concurrent access)?</li>
+<li>Error paths handled gracefully?</li>
+</ul>
+
+<h3>Security</h3>
+<ul>
+<li>No hardcoded secrets, credentials, or API keys</li>
+<li>Input validation on user-facing inputs</li>
+<li>No SQL injection, XSS, or path traversal</li>
+<li>Auth/authz checks where needed</li>
+</ul>
+
+<h3>Code Quality</h3>
+<ul>
+<li>Clear naming (variables, functions, classes)</li>
+<li>No unnecessary complexity or premature abstraction</li>
+<li>DRY — no duplicated logic that should be extracted</li>
+<li>Functions are focused (single responsibility)</li>
+</ul>
+
+<h3>Testing</h3>
+<ul>
+<li>New code paths tested?</li>
+<li>Happy path and error cases covered?</li>
+<li>Tests readable and maintainable?</li>
+</ul>
+
+<h3>Performance</h3>
+<ul>
+<li>No N+1 queries or unnecessary loops</li>
+<li>Appropriate caching where beneficial</li>
+<li>No blocking operations in async code paths</li>
+</ul>
+
+<h3>Documentation</h3>
+<ul>
+<li>Public APIs documented</li>
+<li>Non-obvious logic has comments explaining &quot;why&quot;</li>
+<li>README updated if behavior changed</li>
+</ul>
+
+<hr>
+
+<h2>4. Pre-Push Review Workflow</h2>
+
+<p>When the user asks you to &quot;review the code&quot; or &quot;check before pushing&quot;:</p>
+
+<ul>
+<li><code>git diff main...HEAD --stat</code> — see scope of changes</li>
+<li><code>git diff main...HEAD</code> — read the full diff</li>
+<li>For each changed file, use <code>read_file</code> if you need more context</li>
+<li>Apply the checklist above</li>
+<li>Present findings in the structured format (Critical / Warnings / Suggestions / Looks Good)</li>
+<li>If critical issues found, offer to fix them before the user pushes</li>
+</ul>
+
+<hr>
+
+<h2>5. PR Review Workflow (End-to-End)</h2>
+
+<h3>Step 0: Discover PRs to review</h3>
+
+<p>When the user asks to &quot;check my repos for open PRs&quot; or similar, they usually mean PRs submitted by <strong>other people</strong> on repos <strong>they own</strong> (not their own PRs). Two approaches:</p>
+
+<p><strong>Across all owned repos:</strong></p>
+<pre class='code'><code>gh search prs --owner &lt;username&gt; --state open --limit 50 \
+  --json number,title,repository,author,updatedAt,url,isDraft</code></pre>
+
+<p><strong>On a specific repo:</strong></p>
+<pre class='code'><code>gh pr list --repo owner/repo --state open --author &quot;*&quot; \
+  --json number,title,author,updatedAt,url</code></pre>
+
+<p>Filter out PRs authored by the repo owner to focus on external contributions.</p>
+
+<h3>Step 1: Set up environment</h3>
+
+<pre class='code'><code>source &quot;${HERMES_HOME:-$HOME/.hermes}/skills/github/github-auth/scripts/gh-env.sh&quot;
+# Or run the inline setup block from the top of this skill</code></pre>
+
+<h3>Step 2: Gather PR context</h3>
+
+<p>Get the PR metadata, description, and list of changed files to understand scope before diving into code.</p>
+
+<p><strong>With gh:</strong></p>
+<pre class='code'><code>gh pr view 123
+gh pr diff 123 --name-only
+gh pr checks 123</code></pre>
+
+<p><strong>With curl:</strong></p>
+<pre class='code'><code>PR_NUMBER=123
+
+# PR details (title, author, description, branch)
+curl -s -H &quot;Authorization: token $GITHUB_TOKEN&quot; \
+  https://api.github.com/repos/$GH_OWNER/$GH_REPO/pulls/$PR_NUMBER
+
+# Changed files with line counts
+curl -s -H &quot;Authorization: token $GITHUB_TOKEN&quot; \
+  https://api.github.com/repos/$GH_OWNER/$GH_REPO/pulls/$PR_NUMBER/files</code></pre>
+
+<h3>Step 3: Check out the PR locally</h3>
+
+<p>This gives you full access to <code>read_file</code>, <code>search_files</code>, and the ability to run tests.</p>
+
+<pre class='code'><code>git fetch origin pull/$PR_NUMBER/head:pr-$PR_NUMBER
+git checkout pr-$PR_NUMBER</code></pre>
+
+<h3>Step 4: Read the diff and understand changes</h3>
+
+<pre class='code'><code># Full diff against the base branch
+git diff main...HEAD
+
+# Or file-by-file for large PRs
+git diff main...HEAD --name-only
+# Then for each file:
+git diff main...HEAD -- path/to/file.py</code></pre>
+
+<p>For each changed file, use <code>read_file</code> to see full context around the changes — diffs alone can miss issues visible only with surrounding code.</p>
+
+<h3>Step 5: Run automated checks locally (if applicable)</h3>
+
+<pre class='code'><code># Run tests if there&#x27;s a test suite
+python -m pytest 2&gt;&amp;1 | tail -20
+# or: npm test, cargo test, go test ./..., etc.
+
+# Run linter if configured
+ruff check . 2&gt;&amp;1 | head -30
+# or: eslint, clippy, etc.</code></pre>
+
+<h3>Step 6: Apply the review checklist (Section 3)</h3>
+
+<p>Go through each category: Correctness, Security, Code Quality, Testing, Performance, Documentation.</p>
+
+<h3>Step 7: Post the review to GitHub</h3>
+
+<p>Collect your findings and submit them as a formal review with inline comments.</p>
+
+<p><strong>With gh:</strong></p>
+<pre class='code'><code># If no issues — approve
+gh pr review $PR_NUMBER --approve --body &quot;Reviewed by Hermes Agent. Code looks clean — good test coverage, no security concerns.&quot;
+
+# If issues found — request changes with inline comments
+gh pr review $PR_NUMBER --request-changes --body &quot;Found a few issues — see inline comments.&quot;</code></pre>
+
+<p><strong>With curl — atomic review with multiple inline comments:</strong></p>
+<pre class='code'><code>HEAD_SHA=$(curl -s -H &quot;Authorization: token $GITHUB_TOKEN&quot; \
+  https://api.github.com/repos/$GH_OWNER/$GH_REPO/pulls/$PR_NUMBER \
+  | python3 -c &quot;import sys,json; print(json.load(sys.stdin)[&#x27;head&#x27;][&#x27;sha&#x27;])&quot;)
+
+# Build the review JSON — event is APPROVE, REQUEST_CHANGES, or COMMENT
+curl -s -X POST \
+  -H &quot;Authorization: token $GITHUB_TOKEN&quot; \
+  https://api.github.com/repos/$GH_OWNER/$GH_REPO/pulls/$PR_NUMBER/reviews \
+  -d &quot;{
+    \&quot;commit_id\&quot;: \&quot;$HEAD_SHA\&quot;,
+    \&quot;event\&quot;: \&quot;REQUEST_CHANGES\&quot;,
+    \&quot;body\&quot;: \&quot;## Hermes Agent Review\n\nFound 2 issues, 1 suggestion. See inline comments.\&quot;,
+    \&quot;comments\&quot;: [
+      {\\\&quot;path\\\&quot;: \\\&quot;src/auth.py\\\&quot;, \\\&quot;line\\\&quot;: 45, \\\&quot;body\\\&quot;: \\\&quot;**Critical:** User input passed directly to SQL query — use parameterized queries.\\\&quot;},
+      {\\\&quot;path\\\&quot;: \\\&quot;src/models.py\\\&quot;, \\\&quot;line\\\&quot;: 23, \\\&quot;body\\\&quot;: \\\&quot;**Warning:** Password stored without hashing.\\\&quot;},
+      {\\\&quot;path\\\&quot;: \\\&quot;src/utils.py\\\&quot;, \\\&quot;line\\\&quot;: 8, \\\&quot;body\\\&quot;: \\\&quot;**Suggestion:** This duplicates logic in core/utils.py:34.\\\&quot;}
+    ]
+  }&quot;</code></pre>
+
+<h3>Step 8: Also post a summary comment</h3>
+
+<p>In addition to inline comments, leave a top-level summary so the PR author gets the full picture at a glance. Use the review output format from <code>references/review-output-template.md</code>.</p>
+
+<p><strong>With gh:</strong></p>
+<pre class='code'><code>gh pr comment $PR_NUMBER --body &quot;$(cat &lt;&lt;&#x27;EOF&#x27;
+## Code Review Summary
+
+**Verdict: Changes Requested** (2 issues, 1 suggestion)
+
+### Critical
+- **src/auth.py:45** — SQL injection vulnerability
+
+### Warnings
+- **src/models.py:23** — Plaintext password storage
+
+### Suggestions
+- **src/utils.py:8** — Duplicated logic, consider consolidating
+
+### Looks Good
+- Clean API design
+- Good error handling in the middleware layer
+
+---
+*Reviewed by Hermes Agent*
+EOF
+)&quot;</code></pre>
+
+<h3>Step 9: Clean up</h3>
+
+<pre class='code'><code>git checkout main
+git branch -D pr-$PR_NUMBER</code></pre>
+
+<h3>Decision: Approve vs Request Changes vs Comment</h3>
+
+<ul>
+<li><strong>Approve</strong> — no critical or warning-level issues, only minor suggestions or all clear</li>
+<li><strong>Request Changes</strong> — any critical or warning-level issue that should be fixed before merge</li>
+<li><strong>Comment</strong> — observations and suggestions, but nothing blocking (use when you&#x27;re unsure or the PR is a draft)</li>
+</ul>
+
+<h2>6. Issue-Driven PR Review (Did It Do the Job?)</h2>
+
+<p>When the user asks &quot;is this PR good?&quot; or &quot;did it do the job?&quot;, they want you to validate that the PR correctly solves its referenced issue — not just that the code is clean. This is distinct from a general code review.</p>
+
+<h3>Workflow</h3>
+
+<ul>
+<li><strong>Read the PR title and description</strong> to understand what it claims to fix.</li>
+<li><strong>Check the linked issue(s)</strong> — verify the PR body says <code>Closes #N</code> or <code>Fixes #N</code>, and read the issue to understand what was actually requested. The PR might look correct in isolation but miss what the issue actually asked for.</li>
+<li><strong>Verify the before-state on main</strong> — check the current code on the default branch (via <code>curl</code> to raw.githubusercontent.com or <code>git</code>) to confirm the problem actually existed. A PR that fixes something that was already fixed is a no-op.</li>
+<li><strong>Read the diff</strong> — does the implementation match the issue&#x27;s requirements? Check:</li>
+<li>Are all methods/lines the issue mentioned addressed?</li>
+<li>Does the approach match what the issue suggested (if guidance was given)?</li>
+<li>Does the PR scope-creep beyond the issue (adding unrelated features)?</li>
+<li><strong>Check test coverage</strong> — does the PR include tests that specifically validate the fix? Do they test defaults, setting values, AND toggling? Are the assertions meaningful?</li>
+<li><strong>Check project conventions</strong> — does the code follow the existing file&#x27;s patterns (logging style, naming, class structure)?</li>
+<li><strong>Give a structured verdict</strong> using the table format below.</li>
+</ul>
+
+<h3>Verdict Table Format</h3>
+
+<p>Use this when the user asks &quot;is it good / did it work?&quot; — compact, per-requirement assessment:</p>
+
+<pre class='code'><code>| Criterion | Verdict |
+|-----------|---------|
+| Does what issue #[N] asked for? | [Yes / Mostly / No] |
+| Follows project conventions? | [Yes / Mostly / No] |
+| Has tests? | [Yes / Partially / No] |
+| Single focused commit? | [Yes / No] |
+| Validated (CI passes, commands shown)? | [Yes / No] |
+
+**Bottom line:** [Ready to merge / Needs minor fixes / Needs rework]</code></pre>
+
+<h3>Workflow for PR Notifications from Cron</h3>
+
+<p>When a cron job or notification delivers a PR to review:</p>
+
+<ul>
+<li>Open the PR page on GitHub (<code>browser_navigate</code>)</li>
+<li>Open the linked issue URL separately to cross-reference</li>
+<li>Fetch the current main branch file(s) to establish before-state</li>
+<li>Apply the checklist above</li>
+<li>Report back with the verdict table in a single message</li>
+</ul>
+
+<h3>Pitfall: PR looks good but doesn&#x27;t address the issue</h3>
+
+<p>Always read the issue before evaluating the PR. A well-written PR with clean code might miss the actual problem. Conversely, a rough PR might be exactly what the issue asked for. The issue is the source of truth for requirements.</p>
+
+<h3>Pitfall: Skipping the main-branch check</h3>
+
+<p>Always verify the before-state on the default branch. A PR claiming to &quot;fix&quot; something that&#x27;s already been addressed in another commit is a red flag — it might be a stale branch or a rebase mistake.</p>
+
+<hr>
+
+<h2>7. Approve and Merge</h2>
+
+<p>After reviewing, if the PR is clean and ready, approve and merge in sequence:</p>
+
+<p><strong>Approve with a thank-you comment:</strong></p>
+<pre class='code'><code>gh pr review &lt;N&gt; --approve --body &quot;Excellent work thank you for contributing!&quot;</code></pre>
+
+<p><strong>Merge (squash) and delete the branch:</strong></p>
+<pre class='code'><code>gh pr merge &lt;N&gt; --squash --delete-branch</code></pre>
+
+<p>The approval + comment and the merge are separate commands so you can first leave the review, then merge once the author sees it.</p>
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : github-code-review // github</div>
+<div>MIT — generated by tools/publish.py; source: skills/github-code-review/SKILL.md</div>
+</footer>
+</body>
+</html>

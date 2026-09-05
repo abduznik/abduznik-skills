@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>yt-dlp-anti-bot // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">yt-dlp-anti-bot</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">media</span>
+<span class='tag' style='border-color:#55ddff'>youtube</span><span class='tag' style='border-color:#55ddff'>yt-dlp</span><span class='tag' style='border-color:#55ddff'>download</span><span class='tag' style='border-color:#55ddff'>403</span></div>
+<p style="color:#8affa8">When yt-dlp hits 403s, harden with impersonation + backoff.</p>
+</header>
+<main>
+
+
+
+<h1>yt-dlp Anti-Bot Hardening (YouTube 403s)</h1>
+
+<p>YouTube intermittently rejects yt-dlp requests with <code>HTTP Error 403: Forbidden</code>. Pattern to recognize: failures hit DIFFERENT tracks each run, in bursts — that&#x27;s IP throttling / bot detection, NOT a per-video block. A job can report &quot;done&quot; while silently skipping failed tracks (see below).</p>
+
+<h2>The fix stack</h2>
+
+<ul>
+<li><strong>Upgrade yt-dlp + install curl_cffi PINNED <code>&lt;0.16</code></strong>:</li>
+</ul>
+<pre class='code'><code>   pip install -U yt-dlp &quot;curl_cffi&lt;0.16&quot;</code></pre>
+<p>yt-dlp 2026.07+ rejects curl_cffi 0.16.x (&quot;Only curl_cffi versions 0.5.10 and 0.10.x through 0.15.x are supported&quot;). When curl_cffi is the wrong version, ALL impersonate targets show <code>(unavailable)</code> in <code>yt-dlp --list-impersonate-targets</code> even though <code>import curl_cffi</code> works fine.</p>
+
+<ul>
+<li><strong>Pin in requirements.txt too</strong> — <code>curl_cffi&lt;0.16</code>. An unpinned entry silently reinstalls the broken latest version on every container restart (services whose entrypoint runs <code>pip install -r requirements.txt</code>).</li>
+</ul>
+
+<ul>
+<li><strong>Python API: pass the ImpersonateTarget OBJECT, not a string</strong>:</li>
+</ul>
+<pre class='code'><code>   from yt_dlp.networking.impersonate import ImpersonateTarget
+   ydl_opts = {&#x27;impersonate&#x27;: ImpersonateTarget.from_str(&#x27;chrome&#x27;)}</code></pre>
+<p>A raw string <code>{&#x27;impersonate&#x27;: &#x27;chrome&#x27;}</code> raises <code>AssertionError: &#x27;&#x27;</code> — an EMPTY message, so the job fails at info-fetch with a blank error. The CLI converts strings for you; the YoutubeDL() API does not.</p>
+
+<ul>
+<li><strong>Stale process trap</strong>: upgrading/downgrading curl_cffi while a service runs does NOT fix the running worker — it imported yt-dlp before the change. CLI tests pass but the service still errors. Always restart the container after version changes.</li>
+</ul>
+
+<h2>Verifying the fix</h2>
+
+<pre class='code'><code># targets usable?
+yt-dlp --list-impersonate-targets
+# single-track test — real googlevideo URL = fingerprint works
+yt-dlp --impersonate chrome -f bestaudio --get-url &quot;&lt;url&gt;&quot;</code></pre>
+
+<h2>Residual throttling → rotate + backoff</h2>
+
+<p>Some tracks still 403 even with impersonation. Gap-fill strategy (download ONLY missing tracks, don&#x27;t re-run whole playlists):</p>
+<ul>
+<li>Rotate impersonation targets per attempt: <code>chrome</code>, <code>chrome-136</code>, <code>chrome-133</code>, <code>safari-18.0</code>, <code>safari-17.2</code></li>
+<li>Rotate player clients: <code>android,web</code>, <code>web</code>, <code>tv,web</code>, <code>android_vr,web</code></li>
+<li>Exponential backoff: <code>&#x27;retry_sleep_functions&#x27;: {&#x27;http&#x27;: lambda n: 25 <em> (2 </em>* min(n, 4))}</code></li>
+<li>60-90s sleeps between attempts; up to 8-12 attempts per track</li>
+<li>Keep per-track metadata (<code>-metadata artist/album/track</code>) and file naming identical to the service&#x27;s output (<code>NN - Title.mp3</code>) so gap-fills blend in</li>
+</ul>
+
+<h2>Pitfalls</h2>
+
+<ul>
+<li><strong>&quot;Job done&quot; ≠ all tracks downloaded</strong>: services report <code>Complete! N tracks processed</code> when the LOOP finishes, not when all succeeded. Always verify disk file count against playlist track count.</li>
+<li><strong><code>docker exec -d</code> swallows output redirects</strong>: <code>docker exec -d &lt;c&gt; python3 x.py &gt; /tmp/x.log</code> writes the log on the HOST (often 0 bytes). Use <code>docker exec -d &lt;c&gt; sh -c &quot;python3 -u x.py &gt; /tmp/x.log 2&gt;&amp;1&quot;</code> — and <code>python3 -u</code> for unbuffered output.</li>
+<li><strong>Block-buffered stdout</strong>: service app stdout to docker logs lags; use jobs.json / event stores as source of truth for job state.</li>
+</ul>
+
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : yt-dlp-anti-bot // media</div>
+<div>MIT — generated by tools/publish.py; source: skills/yt-dlp-anti-bot/SKILL.md</div>
+</footer>
+</body>
+</html>

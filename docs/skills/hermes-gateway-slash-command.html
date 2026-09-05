@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hermes-gateway-slash-command // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">hermes-gateway-slash-command</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">hermes</span>
+<span class='tag' style='border-color:#ff8844'>hermes</span><span class='tag' style='border-color:#ff8844'>gateway</span><span class='tag' style='border-color:#ff8844'>slash-commands</span><span class='tag' style='border-color:#ff8844'>telegram</span><span class='tag' style='border-color:#ff8844'>adapter</span><span class='tag' style='border-color:#ff8844'>batch-delete</span></div>
+<p style="color:#8affa8">Add a gateway-available slash command with message tracking and batch deletion capabilities. Covers the full lifecycle: registry, dispatch, adapter callback wiring, and cleanup.</p>
+</header>
+<main>
+
+
+
+<h1>Hermes Gateway Slash Commands</h1>
+
+<p>How to add a new slash command to the Hermes gateway (Telegram, Discord, etc.) that can also batch-delete tracked bot messages — e.g. a <code>/clear</code> command that wipes the chat UI and starts a fresh session while preserving backend history.</p>
+
+<h2>Overview</h2>
+
+<p>A gateway slash command needs three layers:</p>
+
+<ul>
+<li><strong>Registration</strong> — <code>CommandDef</code> in <code>hermes_cli/commands.py</code></li>
+<li><strong>Dispatch</strong> — handler in <code>gateway/run.py</code> in <strong>both</strong> the cold-path and running-agent-path</li>
+<li><strong>Message tracking</strong> (optional, for batch deletion) — adapter callback in <code>gateway/platforms/base.py</code> + runner tracking</li>
+</ul>
+
+<h2>Step 1: Register the Command</h2>
+
+<p>In <code>hermes_cli/commands.py</code>, add a <code>CommandDef</code> to <code>COMMAND_REGISTRY</code>:</p>
+
+<pre class='code'><code>CommandDef(&quot;clear&quot;, &quot;Clear chat history and start a new session&quot;, &quot;Session&quot;),</code></pre>
+
+<p>Key attributes:</p>
+
+<table><thead><tr><th>Attribute</th><th>Purpose</th></tr></thead><tbody><tr><td><code>name</code></td><td>Canonical name, no leading slash</td></tr><tr><td><code>description</code></td><td>Human-readable, shows in <code>/help</code> and Telegram&#x27;s <code>/</code> menu</td></tr><tr><td><code>category</code></td><td>Grouping for help output: <code>&quot;Session&quot;</code>, <code>&quot;Configuration&quot;</code>, etc.</td></tr><tr><td><code>cli_only=True</code></td><td>Only available in CLI, not gateway</td></tr><tr><td><code>gateway_only=True</code></td><td>Only available on messaging platforms</td></tr><tr><td><code>aliases=(&quot;short&quot;,)</code></td><td>Alternative names that resolve to this command</td></tr><tr><td><code>args_hint=&quot;[name]&quot;</code></td><td>Usage hint shown in help</td></tr></tbody></table>
+
+<p><strong>Note:</strong> Setting <code>cli_only=True</code> excludes the command from <code>GATEWAY_KNOWN_COMMANDS</code>, <code>telegram_bot_commands()</code>, and <code>gateway_help_lines()</code>. To make a command available in both CLI and gateway, omit <code>cli_only</code> entirely.</p>
+
+<h2>Step 2: Add Gateway Handlers</h2>
+
+<h3>2a. Cold Path (no running agent)</h3>
+
+<p>In <code>gateway/run.py</code>, inside <code>_handle_message()</code>, add the dispatch after the check for <code>/new</code> (around line 7730+).</p>
+
+<p>Pattern — simple dispatch:</p>
+
+<pre class='code'><code>if canonical == &quot;clear&quot;:
+    # Optional: delete trigger message from chat (best-effort)
+    _clear_adapter = self.adapters.get(source.platform)
+    if _clear_adapter and hasattr(_clear_adapter, &#x27;delete_message&#x27;) and event.message_id:
+        try:
+            await _clear_adapter.delete_message(
+                chat_id=source.chat_id,
+                message_id=event.message_id,
+            )
+        except Exception:
+            pass
+    return await self._handle_reset_command(event)</code></pre>
+
+<p>Use <code>_maybe_confirm_destructive_slash()</code> for destructive commands (matches <code>/new</code> and <code>/undo</code> pattern):</p>
+
+<pre class='code'><code>if canonical == &quot;clear&quot;:
+    async def _do_clear():
+        return await self._handle_reset_command(event)
+    return await self._maybe_confirm_destructive_slash(
+        event=event,
+        command=&quot;clear&quot;,
+        title=&quot;/clear&quot;,
+        detail=&quot;This deletes the /clear message and starts a fresh session.&quot;,
+        execute=_do_clear,
+    )</code></pre>
+
+<h3>2b. Running-Agent Path (agent is busy)</h3>
+
+<p>Commands that must bypass the running-agent guard (like <code>/new</code>, <code>/clear</code>, <code>/stop</code>) need a dedicated handler <strong>before</strong> the catch-all rejection.</p>
+
+<p>Place it right after the <code>/new</code> block and before <code>/queue</code>:</p>
+
+<pre class='code'><code>if _cmd_def_inner and _cmd_def_inner.name == &quot;clear&quot;:
+    # Interrupt any running agent first
+    await self._interrupt_and_clear_session(
+        _quick_key, source,
+        interrupt_reason=_INTERRUPT_REASON_RESET,
+        invalidation_reason=&quot;clear_command&quot;,
+    )
+    # Optional: batch-delete tracked bot messages from this session
+    _mids = self._clear_session_bot_message_ids(_quick_key)
+    if _mids:
+        _adapter = self.adapters.get(source.platform)
+        if _adapter and hasattr(_adapter, &#x27;delete_message&#x27;):
+            for _mid in _mids:
+                try:
+                    await _adapter.delete_message(chat_id=source.chat_id, message_id=_mid)
+                except Exception:
+                    pass
+    # Delete trigger message, then reset
+    ...
+    return await self._handle_reset_command(event)</code></pre>
+
+<p><strong>Important:</strong> The running-agent path must come BEFORE the <code>_DEDICATED_HANDLERS</code> / catch-all check (line ~7476) or the command will be rejected with &quot;Agent is running — wait or /stop first&quot;.</p>
+
+<h2>Step 3: Add Batch Message Deletion (Optional)</h2>
+
+<p>For commands that should clean up the chat UI, you need to track bot message IDs and delete them on command.</p>
+
+<h3>3a. Adapter Callback in <code>base.py</code></h3>
+
+<p>Add to <code>BasePlatformAdapter.__init__</code>:</p>
+
+<pre class='code'><code>self._message_sent_callback: Optional[Callable[[str, str, str], None]] = None</code></pre>
+
+<p>Add setter:</p>
+
+<pre class='code'><code>def set_message_sent_callback(self, callback):
+    self._message_sent_callback = callback</code></pre>
+
+<p>Wire into <code>_send_with_retry</code> (catches ALL send paths — both command responses and agent replies):</p>
+
+<pre class='code'><code>async def _send_with_retry(self, ..., session_key=None):
+    result = await self.send(...)
+    # Fire callback after successful send
+    if result.success and result.message_id and self._message_sent_callback and session_key:
+        try:
+            self._message_sent_callback(session_key, chat_id, result.message_id)
+        except Exception:
+            pass</code></pre>
+
+<p>Pass <code>session_key=session_key</code> in all calls to <code>_send_with_retry</code>.</p>
+
+<h3>3b. Runner Tracking in <code>run.py</code></h3>
+
+<p>Add to <code>GatewayRunner.__init__</code>:</p>
+
+<pre class='code'><code>self._session_bot_message_ids: Dict[str, set[str]] = {}</code></pre>
+
+<p>Add tracking method:</p>
+
+<pre class='code'><code>def _record_bot_message_id(self, session_key: str, message_id: str) -&gt; None:
+    if not session_key or not message_id:
+        return
+    ids = self._session_bot_message_ids.get(session_key)
+    if ids is None:
+        self._session_bot_message_ids[session_key] = {message_id}
+    else:
+        ids.add(message_id)
+
+def _clear_session_bot_message_ids(self, session_key: str) -&gt; set[str]:
+    return self._session_bot_message_ids.pop(session_key, set())</code></pre>
+
+<p>Wire callback during adapter setup (in the adapter connection loop):</p>
+
+<pre class='code'><code>adapter.set_message_sent_callback(
+    lambda sk, cid, mid: self._record_bot_message_id(sk, mid)
+)</code></pre>
+
+<h2>Pitfalls</h2>
+
+<ul>
+<li><strong>Telegram API limitation:</strong> In private chats (DMs), bots can only delete their own messages — user messages (including the <code>/clear</code> trigger) silently fail to delete. In supergroups where the bot is admin, both user and bot messages can be deleted. Always wrap <code>delete_message</code> in try/except.</li>
+</ul>
+
+<ul>
+<li><strong><code>_send_with_retry</code> vs <code>adapter.send()</code>:</strong> The stream consumer (agent conversational responses) may call <code>adapter.send()</code> directly, bypassing <code>_send_with_retry</code>. If the command needs to track ALL bot messages including agent replies, also instrument <code>adapter.send()</code> or the stream consumer <code>deliver_final</code> path.</li>
+</ul>
+
+<ul>
+<li><strong>Activity session bypass:</strong> Any command that must work while an agent is running needs BOTH a handler in the running-agent path (line ~7322 block) AND must be resolvable by the gateway (not <code>cli_only</code>). The running-agent handler must come before the catch-all at <code>_DEDICATED_HANDLERS</code>.</li>
+</ul>
+
+<ul>
+<li><strong>Session key consistency:</strong> The <code>session_key</code> used for tracking must match the key used in <code>_handle_reset_command</code>. It&#x27;s derived from <code>build_session_key(event.source, ...)</code> in <code>base.py</code>.</li>
+</ul>
+
+<ul>
+<li><strong>Topic lane special case:</strong> If the command touches session state in a Telegram DM topic lane, rebind the topic → session mapping after reset via <code>self._record_telegram_topic_binding(source, new_entry)</code>.</li>
+</ul>
+
+<ul>
+<li><strong>Config gate for cli_only:</strong> A command with <code>cli_only=True</code> can be made conditionally available on the gateway by setting <code>gateway_config_gate=&quot;some.config.path&quot;</code>. The config value must be truthy for the command to appear on gateway surfaces.</li>
+</ul>
+
+<h2>Post-Command Side-Effects (Pattern)</h2>
+
+<p>Some slash commands should do more than just dispatch — they should register</p>
+<p>subscriptions, send notifications, or update state as a side-effect of running.</p>
+
+<h3>Example: <code>/kanban</code> auto-subscribe on create</h3>
+
+<p>When a task is created via <code>/kanban create</code>, the gateway handler also</p>
+<p><strong>auto-subscribes the user</strong> to terminal-event notifications for that task:</p>
+
+<pre class='code'><code># After calling run_slash() and getting the task ID
+re.search(r&quot;Created\s+(t_[0-9a-f]+)\b&quot;, output)  # parse task_id
+kanban_db.add_notify_sub(
+    conn, task_id=task_id,
+    platform=platform_str,
+    chat_id=chat_id,
+    thread_id=thread_id,
+    user_id=user_id or None,
+)</code></pre>
+
+<p>The user then receives Telegram pings when the worker completes, blocks, or</p>
+<p>crashes — without any extra <code>/kanban notify-subscribe</code> step.</p>
+
+<h3>When to use this pattern</h3>
+
+<p>Apply post-command side-effects when:</p>
+
+<ul>
+<li><strong>The user creates a resource</strong> (task, ticket, reminder) and needs to hear</li>
+</ul>
+<p>back about it without polling.</p>
+<ul>
+<li><strong>The command has a lifecycle</strong> — the side-effect subscribes the requester</li>
+</ul>
+<p>to terminal states of the created resource.</p>
+<ul>
+<li><strong>The command creates a cross-session artifact</strong> — e.g., scheduling a cron</li>
+</ul>
+<p>job should log where it was scheduled from.</p>
+
+<h3>Implementation pattern</h3>
+
+<pre class='code'><code># 1. Dispatch the core command
+output = await asyncio.to_thread(run_slash, args_text)
+
+# 2. Detect what was created from the output
+m = re.search(r&quot;Created\s+(t_[0-9a-f]+)\b&quot;, output)
+if m:
+    task_id = m.group(1)
+    # 3. Extract identity from the event source
+    source = event.source
+    platform = getattr(source, &quot;platform&quot;, None)
+    chat_id = str(getattr(source, &quot;chat_id&quot;, &quot;&quot;) or &quot;&quot;)
+    thread_id = str(getattr(source, &quot;thread_id&quot;, &quot;&quot;) or &quot;&quot;)
+    # 4. Register the subscription in a thread pool
+    def _sub():
+        conn = some_db.connect()
+        some_db.add_sub(conn, task_id=task_id, platform=platform, ...)
+    await asyncio.to_thread(_sub)</code></pre>
+
+<h3>Pitfall: don&#x27;t block the dispatch</h3>
+
+<p>Side-effects should run after the dispatch, not before. The user should see</p>
+<p>the command output first; the subscription is invisible to them unless they</p>
+<p>check.</p>
+
+<h2>Related</h2>
+
+<ul>
+<li><code>hermes_cli/commands.py</code> — Root slash command registry</li>
+<li><code>gateway/run.py</code> — <code>_handle_message()</code> for cold path, running-agent dispatch block</li>
+<li><code>gateway/platforms/base.py</code> — <code>BasePlatformAdapter</code>, <code>_send_with_retry</code></li>
+<li><code>GatewayRunner.__init__</code> — State initialization (around line ~1770)</li>
+</ul>
+
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : hermes-gateway-slash-command // hermes</div>
+<div>MIT — generated by tools/publish.py; source: skills/hermes-gateway-slash-command/SKILL.md</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hermes-agent-skill-authoring // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">hermes-agent-skill-authoring</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">hermes</span>
+<span class='tag' style='border-color:#ff8844'>skills</span><span class='tag' style='border-color:#ff8844'>authoring</span><span class='tag' style='border-color:#ff8844'>hermes-agent</span><span class='tag' style='border-color:#ff8844'>conventions</span><span class='tag' style='border-color:#ff8844'>skill-md</span></div>
+<p style="color:#8affa8">Author in-repo SKILL.md: frontmatter, validator, structure.</p>
+</header>
+<main>
+
+
+
+<h1>Authoring Hermes-Agent Skills (in-repo)</h1>
+
+<h2>Overview</h2>
+
+<p>There are two places a SKILL.md can live:</p>
+
+<ul>
+<li><strong>User-local:</strong> <code>~/.hermes/skills/&lt;maybe-category&gt;/&lt;name&gt;/SKILL.md</code> — personal, not shared. Created via <code>skill_manage(action=&#x27;create&#x27;)</code>.</li>
+<li><strong>In-repo (this skill is about this case):</strong> <code>/home/bb/hermes-agent/skills/&lt;category&gt;/&lt;name&gt;/SKILL.md</code> — committed, shipped with the package. Use <code>write_file</code> + <code>git add</code>. <code>skill_manage(action=&#x27;create&#x27;)</code> does NOT target this tree.</li>
+</ul>
+
+<h2>When to Use</h2>
+
+<ul>
+<li>User asks you to add a skill &quot;in this branch / repo / commit&quot;</li>
+<li>You&#x27;re committing a reusable workflow that should ship with hermes-agent</li>
+<li>You&#x27;re editing an existing skill under <code>/home/bb/hermes-agent/skills/</code> (use <code>patch</code> for small edits, <code>write_file</code> for rewrites; <code>skill_manage</code> still works for patch on in-repo skills, but not for <code>create</code>)</li>
+</ul>
+
+<h2>Required Frontmatter</h2>
+
+<p>Source of truth: <code>tools/skill_manager_tool.py::_validate_frontmatter</code>. Hard requirements:</p>
+
+<ul>
+<li>Starts with <code>---</code> as the first bytes (no leading blank line).</li>
+<li>Closes with <code>\n---\n</code> before the body.</li>
+<li>Parses as a YAML mapping.</li>
+<li><code>name</code> field present.</li>
+<li><code>description</code> field present, ≤ <strong>1024 chars</strong> (<code>MAX_DESCRIPTION_LENGTH</code>).</li>
+<li>Non-empty body after the closing <code>---</code>.</li>
+</ul>
+
+<p>Peer-matched shape used by every skill under <code>skills/software-development/</code>:</p>
+
+<pre class='code'><code>---
+name: my-skill-name               # lowercase, hyphens, ≤64 chars (MAX_NAME_LENGTH)
+description: Use when &lt;trigger&gt;. &lt;one-line behavior&gt;.
+version: 1.0.0
+author: Hermes Agent
+license: MIT
+metadata:
+  hermes:
+    tags: [short, descriptive, tags]
+    related_skills: [other-skill, another-skill]
+---</code></pre>
+
+<p><code>version</code> / <code>author</code> / <code>license</code> / <code>metadata</code> are NOT enforced by the validator, but every peer has them — omit and your skill sticks out.</p>
+
+<h2>Size Limits</h2>
+
+<ul>
+<li>Description: ≤ 1024 chars (enforced).</li>
+<li>Full SKILL.md: ≤ 100,000 chars (enforced as <code>MAX_SKILL_CONTENT_CHARS</code>, ~36k tokens).</li>
+<li>Peer skills in <code>software-development/</code> sit at <strong>8-14k chars</strong>. Aim for that range. If you&#x27;re pushing past 20k, split into <code>references/*.md</code> and reference them from SKILL.md.</li>
+</ul>
+
+<h2>Peer-Matched Structure</h2>
+
+<p>Every in-repo skill follows roughly:</p>
+
+<pre class='code'><code># &lt;Title&gt;
+
+## Overview
+One or two paragraphs: what and why.
+
+## When to Use
+- Bulleted triggers
+- &quot;Don&#x27;t use for:&quot; counter-triggers
+
+## &lt;Topic sections specific to the skill&gt;
+- Quick-reference tables are common
+- Code blocks with exact commands
+- Hermes-specific recipes (tests via scripts/run_tests.sh, ui-tui paths, etc.)
+
+## Common Pitfalls
+Numbered list of mistakes and their fixes.
+
+## Verification Checklist
+- [ ] Checkbox list of post-action verifications
+
+## One-Shot Recipes (optional)
+Named scenarios → concrete command sequences.</code></pre>
+
+<p>Not every section is mandatory, but <code>Overview</code> + <code>When to Use</code> + actionable body + pitfalls are the minimum for the skill to feel like a peer.</p>
+
+<h2>Directory Placement</h2>
+
+<pre class='code'><code>skills/&lt;category&gt;/&lt;skill-name&gt;/SKILL.md</code></pre>
+
+<p>Categories currently in repo (confirm with <code>ls skills/</code>): <code>autonomous-ai-agents</code>, <code>creative</code>, <code>data-science</code>, <code>devops</code>, <code>dogfood</code>, <code>email</code>, <code>gaming</code>, <code>github</code>, <code>leisure</code>, <code>mcp</code>, <code>media</code>, <code>mlops/*</code>, <code>note-taking</code>, <code>productivity</code>, <code>red-teaming</code>, <code>research</code>, <code>smart-home</code>, <code>social-media</code>, <code>software-development</code>.</p>
+
+<p>Pick the closest existing category. Don&#x27;t invent new top-level categories casually.</p>
+
+<h2>Workflow</h2>
+
+<ul>
+<li><strong>Survey peers</strong> in the target category:</li>
+</ul>
+<pre class='code'><code>   ls skills/&lt;category&gt;/</code></pre>
+<p>Read 2-3 peer SKILL.md files to match tone and structure.</p>
+<ul>
+<li><strong>Check validator constraints</strong> in <code>tools/skill_manager_tool.py</code> if unsure.</li>
+<li><strong>Draft</strong> with <code>write_file</code> to <code>skills/&lt;category&gt;/&lt;name&gt;/SKILL.md</code>.</li>
+<li><strong>Validate locally</strong>:</li>
+</ul>
+<pre class='code'><code>   import yaml, re, pathlib
+   content = pathlib.Path(&quot;skills/&lt;category&gt;/&lt;name&gt;/SKILL.md&quot;).read_text()
+   assert content.startswith(&quot;---&quot;)
+   m = re.search(r&#x27;\n---\s*\n&#x27;, content[3:])
+   fm = yaml.safe_load(content[3:m.start()+3])
+   assert &quot;name&quot; in fm and &quot;description&quot; in fm
+   assert len(fm[&quot;description&quot;]) &lt;= 1024
+   assert len(content) &lt;= 100_000</code></pre>
+<ul>
+<li><strong>Git add + commit</strong> on the active branch.</li>
+<li><strong>Note:</strong> the CURRENT session&#x27;s skill loader is cached — <code>skill_view</code> / <code>skills_list</code> will not see the new skill until a new session. This is expected, not a bug.</li>
+</ul>
+
+<h2>Cross-Referencing Other Skills</h2>
+
+<p><code>metadata.hermes.related_skills</code> unions both trees (<code>skills/</code> in-repo and <code>~/.hermes/skills/</code>) at load time. You CAN reference a user-local skill from an in-repo skill, but it won&#x27;t resolve for other users who clone the repo fresh. Prefer referencing only in-repo skills from in-repo skills. If a frequently-referenced skill lives only in <code>~/.hermes/skills/</code>, consider promoting it to the repo.</p>
+
+<h2>Publishing Skills to GitHub</h2>
+
+<p>When sharing a custom user-local skill publicly as a GitHub repo, follow these conventions:</p>
+
+<p><strong>Repo name</strong> — append <code>-skill</code> suffix. The repo is a skill package, not a standalone library. <code>my-skill</code> → <code>my-skill-skill</code>.</p>
+
+<p><strong>Include both SKILL.md and README.md:</strong></p>
+<ul>
+<li><code>SKILL.md</code> — the full Hermes skill definition with YAML frontmatter. This is what <code>skill_view</code> loads and what Hermes uses.</li>
+<li><code>README.md</code> — GitHub front-page rendered docs. Should be a <strong>Hermes headstart setup guide</strong> covering:</li>
+<li>Clone path: <code>git clone &lt;repo&gt; /path/to/hermes/data/skills/&lt;name&gt;</code></li>
+<li>Dependency install: <code>pip install &lt;pkg&gt;</code> or platform-specific commands</li>
+<li>First-use example: what to tell the Hermes agent to trigger the skill</li>
+<li>Python API usage and documentation (same as SKILL.md body but platform-agnostic)</li>
+</ul>
+
+<p><strong>Why two files?</strong> GitHub renders README.md as the repo front page. SKILL.md is Hermes-internal — it has YAML frontmatter that GitHub doesn&#x27;t render well. Both should stay in sync content-wise; README.md drops the frontmatter and adds the Hermes setup section at the top.</p>
+
+<p><strong>Delete the old name-only repo</strong> if you created one without the <code>-skill</code> suffix first — orphan repos confuse people searching.</p>
+
+<h2>Support Files (references/ templates/ scripts/)</h2>
+
+<p>Skills can carry <strong>three kinds of support files</strong> — use the right directory per kind:</p>
+
+<table><thead><tr><th>Directory</th><th>Purpose</th><th>Example</th></tr></thead><tbody><tr><td><code>references/</code></td><td>Session-specific detail (error transcripts, reproduction recipes, provider quirks) AND condensed knowledge banks (quoted research, API docs, external authoritative excerpts).</td><td><code>references/s3-signed-urls.md</code></td></tr><tr><td><code>templates/</code></td><td>Starter files meant to be copied and modified — boilerplate configs, scaffolding, known-good examples the agent can reproduce with modifications.</td><td><code>templates/pytest.ini</code></td></tr><tr><td><code>scripts/</code></td><td>Statically re-runnable actions the skill can invoke directly — verification scripts, fixture generators, deterministic probes.</td><td><code>scripts/smoke_test.py</code></td></tr></tbody></table>
+
+<p>Add via: <code>skill_manage(action=&#x27;write_file&#x27;, name=&#x27;&lt;skill&gt;&#x27;, file_path=&#x27;scripts/&lt;name&gt;&#x27;, file_content=...)</code></p>
+<p>Remove via: <code>skill_manage(action=&#x27;remove_file&#x27;, name=&#x27;&lt;skill&gt;&#x27;, file_path=&#x27;scripts/&lt;name&gt;&#x27;)</code></p>
+
+<p>Support files show up under <code>linked_files</code> in <code>skill_view()</code> output, making them discoverable to future sessions.</p>
+
+<h2>User-Local Skill Creation Workflow</h2>
+
+<p>When creating a skill via <code>skill_manage(action=&#x27;create&#x27;)</code> (the most common path for agent-authored skills):</p>
+
+<ul>
+<li><strong>Draft the SKILL.md</strong> with full YAML frontmatter (<code>name</code>, <code>description</code>, <code>category</code>, <code>tags</code>). Aim for 8-15k chars.</li>
+<li><strong>Create via</strong> <code>skill_manage(action=&#x27;create&#x27;, name=&#x27;&lt;name&gt;&#x27;, content=&#x27;&lt;full SKILL.md&gt;&#x27;)</code>. If the directory already exists (e.g. from a prior <code>write_file</code>), the tool reports a conflict — use <code>skill_manage(action=&#x27;edit&#x27;)</code> to overwrite instead.</li>
+<li><strong>Add support files</strong> immediately: <code>skill_manage(action=&#x27;write_file&#x27;, name=&#x27;&lt;name&gt;&#x27;, file_path=&#x27;scripts/&lt;name&gt;&#x27;, file_content=...)</code>. This registers them as <code>linked_files</code>.</li>
+<li><strong>Patch SKILL.md</strong> to include a support-files reference table so future agents see the pointers.</li>
+<li><strong>Verify</strong> with <code>skill_view(name=&#x27;&lt;name&gt;&#x27;)</code> — confirm <code>linked_files</code> lists everything and the content is correct.</li>
+</ul>
+
+<p>This workflow produces a class-level skill with discoverable support files, avoiding loose files in the skill directory root.</p>
+
+<h2>Editing Existing In-Repo Skills</h2>
+
+<ul>
+<li><strong>Small fix (typo, added pitfall, tightened trigger):</strong> <code>skill_manage(action=&#x27;patch&#x27;, name=..., old_string=..., new_string=...)</code> works fine on in-repo skills.</li>
+<li><strong>Major rewrite:</strong> <code>write_file</code> the whole SKILL.md. <code>skill_manage(action=&#x27;edit&#x27;)</code> also works but requires supplying the full new content.</li>
+<li><strong>Adding supporting files:</strong> <code>write_file</code> to <code>skills/&lt;category&gt;/&lt;name&gt;/references/&lt;file&gt;.md</code>, <code>templates/&lt;file&gt;</code>, or <code>scripts/&lt;file&gt;</code>. <code>skill_manage(action=&#x27;write_file&#x27;)</code> also works and enforces the references/templates/scripts/assets subdir allowlist.</li>
+<li><strong>Always commit</strong> the edit — in-repo skills are source, not runtime state.</li>
+</ul>
+
+<h2>Common Pitfalls</h2>
+
+<ul>
+<li><strong>Using <code>skill_manage(action=&#x27;create&#x27;)</code> for an in-repo skill.</strong> It writes to <code>~/.hermes/skills/</code>, not the repo tree. Use <code>write_file</code> for in-repo creation.</li>
+</ul>
+
+<ul>
+<li><strong>Leading whitespace before <code>---</code>.</strong> The validator checks <code>content.startswith(&quot;---&quot;)</code>; any leading blank line or BOM fails validation.</li>
+</ul>
+
+<ul>
+<li><strong>Description too generic.</strong> Peer descriptions start with &quot;Use when ...&quot; and describe the <em>trigger class</em>, not the one task. &quot;Use when debugging X&quot; &gt; &quot;Debug X&quot;.</li>
+</ul>
+
+<ul>
+<li><strong>Forgetting the author/license/metadata block.</strong> Not validator-enforced, but every peer has it; omitting makes the skill look half-finished.</li>
+</ul>
+
+<ul>
+<li><strong>Writing a skill that duplicates a peer.</strong> Before creating, <code>ls skills/&lt;category&gt;/</code> and open 2-3 peers. Prefer extending an existing skill to creating a narrow sibling.</li>
+</ul>
+
+<ul>
+<li><strong>Expecting the current session to see the new skill.</strong> It won&#x27;t. The skill loader is initialized at session start. Verify in a fresh session or via <code>skill_view</code> using the exact path.</li>
+</ul>
+
+<ul>
+<li><strong>Linking to skills that don&#x27;t exist in-repo.</strong> <code>related_skills: [some-user-local-skill]</code> works for you but breaks for other clones. Prefer only in-repo links.</li>
+</ul>
+
+<h2>Verification Checklist</h2>
+
+<ul>
+<li>[ ] File is at <code>skills/&lt;category&gt;/&lt;name&gt;/SKILL.md</code> (not in <code>~/.hermes/skills/</code>)</li>
+<li>[ ] Frontmatter starts at byte 0 with <code>---</code>, closes with <code>\n---\n</code></li>
+<li>[ ] <code>name</code>, <code>description</code>, <code>version</code>, <code>author</code>, <code>license</code>, <code>metadata.hermes.{tags, related_skills}</code> all present</li>
+<li>[ ] Name ≤ 64 chars, lowercase + hyphens</li>
+<li>[ ] Description ≤ 1024 chars and starts with &quot;Use when ...&quot;</li>
+<li>[ ] Total file ≤ 100,000 chars (aim for 8-15k)</li>
+<li>[ ] Structure: <code># Title</code> → <code>## Overview</code> → <code>## When to Use</code> → body → <code>## Common Pitfalls</code> → <code>## Verification Checklist</code></li>
+<li>[ ] <code>related_skills</code> references resolve in-repo (or are explicitly OK to be user-local)</li>
+<li>[ ] <code>git add skills/&lt;category&gt;/&lt;name&gt;/ &amp;&amp; git commit</code> completed on the intended branch</li>
+</ul>
+
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : hermes-agent-skill-authoring // hermes</div>
+<div>MIT — generated by tools/publish.py; source: skills/hermes-agent-skill-authoring/SKILL.md</div>
+</footer>
+</body>
+</html>

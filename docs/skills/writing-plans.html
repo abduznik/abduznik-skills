@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>writing-plans // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">writing-plans</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
+<span class='tag' style='border-color:#ff77cc'>planning</span><span class='tag' style='border-color:#ff77cc'>design</span><span class='tag' style='border-color:#ff77cc'>implementation</span><span class='tag' style='border-color:#ff77cc'>workflow</span><span class='tag' style='border-color:#ff77cc'>documentation</span></div>
+<p style="color:#8affa8">Write implementation plans: bite-sized tasks, paths, code.</p>
+</header>
+<main>
+
+
+
+<h1>Writing Implementation Plans</h1>
+
+<h2>Overview</h2>
+
+<p>Write comprehensive implementation plans assuming the implementer has zero context for the codebase and questionable taste. Document everything they need: which files to touch, complete code, testing commands, docs to check, how to verify. Give them bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.</p>
+
+<p>Assume the implementer is a skilled developer but knows almost nothing about the toolset or problem domain. Assume they don&#x27;t know good test design very well.</p>
+
+<p><strong>Core principle:</strong> A good plan makes implementation obvious. If someone has to guess, the plan is incomplete.</p>
+
+<h2>When to Use</h2>
+
+<p><strong>Always use before:</strong></p>
+<ul>
+<li>Implementing multi-step features</li>
+<li>Breaking down complex requirements</li>
+<li>Delegating to subagents via subagent-driven-development</li>
+</ul>
+
+<p><strong>Don&#x27;t skip when:</strong></p>
+<ul>
+<li>Feature seems simple (assumptions cause bugs)</li>
+<li>You plan to implement it yourself (future you needs guidance)</li>
+<li>Working alone (documentation matters)</li>
+</ul>
+
+<h2>Bite-Sized Task Granularity</h2>
+
+<p><strong>Each task = 2-5 minutes of focused work.</strong></p>
+
+<p>Every step is one action:</p>
+<ul>
+<li>&quot;Write the failing test&quot; — step</li>
+<li>&quot;Run it to make sure it fails&quot; — step</li>
+<li>&quot;Implement the minimal code to make the test pass&quot; — step</li>
+<li>&quot;Run the tests and make sure they pass&quot; — step</li>
+<li>&quot;Commit&quot; — step</li>
+</ul>
+
+<p><strong>Too big:</strong></p>
+<pre class='code'><code>### Task 1: Build authentication system
+[50 lines of code across 5 files]</code></pre>
+
+<p><strong>Right size:</strong></p>
+<pre class='code'><code>### Task 1: Create User model with email field
+[10 lines, 1 file]
+
+### Task 2: Add password hash field to User
+[8 lines, 1 file]
+
+### Task 3: Create password hashing utility
+[15 lines, 1 file]</code></pre>
+
+<h2>Plan Document Structure</h2>
+
+<h3>Header (Required)</h3>
+
+<p>Every plan MUST start with:</p>
+
+<pre class='code'><code># [Feature Name] Implementation Plan
+
+&gt; **For Hermes:** Use subagent-driven-development skill to implement this plan task-by-task.
+
+**Goal:** [One sentence describing what this builds]
+
+**Architecture:** [2-3 sentences about approach]
+
+**Tech Stack:** [Key technologies/libraries]
+
+---</code></pre>
+
+<h3>Task Structure</h3>
+
+<p>Each task follows this format:</p>
+
+<pre class='code'><code>### Task N: [Descriptive Name]
+
+**Objective:** What this task accomplishes (one sentence)
+
+**Files:**
+- Create: `exact/path/to/new_file.py`
+- Modify: `exact/path/to/existing.py:45-67` (line numbers if known)
+- Test: `tests/path/to/test_file.py`
+
+**Step 1: Write failing test**
+</code></pre>
+<p>def test_specific_behavior():</p>
+<p>result = function(input)</p>
+<p>assert result == expected</p>
+<pre class='code'><code>
+**Step 2: Run test to verify failure**
+
+Run: `pytest tests/path/test.py::test_specific_behavior -v`
+Expected: FAIL — &quot;function not defined&quot;
+
+**Step 3: Write minimal implementation**
+</code></pre>
+<p>def function(input):</p>
+<p>return expected</p>
+<pre class='code'><code>
+**Step 4: Run test to verify pass**
+
+Run: `pytest tests/path/test.py::test_specific_behavior -v`
+Expected: PASS
+
+**Step 5: Commit**
+</code></pre>
+<p>git add tests/path/test.py src/path/file.py</p>
+<p>git commit -m &quot;feat: add specific feature&quot;</p>
+<pre class='code'><code></code></pre>
+
+<h2>Writing Process</h2>
+
+<h3>Step 1: Understand Requirements</h3>
+
+<p>Read and understand:</p>
+<ul>
+<li>Feature requirements</li>
+<li>Design documents or user description</li>
+<li>Acceptance criteria</li>
+<li>Constraints</li>
+</ul>
+
+<h3>Step 2: Explore the Codebase</h3>
+
+<p>Use Hermes tools to understand the project:</p>
+
+<pre class='code'><code># Understand project structure
+search_files(&quot;*.py&quot;, target=&quot;files&quot;, path=&quot;src/&quot;)
+
+# Look at similar features
+search_files(&quot;similar_pattern&quot;, path=&quot;src/&quot;, file_glob=&quot;*.py&quot;)
+
+# Check existing tests
+search_files(&quot;*.py&quot;, target=&quot;files&quot;, path=&quot;tests/&quot;)
+
+# Read key files
+read_file(&quot;src/app.py&quot;)</code></pre>
+
+<h3>Step 3: Design Approach</h3>
+
+<p>Decide:</p>
+<ul>
+<li>Architecture pattern</li>
+<li>File organization</li>
+<li>Dependencies needed</li>
+<li>Testing strategy</li>
+</ul>
+
+<h3>Step 4: Write Tasks</h3>
+
+<p>Create tasks in order:</p>
+<ul>
+<li>Setup/infrastructure</li>
+<li>Core functionality (TDD for each)</li>
+<li>Edge cases</li>
+<li>Integration</li>
+<li>Cleanup/documentation</li>
+</ul>
+
+<h3>Step 5: Add Complete Details</h3>
+
+<p>For each task, include:</p>
+<ul>
+<li><strong>Exact file paths</strong> (not &quot;the config file&quot; but <code>src/config/settings.py</code>)</li>
+<li><strong>Complete code examples</strong> (not &quot;add validation&quot; but the actual code)</li>
+<li><strong>Exact commands</strong> with expected output</li>
+<li><strong>Verification steps</strong> that prove the task works</li>
+</ul>
+
+<h3>Step 6: Review the Plan</h3>
+
+<p>Check:</p>
+<ul>
+<li>[ ] Tasks are sequential and logical</li>
+<li>[ ] Each task is bite-sized (2-5 min)</li>
+<li>[ ] File paths are exact</li>
+<li>[ ] Code examples are complete (copy-pasteable)</li>
+<li>[ ] Commands are exact with expected output</li>
+<li>[ ] No missing context</li>
+<li>[ ] DRY, YAGNI, TDD principles applied</li>
+</ul>
+
+<h3>Step 7: Save the Plan</h3>
+
+<pre class='code'><code>mkdir -p docs/plans
+# Save plan to docs/plans/YYYY-MM-DD-feature-name.md
+git add docs/plans/
+git commit -m &quot;docs: add implementation plan for [feature]&quot;</code></pre>
+
+<h2>Principles</h2>
+
+<h3>DRY (Don&#x27;t Repeat Yourself)</h3>
+
+<p><strong>Bad:</strong> Copy-paste validation in 3 places</p>
+<p><strong>Good:</strong> Extract validation function, use everywhere</p>
+
+<h3>YAGNI (You Aren&#x27;t Gonna Need It)</h3>
+
+<p><strong>Bad:</strong> Add &quot;flexibility&quot; for future requirements</p>
+<p><strong>Good:</strong> Implement only what&#x27;s needed now</p>
+
+<pre class='code'><code># Bad — YAGNI violation
+class User:
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+        self.preferences = {}  # Not needed yet!
+        self.metadata = {}     # Not needed yet!
+
+# Good — YAGNI
+class User:
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email</code></pre>
+
+<h3>TDD (Test-Driven Development)</h3>
+
+<p>Every task that produces code should include the full TDD cycle:</p>
+<ul>
+<li>Write failing test</li>
+<li>Run to verify failure</li>
+<li>Write minimal code</li>
+<li>Run to verify pass</li>
+</ul>
+
+<p>See <code>test-driven-development</code> skill for details.</p>
+
+<h3>Frequent Commits</h3>
+
+<p>Commit after every task:</p>
+<pre class='code'><code>git add [files]
+git commit -m &quot;type: description&quot;</code></pre>
+
+<h2>Common Mistakes</h2>
+
+<h3>Vague Tasks</h3>
+
+<p><strong>Bad:</strong> &quot;Add authentication&quot;</p>
+<p><strong>Good:</strong> &quot;Create User model with email and password_hash fields&quot;</p>
+
+<h3>Incomplete Code</h3>
+
+<p><strong>Bad:</strong> &quot;Step 1: Add validation function&quot;</p>
+<p><strong>Good:</strong> &quot;Step 1: Add validation function&quot; followed by the complete function code</p>
+
+<h3>Missing Verification</h3>
+
+<p><strong>Bad:</strong> &quot;Step 3: Test it works&quot;</p>
+<p><strong>Good:</strong> &quot;Step 3: Run <code>pytest tests/test_auth.py -v</code>, expected: 3 passed&quot;</p>
+
+<h3>Missing File Paths</h3>
+
+<p><strong>Bad:</strong> &quot;Create the model file&quot;</p>
+<p><strong>Good:</strong> &quot;Create: <code>src/models/user.py</code>&quot;</p>
+
+<h2>Execution Handoff</h2>
+
+<p>After saving the plan, offer the execution approach:</p>
+
+<p><strong>&quot;Plan complete and saved. Ready to execute using subagent-driven-development — I&#x27;ll dispatch a fresh subagent per task with two-stage review (spec compliance then code quality). Shall I proceed?&quot;</strong></p>
+
+<p>When executing, use the <code>subagent-driven-development</code> skill:</p>
+<ul>
+<li>Fresh <code>delegate_task</code> per task with full context</li>
+<li>Spec compliance review after each task</li>
+<li>Code quality review after spec passes</li>
+<li>Proceed only when both reviews approve</li>
+</ul>
+
+<h2>Remember</h2>
+
+<pre class='code'><code>Bite-sized tasks (2-5 min each)
+Exact file paths
+Complete code (copy-pasteable)
+Exact commands with expected output
+Verification steps
+DRY, YAGNI, TDD
+Frequent commits</code></pre>
+
+<p><strong>A good plan makes implementation obvious.</strong></p>
+
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : writing-plans // software-development</div>
+<div>MIT — generated by tools/publish.py; source: skills/writing-plans/SKILL.md</div>
+</footer>
+</body>
+</html>

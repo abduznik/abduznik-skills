@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>python-webapp-patterns // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">python-webapp-patterns</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
+<span class='tag' style='border-color:#ff77cc'>python</span><span class='tag' style='border-color:#ff77cc'>fastapi</span><span class='tag' style='border-color:#ff77cc'>flask</span><span class='tag' style='border-color:#ff77cc'>webapp</span><span class='tag' style='border-color:#ff77cc'>fastapi</span><span class='tag' style='border-color:#ff77cc'>flask</span><span class='tag' style='border-color:#ff77cc'>web</span><span class='tag' style='border-color:#ff77cc'>frontend</span><span class='tag' style='border-color:#ff77cc'>windows</span><span class='tag' style='border-color:#ff77cc'>search</span><span class='tag' style='border-color:#ff77cc'>pdf</span></div>
+<p style="color:#8affa8">Build Python web apps with FastAPI or Flask — static file serving, search-index frontends, PDF/binary serving, and Windows-specific pitfalls. Covers the local-index-first search pattern, binary response serving, and asyncio quirks.</p>
+</header>
+<main>
+
+
+
+<h1>Python Web App Patterns</h1>
+
+<p>Reusable patterns for building self-hosted Python web apps with FastAPI (or Flask)</p>
+<p>that serve a vanilla JS frontend and handle binary content like PDFs.</p>
+
+<h2>1. Serving binary files (PDFs) on Windows</h2>
+
+<p><strong>Pitfall:</strong> <code>FileResponse(path=str(path_obj))</code> can silently fail on Windows</p>
+<p>when serving PDFs for iframe embedding. The browser receives the response but</p>
+<p>the iframe shows blank or &quot;Failed to load PDF&quot;. Root cause: Windows path</p>
+<p>encoding quirks in Starlette&#x27;s <code>FileResponse</code> implementation.</p>
+
+<p><strong>Fix:</strong> Read the file bytes manually and return a raw <code>Response</code>:</p>
+
+<pre class='code'><code>from pathlib import Path
+from fastapi.responses import Response
+
+def serve_pdf(pdf_path: Path, filename: str) -&gt; Response:
+    content = pdf_path.read_bytes()
+    return Response(
+        content=content,
+        media_type=&quot;application/pdf&quot;,
+        headers={
+            &quot;Content-Disposition&quot;: f&#x27;inline; filename=&quot;{filename}.pdf&quot;&#x27;,
+            &quot;Content-Length&quot;: str(len(content)),
+            &quot;Cache-Control&quot;: &quot;public, max-age=3600&quot;,
+        },
+    )</code></pre>
+
+<p>Use <code>Content-Disposition: inline</code> (not <code>attachment</code>) for iframe embedding.</p>
+<p>Set <code>Content-Length</code> explicitly — some browsers need it for PDF rendering.</p>
+
+<p><code>FileResponse</code> is still fine for HTML/text (e.g. serving <code>index.html</code>).</p>
+
+<h2>2. Local-index-first search with backend fallback</h2>
+
+<p>When building a search UI with Fuse.js over a local index that starts empty</p>
+<p>(e.g. a datasheet library that grows over time), always wire a backend fallback:</p>
+
+<p><strong>Pattern:</strong></p>
+<ul>
+<li>Load index from <code>GET /api/index</code> on page init → build Fuse.js instance</li>
+<li>On input (debounced 150ms): search Fuse.js locally</li>
+<li>If Fuse.js returns 0 results AND query.length &gt;= 2:</li>
+<li>Fire <code>GET /search?q={query}</code> to the backend (with AbortController)</li>
+<li>Backend searches remote sources, caches result, returns JSON</li>
+<li>On success: re-fetch <code>/api/index</code>, rebuild Fuse.js, re-run local search</li>
+<li>Show toast with result metadata</li>
+<li>Cancel pending backend search on each new keystroke</li>
+</ul>
+
+<p><strong>Key implementation details:</strong></p>
+<ul>
+<li>Use <code>AbortController</code> to cancel stale backend requests when user keeps typing</li>
+<li>Track a <code>pendingBackendSearch</code> reference; abort it before starting a new one</li>
+<li>After backend finds a result, the index has grown — re-init Fuse.js</li>
+<li>Don&#x27;t re-fetch the index on every input focus; track <code>_indexLoaded</code> flag</li>
+<li>Suppress &quot;Loaded 0 datasheets&quot; toast on cold start (show only when count &gt; 0)</li>
+</ul>
+
+<pre class='code'><code>let pendingBackendSearch = null;
+
+async function backendSearch(query) {
+    if (pendingBackendSearch) pendingBackendSearch.abort();
+    const controller = new AbortController();
+    pendingBackendSearch = controller;
+
+    try {
+        const resp = await fetch(`/search?q=${encodeURIComponent(query)}`,
+            { signal: controller.signal });
+        if (!resp.ok) return;
+        const result = await resp.json();
+        if (result.status === &#x27;found&#x27; || result.status === &#x27;cached&#x27;) {
+            state.index = await apiGet(&#x27;/api/index&#x27;);
+            rebuildFuse();  // re-init with new data
+            performSearch(query);  // re-run local search
+            showToast(`Found: ${result.part}`, &#x27;success&#x27;);
+        }
+    } catch (err) {
+        if (err.name !== &#x27;AbortError&#x27;) console.warn(&#x27;Backend search failed:&#x27;, err);
+    } finally {
+        if (pendingBackendSearch === controller) pendingBackendSearch = null;
+    }
+}</code></pre>
+
+<h2>3. FastAPI app structure for self-hosted tools</h2>
+
+<p>Recommended layout for a single-page app with API backend:</p>
+
+<pre class='code'><code>project/
+├── backend/
+│   ├── proxy.py          # FastAPI app + routes
+│   ├── finder.py         # Business logic
+│   ├── models.py         # Pydantic models
+│   └── sources/          # Plugin architecture
+├── frontend/
+│   ├── index.html
+│   ├── style.css
+│   └── app.js
+├── data/
+│   └── (runtime data, gitignored)
+├── requirements.txt
+└── run.py                # Entry point</code></pre>
+
+<p><strong>Route patterns:</strong></p>
+<ul>
+<li><code>GET /</code> → <code>FileResponse</code> for <code>index.html</code></li>
+<li><code>GET /static/{path}</code> → <code>StaticFiles</code> mount for CSS/JS</li>
+<li><code>GET /api/*</code> → JSON API endpoints</li>
+<li><code>GET /pdf/{id}</code> → Binary content serving (use the Response pattern above)</li>
+</ul>
+
+<p><strong>CORS:</strong> For local dev, <code>allow_origins=[&quot;*&quot;]</code> is fine. For production behind</p>
+<p>a reverse proxy on the same origin, CORS isn&#x27;t needed.</p>
+
+<h2>4. Asyncio on Windows — ConnectionResetError</h2>
+
+<pre class='code'><code>ConnectionResetError: [WinError 10054] An existing connection was forcibly
+closed by the remote host</code></pre>
+
+<p>This appears in asyncio callback error handlers on Windows when a client</p>
+<p>(browser) closes a connection before the response is fully flushed. It is</p>
+<p><strong>harmless</strong> — the response was already sent. The error is a known Windows</p>
+<p>ProactorEventLoop quirk. Ignore it; do not add error handling for it.</p>
+
+<h2>5. Index builder pattern</h2>
+
+<p>For tools that cache files locally (PDFs, images, documents), build a search</p>
+<p>index by scanning the cache directory:</p>
+
+<ul>
+<li>Walk <code>data/cache/*<em>/</em>.ext</code> recursively</li>
+<li>Read sidecar <code>.json</code> metadata files (same name, next to the cached file)</li>
+<li>If no sidecar, extract metadata from filename/path</li>
+<li>Auto-generate tags from vendor/category prefixes</li>
+<li>Write <code>data/index.json</code> — flat array of entries</li>
+<li>Rebuild on startup and after every batch operation</li>
+</ul>
+
+<p><strong>Sidecar JSON pattern:</strong> Every cached file gets a <code>.json</code> sibling with</p>
+<p><code>{source_url, downloaded_at, file_size_kb, ...}</code>. This survives file moves</p>
+<p>and provides provenance without parsing filenames.</p>
+
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : python-webapp-patterns // software-development</div>
+<div>MIT — generated by tools/publish.py; source: skills/python-webapp-patterns/SKILL.md</div>
+</footer>
+</body>
+</html>

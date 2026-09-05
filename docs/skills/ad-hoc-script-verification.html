@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ad-hoc-script-verification // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">ad-hoc-script-verification</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">devops</span>
+<span class='tag' style='border-color:#44ff77'>Verification</span><span class='tag' style='border-color:#44ff77'>Testing</span><span class='tag' style='border-color:#44ff77'>Harness</span><span class='tag' style='border-color:#44ff77'>Bash</span><span class='tag' style='border-color:#44ff77'>Python</span><span class='tag' style='border-color:#44ff77'>CI-less</span></div>
+<p style="color:#8affa8">Use when verifying a script with no CI suite.</p>
+</header>
+<main>
+
+
+
+<h1>Ad-Hoc Script Verification (no CI)</h1>
+
+<p>There is no canonical test suite for <code>data/scripts</code> (and many homelab/cron</p>
+<p>scripts). The honest report is &quot;ad-hoc verification, N/N checks passed&quot;,</p>
+<p>never &quot;suite green&quot;. This skill is the reusable harness pattern for proving a</p>
+<p>script works when CI does not exist — plus the trap that verification</p>
+<p>evidence must survive on disk.</p>
+
+<h2>Core principle: design scripts to be stubbed</h2>
+
+<p>A script proves testable when every external touchpoint is an env override</p>
+<p>with a sensible default:</p>
+
+<pre class='code'><code>FFPROBE_CMD=&quot;${FFPROBE_CMD:-/usr/lib/jellyfin-ffmpeg/ffprobe}&quot;
+FFMPEG_CMD=&quot;${FFMPEG_CMD:-docker exec jellyfin /usr/lib/jellyfin-ffmpeg/ffmpeg}&quot;
+PRIORITY_WRAPPER=&quot;${PRIORITY_WRAPPER-nice -n 19 ionice -c3}&quot;   # note: NO colon
+MEDIA_ROOT=&quot;${MEDIA_ROOT:-/mnt/storage_8tb/data/media}&quot;</code></pre>
+
+<p>The harness then replays the script against mock inputs with stub binaries</p>
+<p>instead of the real ones. No network, no homelab, no side effects.</p>
+
+<h2>Bash harness pattern (mock tree + stub tools)</h2>
+
+<ul>
+<li><code>mktemp -d</code>; build a small mock tree with <code>truncate -s &lt;size&gt;</code> files.</li>
+</ul>
+<p>Include decoys that MUST be excluded (wrong codec in filename, file below</p>
+<p>a size threshold, wrong extension) and a stale temp artifact with</p>
+<p><code>touch -d &#x27;3 days ago&#x27;</code> for cleanup-path tests.</p>
+<ul>
+<li>Stub binaries as tiny scripts:</li>
+<li>classifier stub (e.g. ffprobe): <code>case &quot;$(basename &quot;${@: -1}&quot;)&quot; in <em>HEVC</em>) echo hevc ;; *) echo h264 ;; esac</code></li>
+<li>action stub (e.g. ffmpeg): scan args, take the value after <code>-i</code> as input,</li>
+</ul>
+<p>last arg as output, <code>cp in out</code> (encode = copy). Never use bare <code>cp</code></p>
+<p>with a script that passes <code>-i</code> — <code>cp -i</code> prompts on overwrite.</p>
+<ul>
+<li>Behavior matrix as <code>check &quot;name&quot; cond</code> assertions:</li>
+<li>scan/classify: candidate count, exclusions, sort order</li>
+<li>dry-run: command fidelity AND zero side effects (assert nothing created)</li>
+<li>gates: refusal paths (night window, missing root) — a fake-clock env</li>
+</ul>
+<p>(<code>FAKE_HOUR</code>) makes time gates deterministic</p>
+<ul>
+<li>full run: state log lines, promote-to-trash, replace-in-place, no temp</li>
+</ul>
+<p>left, stale cleanup</p>
+<ul>
+<li>resumability: re-run asserts SKIP and no new output</li>
+<li>pause/kill flags: test on a FRESH tree — on an already-processed tree the</li>
+</ul>
+<p>skip-check fires before the pause-check and masks it</p>
+<ul>
+<li><code>tee</code> the run into <code>hermes-verify-&lt;name&gt;.results</code>.</li>
+</ul>
+
+<p><strong>Bash gotchas this pattern catches (all hit for real):</strong></p>
+<ul>
+<li><code>${VAR:-default}</code> treats an EMPTY override as unset. When an empty env value</li>
+</ul>
+<p>must disable a default (<code>PRIORITY_WRAPPER=&quot;&quot;</code> = no <code>nice</code>/<code>ionice</code>), use</p>
+<p><code>${VAR-default}</code> (no colon). With <code>:-</code>, MSYS ran <code>ionice</code> (absent there),</p>
+<p>rc=127, every test &quot;failed&quot; for the wrong reason.</p>
+<ul>
+<li><code>cmd | while ... done</code> runs the loop in a SUBSHELL — counter accumulations</li>
+</ul>
+<p>(<code>done=$((done+1))</code>) silently vanish. Use process substitution:</p>
+<p><code>while ... done &lt; &lt;(cmd)</code> so the loop and its counters stay in the current</p>
+<p>shell.</p>
+<ul>
+<li>Harness check logic inverts easily: <code>grep -q bad &amp;&amp; BAD=1</code> then</li>
+</ul>
+<p><code>check &quot;&quot; &quot;$BAD&quot;</code> passes when the bad word WAS found. Assert</p>
+<p><code>[ &quot;$BAD&quot; -eq 0 ]</code> — cond=1 must mean pass.</p>
+<ul>
+<li><code>grep -qF</code> with an exact-path probe: search for the tab-prefixed path</li>
+</ul>
+<p>(<code>grep -qF &quot;$(printf &#x27;\t%s&#x27; &quot;$p&quot;)&quot; state.log</code>), not a half-built pattern.</p>
+
+<h2>Python harness pattern (in-process)</h2>
+
+<ul>
+<li>Syntax gate: <code>python3 -c &quot;import py_compile; py_compile.compile(r&#x27;&lt;path&gt;&#x27;, doraise=True)&quot;</code>.</li>
+<li>Load the module with <code>importlib.util.spec_from_file_location</code>, assert on</li>
+</ul>
+<p>its pure functions with controlled inputs (dates, versions, classifiers).</p>
+<ul>
+<li>Exit-path emulation: monkeypatch the module&#x27;s <code>api_get</code>/<code>shutil.which</code>/</li>
+</ul>
+<p><code>sys.exit</code> to force each branch; assert <code>SystemExit</code> codes (e.g. 0 clean,</p>
+<p>2 stale, 1 API error).</p>
+<ul>
+<li>Real end-to-end: subprocess the script itself (<code>--json</code>/machine mode if</li>
+</ul>
+<p>any), assert returncode + parsed output.</p>
+
+<h2>Evidence persistence (THE trap)</h2>
+
+<p>Verification evidence must exist ON DISK at turn end: the harness file AND a</p>
+<p><code>tee</code>-captured <code>.results</code> log, both under</p>
+<p><code>os.path.join(tempfile.gettempdir(), &#x27;hermes-verify-&lt;name&gt;.*&#x27;)</code>.</p>
+
+<p>Do NOT delete the harness in the same turn you run it. Deleting first means</p>
+<p>the turn ends with zero artifacts; the runtime flags &quot;no fresh passing</p>
+<p>verification evidence&quot; and forces a recreate + re-run (observed Aug-31-2026).</p>
+<p>Sweep stale <code>hermes-verify-*</code> strays at the START of the next cycle instead,</p>
+<p>and say in the report when cleanup is deferred.</p>
+
+<h2>Report wording</h2>
+
+<ul>
+<li>&quot;Ad-hoc verification, N/N checks passed against mock X with stub Y&quot; —</li>
+</ul>
+<p>precise about what was mocked.</p>
+<ul>
+<li>Never &quot;tests pass&quot; for a live-system run that was actually simulated.</li>
+<li>A live end-to-end run against the real target is a SEPARATE check from the</li>
+</ul>
+<p>harness; report both when both exist.</p>
+
+<h2>Pitfalls</h2>
+
+<ul>
+<li>Testing a pause mechanism on a tree that&#x27;s already fully processed proves</li>
+</ul>
+<p>nothing — SKIP paths fire first. Always use a virgin tree for halt-path</p>
+<p>checks.</p>
+<ul>
+<li><code>find -size +NM</code> is strictly-greater; size-threshold decoys must straddle</li>
+</ul>
+<p>the boundary (e.g. MIN=1: use 2M candidates and a 512K decoy).</p>
+<ul>
+<li>Keep the harness under <code>hermes-verify-</code> prefix so the next cycle&#x27;s sweep</li>
+</ul>
+<p>finds it; name it after the script under test.</p>
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : ad-hoc-script-verification // devops</div>
+<div>MIT — generated by tools/publish.py; source: skills/ad-hoc-script-verification/SKILL.md</div>
+</footer>
+</body>
+</html>

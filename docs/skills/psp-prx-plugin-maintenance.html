@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>psp-prx-plugin-maintenance // SKILL</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px">psp-prx-plugin-maintenance</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
+<span class='tag' style='border-color:#ff77cc'>psp</span><span class='tag' style='border-color:#ff77cc'>prx</span><span class='tag' style='border-color:#ff77cc'>plugin</span><span class='tag' style='border-color:#ff77cc'>release</span></div>
+<p style="color:#8affa8">Use when building/debugging PSP prx kernel plugins.</p>
+</header>
+<main>
+
+
+
+<h1>PSP PRX Plugin Maintenance</h1>
+
+<p>Building and debugging PSP <strong>kernel plugins (.prx)</strong> — cheat devices, VSH tools, sysmon overlays — especially when rebuilding legacy codebases with modern toolchains. Homebrew EBOOT ports are <code>psp-development</code>&#x27;s territory; this skill covers prx plugins and real-hardware validation.</p>
+
+<h2>Trigger</h2>
+
+<ul>
+<li>User reports a PSP plugin fork/rebuild crashes on real hardware (&quot;CI passed but my PSP crashes&quot;)</li>
+<li>Working on TempAR / CWCheat-style prx plugins or any <code>seplugins/</code>-deployed kernel plugin</li>
+<li>Toolchain upgrade of a legacy PSP plugin (moving pspdev to GCC 14/15)</li>
+</ul>
+
+<h2>Core rules</h2>
+
+<ul>
+<li><strong>CI green ≠ hardware-valid.</strong> Rebuilding 2010s-era PSP plugin C with modern pspdev (GCC 14/15) can pass CI yet crash on a real PSP: the old code relies on UB (stack layout, OOB reads like <code>for(i=0;i&lt;3;i++)</code> over a 2-element array) that newer compilers compile differently. The game may even boot and play intros, then crash at asset-load. Field-test the actual prx before claiming success, and tell the user explicitly that CI is not proof.</li>
+<li><strong>Find the original working release binary FIRST.</strong> Upstream repos often still host original release assets (e.g. <code>raing3/tempar</code> v1.6.4 tar.gz = the old-toolchain TempAR binary, 122,450 B). Download and diff: size, md5, <code>psp-readelf -S</code> section sizes (.text/.data/.bss). Near-identical sections → the regression is <strong>codegen behavior, not footprint</strong> — stop chasing memory-size theories.</li>
+<li><strong>Keep the ELF for disassembly.</strong> <code>make release</code> runs <code>clean</code> and deletes <code>src/*.elf</code>. Use <code>make prep &lt;tgt&gt;</code> so the ELF survives, then <code>psp-objdump -d src/&lt;tgt&gt;.elf | awk &#x27;/&lt;fn&gt;:/,/\$/&#x27;</code>. On Windows, objdump/readelf must run via the toolchain on the build host (homelab), not local.</li>
+<li><strong>Sysmem partitions matter at game RAM peaks.</strong> <code>sceKernelAllocPartitionMemory</code> from the game&#x27;s own partitions (1/6) steals RAM the game needs at its asset-load peak → hard crash (GTA LCS pattern: boots, title cards, crash when 3D assets start). The original TempAR alloc list was <code>{9,1,6}</code> (still visible commented out in kmalloc.c). A &quot;correct&quot; loop-count fix that truncates the fallback partitions removes the safety net that made older builds survive. Fix: restore the author&#x27;s original partition list AND <strong>fail closed</strong> — if all named partitions are exhausted, <code>return NULL</code> instead of calling <code>sceKernelAllocPartitionMemory(0, ...)</code> (partition 0 may silently draw from the game&#x27;s pool).</li>
+<li><strong>CFLAGS overrides drop include paths.</strong> A command-line <code>CFLAGS=...</code> makes build.mak&#x27;s <code>CFLAGS += -I...</code> inert (command-line vars ignore <code>+=</code>). Re-add explicitly: <code>-I$PSPDEV/psp/include -I$PSPSDK/include -Iinclude -Isrc</code>.</li>
+<li><strong>Old toolchain images are gone from Docker Hub</strong> (oldest <code>pspdev/pspdev</code> tag ≈ v20240701, GCC 14-era; <code>pspdev/pspsdk</code> no longer exists). Original codegen cannot be reproduced via Docker — diff against the original release binary instead.</li>
+<li><strong>Multiple kernel plugins contaminate field tests.</strong> If the stick carries other plugins (AutoCat, PSPSysMon, etc.), disable them for a clean control run before blaming the binary under test.</li>
+</ul>
+
+<h2>Release workflow (GitHub Actions)</h2>
+
+<ul>
+<li>Repos of this class often auto-release on <code>v*</code> tags via a build workflow (<code>docker run pspdev/pspdev make prep psp lite</code> + <code>make pack</code> + <code>softprops/action-gh-release</code>).</li>
+<li>Version bump: <code>RELVER</code> is hardcoded in the makefile — bump it or the packaged zip keeps the old name despite the new tag.</li>
+<li>Beware cp1252/MSYS mangling of non-ASCII commit messages on Windows git-bash — the pushed subject garbles (cosmetic; do not force-push history to fix it).</li>
+<li>Watch CI with <code>gh run watch &lt;id&gt; --repo &lt;owner&gt;/&lt;repo&gt; --exit-status</code>; verify release assets (prx sizes) after.</li>
+</ul>
+
+<h2>Pitfalls</h2>
+
+<ul>
+<li>Patch-tool edits on CRLF C sources mangled indentation this session — use a Python normalize-replace-save (match on <code>\n</code>, write back <code>\r\n</code>) for block edits in this codebase (same lesson as the homelab <code>repair_*.py</code> pattern).</li>
+<li>Windows Defender/vendors may delete freshly downloaded .prx binaries from temp dirs (curl reports success, file vanishes) — download on the Linux build host instead.</li>
+<li>Shell <code>$(cmd)</code> interpolation inside ssh one-liners can trip the terminal hardline parser — use <code>awk</code> two-pass instead of mid-command variable capture.</li>
+</ul>
+
+<p>See <code>references/psp-plugin-toolchain-triage.md</code> for the full TempAR case study (evidence, fixes, tags).</p>
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : psp-prx-plugin-maintenance // software-development</div>
+<div>MIT — generated by tools/publish.py; source: skills/psp-prx-plugin-maintenance/SKILL.md</div>
+</footer>
+</body>
+</html>
