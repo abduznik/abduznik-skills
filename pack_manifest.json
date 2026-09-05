@@ -1,0 +1,294 @@
+{
+  "repo": "hermes-skill-pack",
+  "license": "MIT",
+  "author": "Hermes Agent",
+  "generated_by": "tools/publish.py",
+  "skills": [
+    {
+      "name": "ad-hoc-script-verification",
+      "category": "devops",
+      "tags": [
+        "verification",
+        "testing",
+        "scripts"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "docker-container-update-check",
+      "category": "devops",
+      "tags": [
+        "docker",
+        "containers",
+        "updates"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "ephemeral-file-sharing",
+      "category": "devops",
+      "tags": [
+        "file-sharing",
+        "gofile",
+        "expiring-links"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "reverse-proxy-websocket-debugging",
+      "category": "devops",
+      "tags": [
+        "websocket",
+        "reverse-proxy",
+        "debugging"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "windows-crash-forensics",
+      "category": "devops",
+      "tags": [
+        "windows",
+        "crash",
+        "forensics"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "maintained-fork-publishing",
+      "category": "github",
+      "tags": [
+        "github",
+        "forks",
+        "upstream",
+        "attribution"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "github-code-review",
+      "category": "github",
+      "tags": [
+        "github",
+        "code-review",
+        "pull-requests"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "usb-device-enumeration",
+      "category": "hardware",
+      "tags": [
+        "usb",
+        "hardware",
+        "windows"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "yt-dlp-anti-bot",
+      "category": "media",
+      "tags": [
+        "youtube",
+        "yt-dlp",
+        "download",
+        "403"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "circuit-design",
+      "category": "software-development",
+      "tags": [
+        "kicad",
+        "skidl",
+        "electronics",
+        "netlist"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "embedded-porting-patterns",
+      "category": "software-development",
+      "tags": [
+        "embedded",
+        "porting",
+        "cmake",
+        "sdl2"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "flutter-android-build",
+      "category": "software-development",
+      "tags": [
+        "flutter",
+        "android",
+        "build",
+        "apk"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "flutter-content-rendering",
+      "category": "software-development",
+      "tags": [
+        "flutter",
+        "rendering",
+        "html",
+        "pdf"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "hermes-agent-skill-authoring",
+      "category": "hermes",
+      "tags": [
+        "hermes",
+        "skills",
+        "authoring",
+        "frontmatter"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "plan",
+      "category": "software-development",
+      "tags": [
+        "planning",
+        "markdown",
+        "workflow"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "python-debugpy",
+      "category": "software-development",
+      "tags": [
+        "python",
+        "debugpy",
+        "debugging"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "python-webapp-patterns",
+      "category": "software-development",
+      "tags": [
+        "python",
+        "fastapi",
+        "flask",
+        "webapp"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "simplify-code",
+      "category": "software-development",
+      "tags": [
+        "refactor",
+        "cleanup",
+        "ai-assisted"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "spike",
+      "category": "software-development",
+      "tags": [
+        "prototype",
+        "experimentation",
+        "throwaway"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "subagent-driven-development",
+      "category": "software-development",
+      "tags": [
+        "delegation",
+        "subagents",
+        "execution"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "test-driven-development",
+      "category": "software-development",
+      "tags": [
+        "tdd",
+        "testing",
+        "red-green-refactor"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "writing-plans",
+      "category": "software-development",
+      "tags": [
+        "planning",
+        "docs",
+        "implementation"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "debugging-hermes-tui-commands",
+      "category": "hermes",
+      "tags": [
+        "hermes",
+        "tui",
+        "slash-commands",
+        "debugging"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "psp-prx-plugin-maintenance",
+      "category": "software-development",
+      "tags": [
+        "psp",
+        "prx",
+        "plugin",
+        "release"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "hermes-gateway-slash-command",
+      "category": "hermes",
+      "tags": [
+        "hermes",
+        "gateway",
+        "telegram",
+        "slash-command"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    }
+  ]
+}
