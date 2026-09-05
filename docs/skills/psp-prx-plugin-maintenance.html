@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>psp-prx-plugin-maintenance // SKILL</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 *{box-sizing:border-box}
 body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
@@ -30,15 +31,24 @@ footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8
 .cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
 @keyframes blink{50%{opacity:0}}
 .badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+.catbtn{display:inline-block;border:2px solid #44ff77;color:#44ff77;background:#061106;padding:7px 13px;margin:5px 7px 5px 0;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(0,255,100,.2);text-transform:uppercase;text-decoration:none;letter-spacing:.5px}
+.catbtn:hover{background:#44ff77;color:#050a05}
+.logo{width:44px;height:44px;vertical-align:middle;image-rendering:pixelated;margin-right:12px}
+.get{margin:16px 0}
 </style>
 </head>
 <body>
 <header>
 <p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
-<h1 class="px">psp-prx-plugin-maintenance</h1>
+<h1 class="px"><img class="logo" src="favicon.svg" alt="logo">psp-prx-plugin-maintenance</h1>
 <div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
 <span class='tag' style='border-color:#ff77cc'>psp</span><span class='tag' style='border-color:#ff77cc'>prx</span><span class='tag' style='border-color:#ff77cc'>plugin</span><span class='tag' style='border-color:#ff77cc'>release</span></div>
 <p style="color:#8affa8">Use when building/debugging PSP prx kernel plugins.</p>
+<div class="get">
+<button class="catbtn" onclick="copyRaw()">[ COPY SKILL.MD ]</button>
+<a class="catbtn" download="SKILL.md" href="data:text/markdown;charset=utf-8,---%0Aname%3A%20psp-prx-plugin-maintenance%0Adescription%3A%20Use%20when%20building%2Fdebugging%20PSP%20prx%20kernel%20plugins.%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%0Alicense%3A%20MIT%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Bpsp%2C%20prx%2C%20plugin%2C%20release%5D%0A%20%20%20%20category%3A%20software-development%0A---%0A%0A%0A%23%20PSP%20PRX%20Plugin%20Maintenance%0A%0ABuilding%20and%20debugging%20PSP%20%2A%2Akernel%20plugins%20%28.prx%29%2A%2A%20%E2%80%94%20cheat%20devices%2C%20VSH%20tools%2C%20sysmon%20overlays%20%E2%80%94%20especially%20when%20rebuilding%20legacy%20codebases%20with%20modern%20toolchains.%20Homebrew%20EBOOT%20ports%20are%20%60psp-development%60%27s%20territory%3B%20this%20skill%20covers%20prx%20plugins%20and%20real-hardware%20validation.%0A%0A%23%23%20Trigger%0A%0A-%20User%20reports%20a%20PSP%20plugin%20fork%2Frebuild%20crashes%20on%20real%20hardware%20%28%22CI%20passed%20but%20my%20PSP%20crashes%22%29%0A-%20Working%20on%20TempAR%20%2F%20CWCheat-style%20prx%20plugins%20or%20any%20%60seplugins%2F%60-deployed%20kernel%20plugin%0A-%20Toolchain%20upgrade%20of%20a%20legacy%20PSP%20plugin%20%28moving%20pspdev%20to%20GCC%2014%2F15%29%0A%0A%23%23%20Core%20rules%0A%0A1.%20%2A%2ACI%20green%20%E2%89%A0%20hardware-valid.%2A%2A%20Rebuilding%202010s-era%20PSP%20plugin%20C%20with%20modern%20pspdev%20%28GCC%2014%2F15%29%20can%20pass%20CI%20yet%20crash%20on%20a%20real%20PSP%3A%20the%20old%20code%20relies%20on%20UB%20%28stack%20layout%2C%20OOB%20reads%20like%20%60for%28i%3D0%3Bi%3C3%3Bi%2B%2B%29%60%20over%20a%202-element%20array%29%20that%20newer%20compilers%20compile%20differently.%20The%20game%20may%20even%20boot%20and%20play%20intros%2C%20then%20crash%20at%20asset-load.%20Field-test%20the%20actual%20prx%20before%20claiming%20success%2C%20and%20tell%20the%20user%20explicitly%20that%20CI%20is%20not%20proof.%0A2.%20%2A%2AFind%20the%20original%20working%20release%20binary%20FIRST.%2A%2A%20Upstream%20repos%20often%20still%20host%20original%20release%20assets%20%28e.g.%20%60raing3%2Ftempar%60%20v1.6.4%20tar.gz%20%3D%20the%20old-toolchain%20TempAR%20binary%2C%20122%2C450%20B%29.%20Download%20and%20diff%3A%20size%2C%20md5%2C%20%60psp-readelf%20-S%60%20section%20sizes%20%28.text%2F.data%2F.bss%29.%20Near-identical%20sections%20%E2%86%92%20the%20regression%20is%20%2A%2Acodegen%20behavior%2C%20not%20footprint%2A%2A%20%E2%80%94%20stop%20chasing%20memory-size%20theories.%0A3.%20%2A%2AKeep%20the%20ELF%20for%20disassembly.%2A%2A%20%60make%20release%60%20runs%20%60clean%60%20and%20deletes%20%60src%2F%2A.elf%60.%20Use%20%60make%20prep%20%3Ctgt%3E%60%20so%20the%20ELF%20survives%2C%20then%20%60psp-objdump%20-d%20src%2F%3Ctgt%3E.elf%20%7C%20awk%20%27%2F%3Cfn%3E%3A%2F%2C%2F%5C%24%2F%27%60.%20On%20Windows%2C%20objdump%2Freadelf%20must%20run%20via%20the%20toolchain%20on%20the%20build%20host%20%28homelab%29%2C%20not%20local.%0A4.%20%2A%2ASysmem%20partitions%20matter%20at%20game%20RAM%20peaks.%2A%2A%20%60sceKernelAllocPartitionMemory%60%20from%20the%20game%27s%20own%20partitions%20%281%2F6%29%20steals%20RAM%20the%20game%20needs%20at%20its%20asset-load%20peak%20%E2%86%92%20hard%20crash%20%28GTA%20LCS%20pattern%3A%20boots%2C%20title%20cards%2C%20crash%20when%203D%20assets%20start%29.%20The%20original%20TempAR%20alloc%20list%20was%20%60%7B9%2C1%2C6%7D%60%20%28still%20visible%20commented%20out%20in%20kmalloc.c%29.%20A%20%22correct%22%20loop-count%20fix%20that%20truncates%20the%20fallback%20partitions%20removes%20the%20safety%20net%20that%20made%20older%20builds%20survive.%20Fix%3A%20restore%20the%20author%27s%20original%20partition%20list%20AND%20%2A%2Afail%20closed%2A%2A%20%E2%80%94%20if%20all%20named%20partitions%20are%20exhausted%2C%20%60return%20NULL%60%20instead%20of%20calling%20%60sceKernelAllocPartitionMemory%280%2C%20...%29%60%20%28partition%200%20may%20silently%20draw%20from%20the%20game%27s%20pool%29.%0A5.%20%2A%2ACFLAGS%20overrides%20drop%20include%20paths.%2A%2A%20A%20command-line%20%60CFLAGS%3D...%60%20makes%20build.mak%27s%20%60CFLAGS%20%2B%3D%20-I...%60%20inert%20%28command-line%20vars%20ignore%20%60%2B%3D%60%29.%20Re-add%20explicitly%3A%20%60-I%24PSPDEV%2Fpsp%2Finclude%20-I%24PSPSDK%2Finclude%20-Iinclude%20-Isrc%60.%0A6.%20%2A%2AOld%20toolchain%20images%20are%20gone%20from%20Docker%20Hub%2A%2A%20%28oldest%20%60pspdev%2Fpspdev%60%20tag%20%E2%89%88%20v20240701%2C%20GCC%2014-era%3B%20%60pspdev%2Fpspsdk%60%20no%20longer%20exists%29.%20Original%20codegen%20cannot%20be%20reproduced%20via%20Docker%20%E2%80%94%20diff%20against%20the%20original%20release%20binary%20instead.%0A7.%20%2A%2AMultiple%20kernel%20plugins%20contaminate%20field%20tests.%2A%2A%20If%20the%20stick%20carries%20other%20plugins%20%28AutoCat%2C%20PSPSysMon%2C%20etc.%29%2C%20disable%20them%20for%20a%20clean%20control%20run%20before%20blaming%20the%20binary%20under%20test.%0A%0A%23%23%20Release%20workflow%20%28GitHub%20Actions%29%0A%0A-%20Repos%20of%20this%20class%20often%20auto-release%20on%20%60v%2A%60%20tags%20via%20a%20build%20workflow%20%28%60docker%20run%20pspdev%2Fpspdev%20make%20prep%20psp%20lite%60%20%2B%20%60make%20pack%60%20%2B%20%60softprops%2Faction-gh-release%60%29.%0A-%20Version%20bump%3A%20%60RELVER%60%20is%20hardcoded%20in%20the%20makefile%20%E2%80%94%20bump%20it%20or%20the%20packaged%20zip%20keeps%20the%20old%20name%20despite%20the%20new%20tag.%0A-%20Beware%20cp1252%2FMSYS%20mangling%20of%20non-ASCII%20commit%20messages%20on%20Windows%20git-bash%20%E2%80%94%20the%20pushed%20subject%20garbles%20%28cosmetic%3B%20do%20not%20force-push%20history%20to%20fix%20it%29.%0A-%20Watch%20CI%20with%20%60gh%20run%20watch%20%3Cid%3E%20--repo%20%3Cowner%3E%2F%3Crepo%3E%20--exit-status%60%3B%20verify%20release%20assets%20%28prx%20sizes%29%20after.%0A%0A%23%23%20Pitfalls%0A%0A-%20Patch-tool%20edits%20on%20CRLF%20C%20sources%20mangled%20indentation%20this%20session%20%E2%80%94%20use%20a%20Python%20normalize-replace-save%20%28match%20on%20%60%5Cn%60%2C%20write%20back%20%60%5Cr%5Cn%60%29%20for%20block%20edits%20in%20this%20codebase%20%28same%20lesson%20as%20the%20homelab%20%60repair_%2A.py%60%20pattern%29.%0A-%20Windows%20Defender%2Fvendors%20may%20delete%20freshly%20downloaded%20.prx%20binaries%20from%20temp%20dirs%20%28curl%20reports%20success%2C%20file%20vanishes%29%20%E2%80%94%20download%20on%20the%20Linux%20build%20host%20instead.%0A-%20Shell%20%60%24%28cmd%29%60%20interpolation%20inside%20ssh%20one-liners%20can%20trip%20the%20terminal%20hardline%20parser%20%E2%80%94%20use%20%60awk%60%20two-pass%20instead%20of%20mid-command%20variable%20capture.%0A%0ASee%20%60references%2Fpsp-plugin-toolchain-triage.md%60%20for%20the%20full%20TempAR%20case%20study%20%28evidence%2C%20fixes%2C%20tags%29.">[ DOWNLOAD SKILL.MD ]</a>
+<span id="copied-msg" style="color:#8affa8">&nbsp;</span>
+</div>
 </header>
 <main>
 
@@ -91,5 +101,55 @@ footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8
 <div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : psp-prx-plugin-maintenance // software-development</div>
 <div>MIT — generated by tools/publish.py; source: skills/psp-prx-plugin-maintenance/SKILL.md</div>
 </footer>
+<pre id="raw" hidden>---
+name: psp-prx-plugin-maintenance
+description: Use when building/debugging PSP prx kernel plugins.
+version: 1.0.0
+author: Hermes Agent
+license: MIT
+metadata:
+  hermes:
+    tags: [psp, prx, plugin, release]
+    category: software-development
+---
+
+
+# PSP PRX Plugin Maintenance
+
+Building and debugging PSP **kernel plugins (.prx)** — cheat devices, VSH tools, sysmon overlays — especially when rebuilding legacy codebases with modern toolchains. Homebrew EBOOT ports are `psp-development`&#x27;s territory; this skill covers prx plugins and real-hardware validation.
+
+## Trigger
+
+- User reports a PSP plugin fork/rebuild crashes on real hardware (&quot;CI passed but my PSP crashes&quot;)
+- Working on TempAR / CWCheat-style prx plugins or any `seplugins/`-deployed kernel plugin
+- Toolchain upgrade of a legacy PSP plugin (moving pspdev to GCC 14/15)
+
+## Core rules
+
+1. **CI green ≠ hardware-valid.** Rebuilding 2010s-era PSP plugin C with modern pspdev (GCC 14/15) can pass CI yet crash on a real PSP: the old code relies on UB (stack layout, OOB reads like `for(i=0;i&lt;3;i++)` over a 2-element array) that newer compilers compile differently. The game may even boot and play intros, then crash at asset-load. Field-test the actual prx before claiming success, and tell the user explicitly that CI is not proof.
+2. **Find the original working release binary FIRST.** Upstream repos often still host original release assets (e.g. `raing3/tempar` v1.6.4 tar.gz = the old-toolchain TempAR binary, 122,450 B). Download and diff: size, md5, `psp-readelf -S` section sizes (.text/.data/.bss). Near-identical sections → the regression is **codegen behavior, not footprint** — stop chasing memory-size theories.
+3. **Keep the ELF for disassembly.** `make release` runs `clean` and deletes `src/*.elf`. Use `make prep &lt;tgt&gt;` so the ELF survives, then `psp-objdump -d src/&lt;tgt&gt;.elf | awk &#x27;/&lt;fn&gt;:/,/\$/&#x27;`. On Windows, objdump/readelf must run via the toolchain on the build host (homelab), not local.
+4. **Sysmem partitions matter at game RAM peaks.** `sceKernelAllocPartitionMemory` from the game&#x27;s own partitions (1/6) steals RAM the game needs at its asset-load peak → hard crash (GTA LCS pattern: boots, title cards, crash when 3D assets start). The original TempAR alloc list was `{9,1,6}` (still visible commented out in kmalloc.c). A &quot;correct&quot; loop-count fix that truncates the fallback partitions removes the safety net that made older builds survive. Fix: restore the author&#x27;s original partition list AND **fail closed** — if all named partitions are exhausted, `return NULL` instead of calling `sceKernelAllocPartitionMemory(0, ...)` (partition 0 may silently draw from the game&#x27;s pool).
+5. **CFLAGS overrides drop include paths.** A command-line `CFLAGS=...` makes build.mak&#x27;s `CFLAGS += -I...` inert (command-line vars ignore `+=`). Re-add explicitly: `-I$PSPDEV/psp/include -I$PSPSDK/include -Iinclude -Isrc`.
+6. **Old toolchain images are gone from Docker Hub** (oldest `pspdev/pspdev` tag ≈ v20240701, GCC 14-era; `pspdev/pspsdk` no longer exists). Original codegen cannot be reproduced via Docker — diff against the original release binary instead.
+7. **Multiple kernel plugins contaminate field tests.** If the stick carries other plugins (AutoCat, PSPSysMon, etc.), disable them for a clean control run before blaming the binary under test.
+
+## Release workflow (GitHub Actions)
+
+- Repos of this class often auto-release on `v*` tags via a build workflow (`docker run pspdev/pspdev make prep psp lite` + `make pack` + `softprops/action-gh-release`).
+- Version bump: `RELVER` is hardcoded in the makefile — bump it or the packaged zip keeps the old name despite the new tag.
+- Beware cp1252/MSYS mangling of non-ASCII commit messages on Windows git-bash — the pushed subject garbles (cosmetic; do not force-push history to fix it).
+- Watch CI with `gh run watch &lt;id&gt; --repo &lt;owner&gt;/&lt;repo&gt; --exit-status`; verify release assets (prx sizes) after.
+
+## Pitfalls
+
+- Patch-tool edits on CRLF C sources mangled indentation this session — use a Python normalize-replace-save (match on `\n`, write back `\r\n`) for block edits in this codebase (same lesson as the homelab `repair_*.py` pattern).
+- Windows Defender/vendors may delete freshly downloaded .prx binaries from temp dirs (curl reports success, file vanishes) — download on the Linux build host instead.
+- Shell `$(cmd)` interpolation inside ssh one-liners can trip the terminal hardline parser — use `awk` two-pass instead of mid-command variable capture.
+
+See `references/psp-plugin-toolchain-triage.md` for the full TempAR case study (evidence, fixes, tags).</pre>
+<script>
+function copyRaw(){var t=document.getElementById('raw').textContent;navigator.clipboard.writeText(t).then(function(){var m=document.getElementById('copied-msg');m.textContent='COPIED!';setTimeout(function(){m.textContent='';},2000);});}
+</script>
 </body>
 </html>

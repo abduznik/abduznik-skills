@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>jellyseerr-watch-suggestions // SKILL</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 *{box-sizing:border-box}
 body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
@@ -30,15 +31,24 @@ footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8
 .cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
 @keyframes blink{50%{opacity:0}}
 .badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+.catbtn{display:inline-block;border:2px solid #44ff77;color:#44ff77;background:#061106;padding:7px 13px;margin:5px 7px 5px 0;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(0,255,100,.2);text-transform:uppercase;text-decoration:none;letter-spacing:.5px}
+.catbtn:hover{background:#44ff77;color:#050a05}
+.logo{width:44px;height:44px;vertical-align:middle;image-rendering:pixelated;margin-right:12px}
+.get{margin:16px 0}
 </style>
 </head>
 <body>
 <header>
 <p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
-<h1 class="px">jellyseerr-watch-suggestions</h1>
+<h1 class="px"><img class="logo" src="favicon.svg" alt="logo">jellyseerr-watch-suggestions</h1>
 <div><span class="badge" style="border-color:#ffb000;color:#ffb000">media</span>
 <span class='tag' style='border-color:#55ddff'>jellyseerr</span><span class='tag' style='border-color:#55ddff'>sonarr</span><span class='tag' style='border-color:#55ddff'>radarr</span><span class='tag' style='border-color:#55ddff'>media</span><span class='tag' style='border-color:#55ddff'>suggestions</span></div>
 <p style="color:#8affa8">Use when suggesting watch picks filtered by your library.</p>
+<div class="get">
+<button class="catbtn" onclick="copyRaw()">[ COPY SKILL.MD ]</button>
+<a class="catbtn" download="SKILL.md" href="data:text/markdown;charset=utf-8,---%0Aname%3A%20jellyseerr-watch-suggestions%0Adescription%3A%20Use%20when%20suggesting%20watch%20picks%20filtered%20by%20your%20library.%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%0Alicense%3A%20MIT%0Aplatforms%3A%20%5Blinux%2C%20macos%2C%20windows%5D%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Bjellyseerr%2C%20sonarr%2C%20radarr%2C%20media%2C%20suggestions%5D%0A%20%20%20%20category%3A%20media%0A---%0A%0A%0A%23%20Watch%20Suggestions%20Filtered%20by%20Your%20Library%0A%0A%23%23%20Overview%0A%0AGenerate%20watch%20recommendations%20that%20actually%20make%20sense%20for%20YOUR%20library%3A%0Apull%20trending%20titles%20from%20a%20Jellyseerr%20instance%2C%20filter%20out%20everything%20you%0Aalready%20own%20%28Sonarr%20series%20%2F%20Radarr%20movies%29%20and%20everything%20already%20requested%0A%28Jellyseerr%20requested%2Fprocessing%20states%29%2C%20then%20rank%20the%20survivors%20by%20vote%0Aaverage.%20Great%20for%20a%20weekly%20%22what%27s%20new%20worth%20watching%22%20digest%20%E2%80%94%20no%0Aduplicates%2C%20no%20%22suggest%20my%20own%20library%20back%20to%20me%22.%0A%0AShips%20%60scripts%2Fwatch_suggest.py%60%20%E2%80%94%20a%20zero-dependency%20implementation%0A%28urllib%20only%29.%20All%20endpoints%2Fcredentials%20come%20from%20environment%20variables%2C%20so%0Ait%20runs%20anywhere%20and%20never%20hardcodes%20infrastructure.%0A%0A%23%23%20When%20to%20Use%0A%0A-%20Weekly%20media%20digests%20%28%22what%20should%20I%20watch%20this%20weekend%22%29.%0A-%20Automating%20discovery%20when%20the%20library%20is%20large%20enough%20that%20remembering%20what%0A%20%20you%20own%20is%20hard.%0A-%20%2A%2ADon%27t%20use%20for%3A%2A%2A%20metadata%20browsing%20or%20request%20submission%20%E2%80%94%20this%20skill%0A%20%20only%20filters%20and%20ranks.%0A%0A%23%23%20Configuration%20%28env%20vars%29%0A%0A%7C%20Var%20%7C%20Meaning%20%7C%0A%7C---%7C---%7C%0A%7C%20%60SEERR_URL%60%20%7C%20Jellyseerr%20base%20%28default%20%60http%3A%2F%2Flocalhost%3A5055%60%29%20%7C%0A%7C%20%60SONARR_URL%60%20%2F%20%60RADARR_URL%60%20%7C%20Sonarr%2FRadarr%20bases%20%28defaults%20%60localhost%3A8989%60%20%2F%20%60%3A7878%60%29%20%7C%0A%7C%20%60SONARR_API_KEY%60%20%2F%20%60RADARR_API_KEY%60%20%7C%20API%20keys%20for%20owned-library%20queries%20%7C%0A%7C%20%60SEERR_USER%60%20%2F%20%60SEERR_PASSWORD%60%20%7C%20Jellyseerr%20local%20auth%20for%20trending%20%2B%20request%20state%20%7C%0A%0A%23%23%20Algorithm%0A%0A1.%20Build%20owned%20sets%3A%20Sonarr%20%60%2Fapi%2Fv3%2Fseries%60%20and%20Radarr%20%60%2Fapi%2Fv3%2Fmovie%60%2C%0A%20%20%20lowercase%20titles.%0A2.%20Login%20to%20Jellyseerr%20once%20%28keep%20the%20cookie%20jar%29%2C%20then%3A%0A%20%20%20-%20pending%20set%3A%20%60%2Fapi%2Fv1%2Fmedia%3Ffilter%3Drequested%60%20and%20%60filter%3Dprocessing%60%0A%20%20%20%20%20%28%60take%3D100%60%29.%0A%20%20%20-%20trending%3A%20%60%2Fapi%2Fv1%2Fdiscover%2Ftrending%3Fpage%3D1..3%26language%3Den%60%20for%20both%0A%20%20%20%20%20%60movie%60%20and%20%60tv%60%20media%20types.%0A3.%20Dedupe%20by%20lowercase%20title%3B%20skip%20anything%20owned%20or%20pending.%0A4.%20Sort%20by%20%60voteAverage%60%2C%20print%20top%20N%20with%20year%2C%20type%20and%20a%20short%20overview.%0A%0A%23%23%20Common%20Pitfalls%0A%0A1.%20%2A%2ACookie%20jar%20must%20persist%20across%20requests%2A%2A%20%E2%80%94%20log%20in%20once%20and%20reuse%20the%0A%20%20%20same%20opener%3B%20a%20fresh%20opener%20per%20request%20loses%20the%20session.%0A2.%20%2A%2ATitle%20collisions%20across%20media%20types%2A%2A%20%E2%80%94%20a%20film%20and%20a%20show%20can%20share%20a%0A%20%20%20name%3B%20dedupe%20within%20type%20or%20keep%20type%20in%20the%20key.%0A3.%20%2A%2APagination%20defaults%2A%2A%20%E2%80%94%20Jellyseerr%20%60take%60%20defaults%20are%20small%3B%20pass%0A%20%20%20%60take%3D100%26skip%3D0%60%20explicitly%20or%20you%20miss%20most%20of%20the%20catalog.%0A4.%20%2A%2ACredentials%20in%20code%20%3D%20instant%20leak%2A%2A%20%E2%80%94%20always%20env%20vars%3B%20the%20included%0A%20%20%20script%20refuses%20to%20run%20without%20them.%0A5.%20%2A%2ALanguage%20param%2A%2A%20%E2%80%94%20%60language%3Den%60%20changes%20the%20discovery%20surface%3B%20match%20it%0A%20%20%20to%20the%20user%27s%20library%20language%20to%20avoid%20foreign-language%20noise.%0A%0A%23%23%20Verification%20Checklist%0A%0A-%20%5B%20%5D%20Script%20runs%20without%20errors%20using%20only%20env-var%20config%0A-%20%5B%20%5D%20Owned%20titles%20from%20Sonarr%2FRadarr%20never%20appear%20in%20the%20output%0A-%20%5B%20%5D%20Titles%20in%20requested%2Fprocessing%20state%20never%20appear%0A-%20%5B%20%5D%20Output%20sorted%20by%20vote%20average%2C%20top%20N%20printed%20with%20overviews">[ DOWNLOAD SKILL.MD ]</a>
+<span id="copied-msg" style="color:#8affa8">&nbsp;</span>
+</div>
 </header>
 <main>
 
@@ -131,5 +141,85 @@ footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8
 <div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : jellyseerr-watch-suggestions // media</div>
 <div>MIT — generated by tools/publish.py; source: skills/jellyseerr-watch-suggestions/SKILL.md</div>
 </footer>
+<pre id="raw" hidden>---
+name: jellyseerr-watch-suggestions
+description: Use when suggesting watch picks filtered by your library.
+version: 1.0.0
+author: Hermes Agent
+license: MIT
+platforms: [linux, macos, windows]
+metadata:
+  hermes:
+    tags: [jellyseerr, sonarr, radarr, media, suggestions]
+    category: media
+---
+
+
+# Watch Suggestions Filtered by Your Library
+
+## Overview
+
+Generate watch recommendations that actually make sense for YOUR library:
+pull trending titles from a Jellyseerr instance, filter out everything you
+already own (Sonarr series / Radarr movies) and everything already requested
+(Jellyseerr requested/processing states), then rank the survivors by vote
+average. Great for a weekly &quot;what&#x27;s new worth watching&quot; digest — no
+duplicates, no &quot;suggest my own library back to me&quot;.
+
+Ships `scripts/watch_suggest.py` — a zero-dependency implementation
+(urllib only). All endpoints/credentials come from environment variables, so
+it runs anywhere and never hardcodes infrastructure.
+
+## When to Use
+
+- Weekly media digests (&quot;what should I watch this weekend&quot;).
+- Automating discovery when the library is large enough that remembering what
+  you own is hard.
+- **Don&#x27;t use for:** metadata browsing or request submission — this skill
+  only filters and ranks.
+
+## Configuration (env vars)
+
+| Var | Meaning |
+|---|---|
+| `SEERR_URL` | Jellyseerr base (default `http://localhost:5055`) |
+| `SONARR_URL` / `RADARR_URL` | Sonarr/Radarr bases (defaults `localhost:8989` / `:7878`) |
+| `SONARR_API_KEY` / `RADARR_API_KEY` | API keys for owned-library queries |
+| `SEERR_USER` / `SEERR_PASSWORD` | Jellyseerr local auth for trending + request state |
+
+## Algorithm
+
+1. Build owned sets: Sonarr `/api/v3/series` and Radarr `/api/v3/movie`,
+   lowercase titles.
+2. Login to Jellyseerr once (keep the cookie jar), then:
+   - pending set: `/api/v1/media?filter=requested` and `filter=processing`
+     (`take=100`).
+   - trending: `/api/v1/discover/trending?page=1..3&amp;language=en` for both
+     `movie` and `tv` media types.
+3. Dedupe by lowercase title; skip anything owned or pending.
+4. Sort by `voteAverage`, print top N with year, type and a short overview.
+
+## Common Pitfalls
+
+1. **Cookie jar must persist across requests** — log in once and reuse the
+   same opener; a fresh opener per request loses the session.
+2. **Title collisions across media types** — a film and a show can share a
+   name; dedupe within type or keep type in the key.
+3. **Pagination defaults** — Jellyseerr `take` defaults are small; pass
+   `take=100&amp;skip=0` explicitly or you miss most of the catalog.
+4. **Credentials in code = instant leak** — always env vars; the included
+   script refuses to run without them.
+5. **Language param** — `language=en` changes the discovery surface; match it
+   to the user&#x27;s library language to avoid foreign-language noise.
+
+## Verification Checklist
+
+- [ ] Script runs without errors using only env-var config
+- [ ] Owned titles from Sonarr/Radarr never appear in the output
+- [ ] Titles in requested/processing state never appear
+- [ ] Output sorted by vote average, top N printed with overviews</pre>
+<script>
+function copyRaw(){var t=document.getElementById('raw').textContent;navigator.clipboard.writeText(t).then(function(){var m=document.getElementById('copied-msg');m.textContent='COPIED!';setTimeout(function(){m.textContent='';},2000);});}
+</script>
 </body>
 </html>

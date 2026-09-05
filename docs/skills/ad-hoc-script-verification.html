@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ad-hoc-script-verification // SKILL</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 *{box-sizing:border-box}
 body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
@@ -30,15 +31,24 @@ footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8
 .cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
 @keyframes blink{50%{opacity:0}}
 .badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+.catbtn{display:inline-block;border:2px solid #44ff77;color:#44ff77;background:#061106;padding:7px 13px;margin:5px 7px 5px 0;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(0,255,100,.2);text-transform:uppercase;text-decoration:none;letter-spacing:.5px}
+.catbtn:hover{background:#44ff77;color:#050a05}
+.logo{width:44px;height:44px;vertical-align:middle;image-rendering:pixelated;margin-right:12px}
+.get{margin:16px 0}
 </style>
 </head>
 <body>
 <header>
 <p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
-<h1 class="px">ad-hoc-script-verification</h1>
+<h1 class="px"><img class="logo" src="favicon.svg" alt="logo">ad-hoc-script-verification</h1>
 <div><span class="badge" style="border-color:#ffb000;color:#ffb000">devops</span>
 <span class='tag' style='border-color:#44ff77'>Verification</span><span class='tag' style='border-color:#44ff77'>Testing</span><span class='tag' style='border-color:#44ff77'>Harness</span><span class='tag' style='border-color:#44ff77'>Bash</span><span class='tag' style='border-color:#44ff77'>Python</span><span class='tag' style='border-color:#44ff77'>CI-less</span></div>
 <p style="color:#8affa8">Use when verifying a script with no CI suite.</p>
+<div class="get">
+<button class="catbtn" onclick="copyRaw()">[ COPY SKILL.MD ]</button>
+<a class="catbtn" download="SKILL.md" href="data:text/markdown;charset=utf-8,---%0Aname%3A%20ad-hoc-script-verification%0Adescription%3A%20Use%20when%20verifying%20a%20script%20with%20no%20CI%20suite.%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%0Alicense%3A%20MIT%0Aplatforms%3A%20%5Bwindows%2C%20linux%2C%20macos%5D%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5BVerification%2C%20Testing%2C%20Harness%2C%20Bash%2C%20Python%2C%20CI-less%5D%0A%20%20%20%20related_skills%3A%20%5Bself-improvement-cycle%2C%20storage-optimization%2C%20test-driven-development%5D%0A---%0A%0A%0A%23%20Ad-Hoc%20Script%20Verification%20%28no%20CI%29%0A%0AThere%20is%20no%20canonical%20test%20suite%20for%20%60data%2Fscripts%60%20%28and%20many%20homelab%2Fcron%0Ascripts%29.%20The%20honest%20report%20is%20%22ad-hoc%20verification%2C%20N%2FN%20checks%20passed%22%2C%0Anever%20%22suite%20green%22.%20This%20skill%20is%20the%20reusable%20harness%20pattern%20for%20proving%20a%0Ascript%20works%20when%20CI%20does%20not%20exist%20%E2%80%94%20plus%20the%20trap%20that%20verification%0Aevidence%20must%20survive%20on%20disk.%0A%0A%23%23%20Core%20principle%3A%20design%20scripts%20to%20be%20stubbed%0A%0AA%20script%20proves%20testable%20when%20every%20external%20touchpoint%20is%20an%20env%20override%0Awith%20a%20sensible%20default%3A%0A%0A%60%60%60bash%0AFFPROBE_CMD%3D%22%24%7BFFPROBE_CMD%3A-%2Fusr%2Flib%2Fjellyfin-ffmpeg%2Fffprobe%7D%22%0AFFMPEG_CMD%3D%22%24%7BFFMPEG_CMD%3A-docker%20exec%20jellyfin%20%2Fusr%2Flib%2Fjellyfin-ffmpeg%2Fffmpeg%7D%22%0APRIORITY_WRAPPER%3D%22%24%7BPRIORITY_WRAPPER-nice%20-n%2019%20ionice%20-c3%7D%22%20%20%20%23%20note%3A%20NO%20colon%0AMEDIA_ROOT%3D%22%24%7BMEDIA_ROOT%3A-%2Fmnt%2Fstorage_8tb%2Fdata%2Fmedia%7D%22%0A%60%60%60%0A%0AThe%20harness%20then%20replays%20the%20script%20against%20mock%20inputs%20with%20stub%20binaries%0Ainstead%20of%20the%20real%20ones.%20No%20network%2C%20no%20homelab%2C%20no%20side%20effects.%0A%0A%23%23%20Bash%20harness%20pattern%20%28mock%20tree%20%2B%20stub%20tools%29%0A%0A1.%20%60mktemp%20-d%60%3B%20build%20a%20small%20mock%20tree%20with%20%60truncate%20-s%20%3Csize%3E%60%20files.%0A%20%20%20Include%20decoys%20that%20MUST%20be%20excluded%20%28wrong%20codec%20in%20filename%2C%20file%20below%0A%20%20%20a%20size%20threshold%2C%20wrong%20extension%29%20and%20a%20stale%20temp%20artifact%20with%0A%20%20%20%60touch%20-d%20%273%20days%20ago%27%60%20for%20cleanup-path%20tests.%0A2.%20Stub%20binaries%20as%20tiny%20scripts%3A%0A%20%20%20-%20classifier%20stub%20%28e.g.%20ffprobe%29%3A%20%60case%20%22%24%28basename%20%22%24%7B%40%3A%20-1%7D%22%29%22%20in%20%2AHEVC%2A%29%20echo%20hevc%20%3B%3B%20%2A%29%20echo%20h264%20%3B%3B%20esac%60%0A%20%20%20-%20action%20stub%20%28e.g.%20ffmpeg%29%3A%20scan%20args%2C%20take%20the%20value%20after%20%60-i%60%20as%20input%2C%0A%20%20%20%20%20last%20arg%20as%20output%2C%20%60cp%20in%20out%60%20%28encode%20%3D%20copy%29.%20Never%20use%20bare%20%60cp%60%0A%20%20%20%20%20with%20a%20script%20that%20passes%20%60-i%60%20%E2%80%94%20%60cp%20-i%60%20prompts%20on%20overwrite.%0A3.%20Behavior%20matrix%20as%20%60check%20%22name%22%20cond%60%20assertions%3A%0A%20%20%20-%20scan%2Fclassify%3A%20candidate%20count%2C%20exclusions%2C%20sort%20order%0A%20%20%20-%20dry-run%3A%20command%20fidelity%20AND%20zero%20side%20effects%20%28assert%20nothing%20created%29%0A%20%20%20-%20gates%3A%20refusal%20paths%20%28night%20window%2C%20missing%20root%29%20%E2%80%94%20a%20fake-clock%20env%0A%20%20%20%20%20%28%60FAKE_HOUR%60%29%20makes%20time%20gates%20deterministic%0A%20%20%20-%20full%20run%3A%20state%20log%20lines%2C%20promote-to-trash%2C%20replace-in-place%2C%20no%20temp%0A%20%20%20%20%20left%2C%20stale%20cleanup%0A%20%20%20-%20resumability%3A%20re-run%20asserts%20SKIP%20and%20no%20new%20output%0A%20%20%20-%20pause%2Fkill%20flags%3A%20test%20on%20a%20FRESH%20tree%20%E2%80%94%20on%20an%20already-processed%20tree%20the%0A%20%20%20%20%20skip-check%20fires%20before%20the%20pause-check%20and%20masks%20it%0A4.%20%60tee%60%20the%20run%20into%20%60hermes-verify-%3Cname%3E.results%60.%0A%0A%2A%2ABash%20gotchas%20this%20pattern%20catches%20%28all%20hit%20for%20real%29%3A%2A%2A%0A-%20%60%24%7BVAR%3A-default%7D%60%20treats%20an%20EMPTY%20override%20as%20unset.%20When%20an%20empty%20env%20value%0A%20%20must%20disable%20a%20default%20%28%60PRIORITY_WRAPPER%3D%22%22%60%20%3D%20no%20%60nice%60%2F%60ionice%60%29%2C%20use%0A%20%20%60%24%7BVAR-default%7D%60%20%28no%20colon%29.%20With%20%60%3A-%60%2C%20MSYS%20ran%20%60ionice%60%20%28absent%20there%29%2C%0A%20%20rc%3D127%2C%20every%20test%20%22failed%22%20for%20the%20wrong%20reason.%0A-%20%60cmd%20%7C%20while%20...%20done%60%20runs%20the%20loop%20in%20a%20SUBSHELL%20%E2%80%94%20counter%20accumulations%0A%20%20%28%60done%3D%24%28%28done%2B1%29%29%60%29%20silently%20vanish.%20Use%20process%20substitution%3A%0A%20%20%60while%20...%20done%20%3C%20%3C%28cmd%29%60%20so%20the%20loop%20and%20its%20counters%20stay%20in%20the%20current%0A%20%20shell.%0A-%20Harness%20check%20logic%20inverts%20easily%3A%20%60grep%20-q%20bad%20%26%26%20BAD%3D1%60%20then%0A%20%20%60check%20%22%22%20%22%24BAD%22%60%20passes%20when%20the%20bad%20word%20WAS%20found.%20Assert%0A%20%20%60%5B%20%22%24BAD%22%20-eq%200%20%5D%60%20%E2%80%94%20cond%3D1%20must%20mean%20pass.%0A-%20%60grep%20-qF%60%20with%20an%20exact-path%20probe%3A%20search%20for%20the%20tab-prefixed%20path%0A%20%20%28%60grep%20-qF%20%22%24%28printf%20%27%5Ct%25s%27%20%22%24p%22%29%22%20state.log%60%29%2C%20not%20a%20half-built%20pattern.%0A%0A%23%23%20Python%20harness%20pattern%20%28in-process%29%0A%0A1.%20Syntax%20gate%3A%20%60python3%20-c%20%22import%20py_compile%3B%20py_compile.compile%28r%27%3Cpath%3E%27%2C%20doraise%3DTrue%29%22%60.%0A2.%20Load%20the%20module%20with%20%60importlib.util.spec_from_file_location%60%2C%20assert%20on%0A%20%20%20its%20pure%20functions%20with%20controlled%20inputs%20%28dates%2C%20versions%2C%20classifiers%29.%0A3.%20Exit-path%20emulation%3A%20monkeypatch%20the%20module%27s%20%60api_get%60%2F%60shutil.which%60%2F%0A%20%20%20%60sys.exit%60%20to%20force%20each%20branch%3B%20assert%20%60SystemExit%60%20codes%20%28e.g.%200%20clean%2C%0A%20%20%202%20stale%2C%201%20API%20error%29.%0A4.%20Real%20end-to-end%3A%20subprocess%20the%20script%20itself%20%28%60--json%60%2Fmachine%20mode%20if%0A%20%20%20any%29%2C%20assert%20returncode%20%2B%20parsed%20output.%0A%0A%23%23%20Evidence%20persistence%20%28THE%20trap%29%0A%0AVerification%20evidence%20must%20exist%20ON%20DISK%20at%20turn%20end%3A%20the%20harness%20file%20AND%20a%0A%60tee%60-captured%20%60.results%60%20log%2C%20both%20under%0A%60os.path.join%28tempfile.gettempdir%28%29%2C%20%27hermes-verify-%3Cname%3E.%2A%27%29%60.%0A%0ADo%20NOT%20delete%20the%20harness%20in%20the%20same%20turn%20you%20run%20it.%20Deleting%20first%20means%0Athe%20turn%20ends%20with%20zero%20artifacts%3B%20the%20runtime%20flags%20%22no%20fresh%20passing%0Averification%20evidence%22%20and%20forces%20a%20recreate%20%2B%20re-run%20%28observed%20Aug-31-2026%29.%0ASweep%20stale%20%60hermes-verify-%2A%60%20strays%20at%20the%20START%20of%20the%20next%20cycle%20instead%2C%0Aand%20say%20in%20the%20report%20when%20cleanup%20is%20deferred.%0A%0A%23%23%20Report%20wording%0A%0A-%20%22Ad-hoc%20verification%2C%20N%2FN%20checks%20passed%20against%20mock%20X%20with%20stub%20Y%22%20%E2%80%94%0A%20%20precise%20about%20what%20was%20mocked.%0A-%20Never%20%22tests%20pass%22%20for%20a%20live-system%20run%20that%20was%20actually%20simulated.%0A-%20A%20live%20end-to-end%20run%20against%20the%20real%20target%20is%20a%20SEPARATE%20check%20from%20the%0A%20%20harness%3B%20report%20both%20when%20both%20exist.%0A%0A%23%23%20Pitfalls%0A%0A-%20Testing%20a%20pause%20mechanism%20on%20a%20tree%20that%27s%20already%20fully%20processed%20proves%0A%20%20nothing%20%E2%80%94%20SKIP%20paths%20fire%20first.%20Always%20use%20a%20virgin%20tree%20for%20halt-path%0A%20%20checks.%0A-%20%60find%20-size%20%2BNM%60%20is%20strictly-greater%3B%20size-threshold%20decoys%20must%20straddle%0A%20%20the%20boundary%20%28e.g.%20MIN%3D1%3A%20use%202M%20candidates%20and%20a%20512K%20decoy%29.%0A-%20Keep%20the%20harness%20under%20%60hermes-verify-%60%20prefix%20so%20the%20next%20cycle%27s%20sweep%0A%20%20finds%20it%3B%20name%20it%20after%20the%20script%20under%20test.">[ DOWNLOAD SKILL.MD ]</a>
+<span id="copied-msg" style="color:#8affa8">&nbsp;</span>
+</div>
 </header>
 <main>
 
@@ -184,5 +194,123 @@ MEDIA_ROOT=&quot;${MEDIA_ROOT:-/mnt/storage_8tb/data/media}&quot;</code></pre>
 <div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : ad-hoc-script-verification // devops</div>
 <div>MIT — generated by tools/publish.py; source: skills/ad-hoc-script-verification/SKILL.md</div>
 </footer>
+<pre id="raw" hidden>---
+name: ad-hoc-script-verification
+description: Use when verifying a script with no CI suite.
+version: 1.0.0
+author: Hermes Agent
+license: MIT
+platforms: [windows, linux, macos]
+metadata:
+  hermes:
+    tags: [Verification, Testing, Harness, Bash, Python, CI-less]
+    related_skills: [self-improvement-cycle, storage-optimization, test-driven-development]
+---
+
+
+# Ad-Hoc Script Verification (no CI)
+
+There is no canonical test suite for `data/scripts` (and many homelab/cron
+scripts). The honest report is &quot;ad-hoc verification, N/N checks passed&quot;,
+never &quot;suite green&quot;. This skill is the reusable harness pattern for proving a
+script works when CI does not exist — plus the trap that verification
+evidence must survive on disk.
+
+## Core principle: design scripts to be stubbed
+
+A script proves testable when every external touchpoint is an env override
+with a sensible default:
+
+```bash
+FFPROBE_CMD=&quot;${FFPROBE_CMD:-/usr/lib/jellyfin-ffmpeg/ffprobe}&quot;
+FFMPEG_CMD=&quot;${FFMPEG_CMD:-docker exec jellyfin /usr/lib/jellyfin-ffmpeg/ffmpeg}&quot;
+PRIORITY_WRAPPER=&quot;${PRIORITY_WRAPPER-nice -n 19 ionice -c3}&quot;   # note: NO colon
+MEDIA_ROOT=&quot;${MEDIA_ROOT:-/mnt/storage_8tb/data/media}&quot;
+```
+
+The harness then replays the script against mock inputs with stub binaries
+instead of the real ones. No network, no homelab, no side effects.
+
+## Bash harness pattern (mock tree + stub tools)
+
+1. `mktemp -d`; build a small mock tree with `truncate -s &lt;size&gt;` files.
+   Include decoys that MUST be excluded (wrong codec in filename, file below
+   a size threshold, wrong extension) and a stale temp artifact with
+   `touch -d &#x27;3 days ago&#x27;` for cleanup-path tests.
+2. Stub binaries as tiny scripts:
+   - classifier stub (e.g. ffprobe): `case &quot;$(basename &quot;${@: -1}&quot;)&quot; in *HEVC*) echo hevc ;; *) echo h264 ;; esac`
+   - action stub (e.g. ffmpeg): scan args, take the value after `-i` as input,
+     last arg as output, `cp in out` (encode = copy). Never use bare `cp`
+     with a script that passes `-i` — `cp -i` prompts on overwrite.
+3. Behavior matrix as `check &quot;name&quot; cond` assertions:
+   - scan/classify: candidate count, exclusions, sort order
+   - dry-run: command fidelity AND zero side effects (assert nothing created)
+   - gates: refusal paths (night window, missing root) — a fake-clock env
+     (`FAKE_HOUR`) makes time gates deterministic
+   - full run: state log lines, promote-to-trash, replace-in-place, no temp
+     left, stale cleanup
+   - resumability: re-run asserts SKIP and no new output
+   - pause/kill flags: test on a FRESH tree — on an already-processed tree the
+     skip-check fires before the pause-check and masks it
+4. `tee` the run into `hermes-verify-&lt;name&gt;.results`.
+
+**Bash gotchas this pattern catches (all hit for real):**
+- `${VAR:-default}` treats an EMPTY override as unset. When an empty env value
+  must disable a default (`PRIORITY_WRAPPER=&quot;&quot;` = no `nice`/`ionice`), use
+  `${VAR-default}` (no colon). With `:-`, MSYS ran `ionice` (absent there),
+  rc=127, every test &quot;failed&quot; for the wrong reason.
+- `cmd | while ... done` runs the loop in a SUBSHELL — counter accumulations
+  (`done=$((done+1))`) silently vanish. Use process substitution:
+  `while ... done &lt; &lt;(cmd)` so the loop and its counters stay in the current
+  shell.
+- Harness check logic inverts easily: `grep -q bad &amp;&amp; BAD=1` then
+  `check &quot;&quot; &quot;$BAD&quot;` passes when the bad word WAS found. Assert
+  `[ &quot;$BAD&quot; -eq 0 ]` — cond=1 must mean pass.
+- `grep -qF` with an exact-path probe: search for the tab-prefixed path
+  (`grep -qF &quot;$(printf &#x27;\t%s&#x27; &quot;$p&quot;)&quot; state.log`), not a half-built pattern.
+
+## Python harness pattern (in-process)
+
+1. Syntax gate: `python3 -c &quot;import py_compile; py_compile.compile(r&#x27;&lt;path&gt;&#x27;, doraise=True)&quot;`.
+2. Load the module with `importlib.util.spec_from_file_location`, assert on
+   its pure functions with controlled inputs (dates, versions, classifiers).
+3. Exit-path emulation: monkeypatch the module&#x27;s `api_get`/`shutil.which`/
+   `sys.exit` to force each branch; assert `SystemExit` codes (e.g. 0 clean,
+   2 stale, 1 API error).
+4. Real end-to-end: subprocess the script itself (`--json`/machine mode if
+   any), assert returncode + parsed output.
+
+## Evidence persistence (THE trap)
+
+Verification evidence must exist ON DISK at turn end: the harness file AND a
+`tee`-captured `.results` log, both under
+`os.path.join(tempfile.gettempdir(), &#x27;hermes-verify-&lt;name&gt;.*&#x27;)`.
+
+Do NOT delete the harness in the same turn you run it. Deleting first means
+the turn ends with zero artifacts; the runtime flags &quot;no fresh passing
+verification evidence&quot; and forces a recreate + re-run (observed Aug-31-2026).
+Sweep stale `hermes-verify-*` strays at the START of the next cycle instead,
+and say in the report when cleanup is deferred.
+
+## Report wording
+
+- &quot;Ad-hoc verification, N/N checks passed against mock X with stub Y&quot; —
+  precise about what was mocked.
+- Never &quot;tests pass&quot; for a live-system run that was actually simulated.
+- A live end-to-end run against the real target is a SEPARATE check from the
+  harness; report both when both exist.
+
+## Pitfalls
+
+- Testing a pause mechanism on a tree that&#x27;s already fully processed proves
+  nothing — SKIP paths fire first. Always use a virgin tree for halt-path
+  checks.
+- `find -size +NM` is strictly-greater; size-threshold decoys must straddle
+  the boundary (e.g. MIN=1: use 2M candidates and a 512K decoy).
+- Keep the harness under `hermes-verify-` prefix so the next cycle&#x27;s sweep
+  finds it; name it after the script under test.</pre>
+<script>
+function copyRaw(){var t=document.getElementById('raw').textContent;navigator.clipboard.writeText(t).then(function(){var m=document.getElementById('copied-msg');m.textContent='COPIED!';setTimeout(function(){m.textContent='';},2000);});}
+</script>
 </body>
 </html>

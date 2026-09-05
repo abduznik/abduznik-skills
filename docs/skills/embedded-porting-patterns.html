@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>embedded-porting-patterns // SKILL</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 *{box-sizing:border-box}
 body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
@@ -30,15 +31,24 @@ footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8
 .cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
 @keyframes blink{50%{opacity:0}}
 .badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+.catbtn{display:inline-block;border:2px solid #44ff77;color:#44ff77;background:#061106;padding:7px 13px;margin:5px 7px 5px 0;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(0,255,100,.2);text-transform:uppercase;text-decoration:none;letter-spacing:.5px}
+.catbtn:hover{background:#44ff77;color:#050a05}
+.logo{width:44px;height:44px;vertical-align:middle;image-rendering:pixelated;margin-right:12px}
+.get{margin:16px 0}
 </style>
 </head>
 <body>
 <header>
 <p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
-<h1 class="px">embedded-porting-patterns</h1>
+<h1 class="px"><img class="logo" src="favicon.svg" alt="logo">embedded-porting-patterns</h1>
 <div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
 <span class='tag' style='border-color:#ff77cc'>embedded</span><span class='tag' style='border-color:#ff77cc'>porting</span><span class='tag' style='border-color:#ff77cc'>cmake</span><span class='tag' style='border-color:#ff77cc'>sdl2</span></div>
 <p style="color:#8affa8">Porting C/C++ CMake+SDL2 applications to new embedded/handheld platforms (PSP, Vita, 3DS, etc.) by following existing fork patterns without touching core game logic.</p>
+<div class="get">
+<button class="catbtn" onclick="copyRaw()">[ COPY SKILL.MD ]</button>
+<a class="catbtn" download="SKILL.md" href="data:text/markdown;charset=utf-8,---%0Aname%3A%20embedded-porting-patterns%0Adescription%3A%20Porting%20C%2FC%2B%2B%20CMake%2BSDL2%20applications%20to%20new%20embedded%2Fhandheld%20platforms%20%28PSP%2C%20Vita%2C%203DS%2C%20etc.%29%20by%20following%20existing%20fork%20patterns%20without%20touching%20core%20game%20logic.%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%0Alicense%3A%20MIT%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Bembedded%2C%20porting%2C%20cmake%2C%20sdl2%5D%0A%20%20%20%20category%3A%20software-development%0A---%0A%0A%0A%23%20Embedded%20%2F%20Game-Engine%20Platform%20Porting%20Patterns%0A%0AClass%20of%20work%3A%20taking%20an%20existing%20C%2FC%2B%2B%20application%20%28CMake%20%2B%20SDL2%29%20that%20ships%20for%20desktop%2Fmobile%20and%20adding%20support%20for%20a%20new%20embedded%2Fhandheld%20platform.%20The%20canonical%20example%20is%20porting%20%60fallout1-ce%60%20%28or%20similar%29%20to%20PSP%2FVita%2F3DS%20by%20adding%20a%20platform%20branch%20%E2%80%94%20never%20modifying%20core%20game%20logic.%0A%0A%23%23%20Guiding%20Principles%0A%0A1.%20%2A%2APlatform%20branch%2C%20not%20fork%20of%20logic.%2A%2A%20The%20upstream%20repo%27s%20game%20engine%2C%20render%20path%2C%20and%20asset%20pipeline%20are%20untouched.%20New%20files%20go%20under%20%60os%2F%3Cplatform%3E%2F%60.%20Conditionals%20go%20in%20shared%20files%20under%20%60%23ifdef%20__%3CPLATFORM%3E__%60.%0A2.%20%2A%2ACopy%20the%20pattern%20of%20an%20existing%20platform%20fork.%2A%2A%20For%20PSP%2C%20use%20the%20Vita%20fork%20%28%60Northfear%2Ffallout1-ce-vita%60%29%20as%20the%20structural%20reference.%20Diff%20it%20against%20upstream%20to%20see%20what%20a%20complete%20platform%20block%20looks%20like%20in%20CMakeLists.txt.%0A3.%20%2A%2AOne%20platform%20branch%20per%20commit%20series%2A%2A%20%E2%80%94%20never%20mix%20unrelated%20port%20work.%0A%0A%23%23%20Workflow%0A%0A%23%23%23%201.%20Setup%0A-%20Fork%20the%20upstream%20repo%20with%20a%20%60-psp%60%20%2F%20%60-vita%60%20etc.%20suffix%20in%20the%20clone%20name%0A-%20Clone%20the%20reference%20fork%20%28e.g.%20%60Northfear%2Ffallout1-ce-vita%60%29%20alongside%20for%20quick%20%60diff%60%20access%0A-%20Initialize%20a%20build%20directory%20on%20the%20cross-compilation%20host%0A%0A%23%23%23%202.%20Toolchain%0A-%20Install%20or%20locate%20the%20platform%20toolchain%20%28e.g.%20%60pspdev%60%20for%20PSP%29%0A-%20Verify%20with%20a%20stand-alone%20%22hello%20world%22%20SDL2%20CMake%20project%20BEFORE%20touching%20the%20game%20repo%0A-%20Key%20verification%3A%20%60find_package%28SDL2%29%60%20resolves%20against%20the%20toolchain%27s%20packaged%20SDL2%20%28not%20building%20from%20source%29%0A%0A%23%23%23%203.%20CMake%20Integration%0AAdd%20an%20%60if%28%3CPLATFORM%3E%29%60%20block%20in%20%60CMakeLists.txt%60%20that%3A%0A-%20Sets%20platform%20compiler%20flags%20%28architecture-specific%2C%20not%20copied%20verbatim%20from%20other%20platforms%29%0A-%20Routes%20SDL2%20lookup%20through%20%60find_package%28SDL2%29%60%20%28skip%20%60third_party%2Fsdl2%60%20source%20build%29%0A-%20Links%20platform-native%20libraries%20%28e.g.%20%60pspctrl%60%2C%20%60pspgu%60%2C%20%60pspdebug%60%20for%20PSP%29%0A-%20Includes%20%60os%2F%3Cplatform%3E%2F%3Cplatform%3E.cmake%60%20for%20packaging%20%28EBOOT%2FPBP%2C%20icon%2C%20metadata%29%0A%0A%23%23%23%204.%20Platform%20Scaffold%20%28files%20to%20create%29%0A-%20%60os%2F%3Cplatform%3E%2F%3Cplatform%3E.cmake%60%20%E2%80%94%20packaging%20rules%20%28EBOOT%2C%20icon%2C%20PARAM.SFO%2C%20title%29%0A-%20%60os%2F%3Cplatform%3E%2Ficon.png%60%20%E2%80%94%20placeholder%20icon%20%28replaceable%20later%29%0A-%20Modify%20%60src%2Fplib%2Fgnw%2Fwinmain.cc%60%20%E2%80%94%20platform%20init%20block%20%28chdir%2C%20controller%20init%2C%20debug%20screen%29%0A-%20Modify%20%60src%2Fplib%2Fgnw%2Fdxinput.cc%60%20%E2%80%94%20input%20source%20%28game%20controller%2C%20analog%20sticks%29%0A-%20Modify%20%60src%2Fplib%2Fgnw%2Finput.cc%60%20%E2%80%94%20cursor%20mapping%20%28stick%20%E2%86%92%20mouse%29%0A-%20Include%20%60%3Cpspkernel.h%3E%60%20%2F%20%60%3Cpspdebug.h%3E%60%20etc.%20in%20the%20PSP%20init%20in%20the%20file%2C%20not%20in%20headers%0A%0A%23%23%23%205.%20Debug%20Output%20%28critical%20%E2%80%94%20C%20printf%20doesn%27t%20work%20on%20many%20embedded%20systems%29%0AOn%20PSP%20specifically%3A%0A-%20%2A%2AC%20%60printf%28%29%60%2A%2A%20goes%20through%20newlib%20%E2%86%92%20%60write%281%2C...%29%60%20%E2%86%92%20%60sceIoWrite%281%2C...%29%60.%20This%20is%20NOT%20captured%20by%20PPSSPP%27s%20log%20%28which%20captures%20%60sceKernelPrintf%60%20syscalls%29.%0A-%20%2A%2AC%20%60fopen%28%29%60%2A%2A%20needs%20the%20full%20%60ms0%3A%2F%60%20device%20prefix%20%E2%80%94%20bare%20%60%2F%60%20paths%20may%20point%20to%20unwritable%20flash.%0A-%20%2A%2AWorking%20channels%20%28PSP%29%3A%2A%2A%0A%20%20-%20Native%20file%20API%3A%20%60sceIoOpen%28%22ms0%3A%2Fdebug.txt%22%2C%20PSP_O_WRONLY%7CPSP_O_CREAT%2C%200777%29%60%20%2B%20%60sceIoWrite%28%29%60%20%2B%20%60sceIoClose%28%29%60%20%E2%80%94%20requires%20%60%3Cpspiofilemgr.h%3E%60%0A%20%20-%20On-screen%3A%20%60pspDebugScreenInit%28%29%60%20%2B%20%60pspDebugScreenPrintf%28%29%60%20%E2%80%94%20writes%20to%20VRAM.%20Must%20be%20called%20BEFORE%20SDL2%20takes%20over%20the%20display%3B%20the%20text%20may%20be%20overwritten%20by%20GPU%20rendering.%0A%20%20-%20Kernel%20printf%3A%20%60sceKernelPrintf%28%29%60%20captured%20by%20PPSSPP%2C%20but%20NOT%20directly%20callable%20from%20user-space.%20Install%20via%20%60pspDebugInstallKprintfHandler%28%29%60.%0A-%20%2A%2AVerify%20the%20debug%20channel%20works%2A%2A%20with%20a%20known%20marker%20string%20before%20trusting%20it%20for%20diagnostic%20data.%0A-%20For%20other%20platforms%20%28Vita%2C%203DS%29%2C%20check%20the%20reference%20fork%20for%20their%20equivalent%20debug%20channel.%0A%0A%23%23%23%206.%20Build%20%26%20Deploy%20Loop%0A1.%20Commit%2C%20push%20to%20GitHub%0A2.%20SSH%20to%20cross-compilation%20host%2C%20pull%2C%20build%0A3.%20Deploy%20EBOOT.PBP%20to%20emulator%20memstick%0A4.%20Run%20emulator%2C%20capture%20screenshots%20or%20log%20output%0A5.%20Iterate%0A%0AUse%20%60ssh%20-o%20StrictHostKeyChecking%3Dno%20-o%20UserKnownHostsFile%3D%2Fdev%2Fnull%60%20if%20host%20key%20caching%20causes%20connection%20hangs%20%28common%20with%20Tailscale%2Fresidential%20proxies%29.%0A%0A%23%23%23%207.%20Rendering%20Pitfalls%20%28PSP-specific%29%0A-%20The%20PSP%20SDL2%20backend%20uses%20a%20%2A%2A16-bit%20RGB565%2A%2A%20framebuffer%20via%20%60sceGu%60.%20The%20game%20engine%20creates%20an%20%2A%2A8-bit%20paletted%20surface%2A%2A%20%28%60SDL_CreateRGBSurface%28depth%3D8%2C%20...%29%60%29%20and%20calls%20%60SDL_SetPaletteColors%28%29%60.%20The%20INDEX8%20%E2%86%92%20RGB565%20conversion%20during%20%60SDL_BlitSurface%60%20may%20silently%20fail%20or%20produce%20wrong%20colors.%0A-%20Direct%20pixel%20writes%20to%20%60gSdlTextureSurface-%3Epixels%60%20may%20NOT%20reach%20the%20screen%20%E2%80%94%20the%20PSP%20SDL2%20backend%20uses%20GPU-managed%20texture%20memory.%0A-%20Do%20NOT%20modify%20%60SDL_HINT_RENDER_DRIVER%3D%22opengl%22%60%20or%20%60SDL_WINDOW_OPENGL%60%20%E2%80%94%20the%20PSP%20SDL2%20backend%20ignores%20these%20gracefully.%20Removing%20them%20causes%20regressions.%0A-%20Do%20NOT%20change%20the%20internal%20resolution%20from%20640%C3%97480%20to%20480%C3%97272%20%E2%80%94%20the%20engine%20coordinates%20depend%20on%20640%C3%97480.%0A-%20%2A%2ATo%20diagnose%20palette%20issues%2C%20use%20%60sceIoWrite%60%20to%20dump%20palette%20entries%20to%20a%20file%2A%2A%20%E2%80%94%20on-screen%20debug%20may%20be%20overwritten%20by%20GPU.%0A%0A%23%23%20Platform-Specific%20Libraries%20to%20Link%0A%0A%23%23%23%20PSP%20%28pspdev%20toolchain%29%0A%60%60%60%0Apspctrl%20%20%20%20%E2%80%94%20controller%20input%0Apspdebug%20%20%20%E2%80%94%20pspDebugScreenInit%2FPrintf%20%28link%20explicitly%29%0Apspgu%20%20%20%20%20%20%E2%80%94%20graphics%20engine%0Apspgum%20%20%20%20%20%E2%80%94%20matrix%20utilities%0Apspvfpu%20%20%20%20%E2%80%94%20vector%20FPU%0Apspiofilemgr%20%E2%80%94%20file%20I%2FO%20%28header%20only%20for%20sceIoOpen%2FWrite%2FClose%29%0A%60%60%60%0A%0A%23%23%20Reference%20Files%0A-%20%60references%2Fpsp-debug-output.md%60%20%E2%80%94%20full%20transcript%20of%20which%20debug%20channels%20work%20on%20PSP%20and%20PPSSPP%0A%0A%23%23%20Pitfalls%0A-%20%2A%2APSPDEV%20env%20var%20must%20be%20set%2A%2A%20before%20running%20cmake%3A%20%60export%20PSPDEV%3D%2Fusr%2Flocal%2Fpspdev%20%26%26%20export%20PATH%3D%24PSPDEV%2Fbin%3A%24PATH%60%0A-%20%2A%2Apspdebug%20library%20is%20NOT%20auto-linked%20by%20pspdev.cmake%2A%2A%20%E2%80%94%20must%20be%20added%20to%20%60target_link_libraries%28%29%60%20explicitly%20%28unlike%20pspctrl%2Fpspgu%20which%20come%20through%20the%20toolchain%20default%20libs%29%0A-%20%2A%2Afopen%28%22ms0%3A%2F...%22%29%20may%20still%20work%2A%2A%2C%20but%20sceIoOpen%20is%20more%20reliable.%20If%20fopen%20returns%20NULL%2C%20try%20sceIoOpen%20%E2%80%94%20don%27t%20assume%20the%20path%20is%20wrong.%0A-%20%2A%2ASSH%20connectivity%2A%2A%20to%20the%20cross-compilation%20host%20may%20appear%20intermittent%20because%20of%20host%20key%20verification%20mismatches.%20Use%20the%20flags%20above%20to%20avoid%20false%20%22host%20unreachable%22%20conclusions.%0A-%20%2A%2AForce-push%20never%2A%2A%20%E2%80%94%20always%20%60git%20push%20origin%20main%60%20without%20%60--force%60.%20The%20user%20has%20explicitly%20rejected%20force-push.%0A">[ DOWNLOAD SKILL.MD ]</a>
+<span id="copied-msg" style="color:#8affa8">&nbsp;</span>
+</div>
 </header>
 <main>
 
@@ -153,5 +163,107 @@ pspiofilemgr — file I/O (header only for sceIoOpen/Write/Close)</code></pre>
 <div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : embedded-porting-patterns // software-development</div>
 <div>MIT — generated by tools/publish.py; source: skills/embedded-porting-patterns/SKILL.md</div>
 </footer>
+<pre id="raw" hidden>---
+name: embedded-porting-patterns
+description: Porting C/C++ CMake+SDL2 applications to new embedded/handheld platforms (PSP, Vita, 3DS, etc.) by following existing fork patterns without touching core game logic.
+version: 1.0.0
+author: Hermes Agent
+license: MIT
+metadata:
+  hermes:
+    tags: [embedded, porting, cmake, sdl2]
+    category: software-development
+---
+
+
+# Embedded / Game-Engine Platform Porting Patterns
+
+Class of work: taking an existing C/C++ application (CMake + SDL2) that ships for desktop/mobile and adding support for a new embedded/handheld platform. The canonical example is porting `fallout1-ce` (or similar) to PSP/Vita/3DS by adding a platform branch — never modifying core game logic.
+
+## Guiding Principles
+
+1. **Platform branch, not fork of logic.** The upstream repo&#x27;s game engine, render path, and asset pipeline are untouched. New files go under `os/&lt;platform&gt;/`. Conditionals go in shared files under `#ifdef __&lt;PLATFORM&gt;__`.
+2. **Copy the pattern of an existing platform fork.** For PSP, use the Vita fork (`Northfear/fallout1-ce-vita`) as the structural reference. Diff it against upstream to see what a complete platform block looks like in CMakeLists.txt.
+3. **One platform branch per commit series** — never mix unrelated port work.
+
+## Workflow
+
+### 1. Setup
+- Fork the upstream repo with a `-psp` / `-vita` etc. suffix in the clone name
+- Clone the reference fork (e.g. `Northfear/fallout1-ce-vita`) alongside for quick `diff` access
+- Initialize a build directory on the cross-compilation host
+
+### 2. Toolchain
+- Install or locate the platform toolchain (e.g. `pspdev` for PSP)
+- Verify with a stand-alone &quot;hello world&quot; SDL2 CMake project BEFORE touching the game repo
+- Key verification: `find_package(SDL2)` resolves against the toolchain&#x27;s packaged SDL2 (not building from source)
+
+### 3. CMake Integration
+Add an `if(&lt;PLATFORM&gt;)` block in `CMakeLists.txt` that:
+- Sets platform compiler flags (architecture-specific, not copied verbatim from other platforms)
+- Routes SDL2 lookup through `find_package(SDL2)` (skip `third_party/sdl2` source build)
+- Links platform-native libraries (e.g. `pspctrl`, `pspgu`, `pspdebug` for PSP)
+- Includes `os/&lt;platform&gt;/&lt;platform&gt;.cmake` for packaging (EBOOT/PBP, icon, metadata)
+
+### 4. Platform Scaffold (files to create)
+- `os/&lt;platform&gt;/&lt;platform&gt;.cmake` — packaging rules (EBOOT, icon, PARAM.SFO, title)
+- `os/&lt;platform&gt;/icon.png` — placeholder icon (replaceable later)
+- Modify `src/plib/gnw/winmain.cc` — platform init block (chdir, controller init, debug screen)
+- Modify `src/plib/gnw/dxinput.cc` — input source (game controller, analog sticks)
+- Modify `src/plib/gnw/input.cc` — cursor mapping (stick → mouse)
+- Include `&lt;pspkernel.h&gt;` / `&lt;pspdebug.h&gt;` etc. in the PSP init in the file, not in headers
+
+### 5. Debug Output (critical — C printf doesn&#x27;t work on many embedded systems)
+On PSP specifically:
+- **C `printf()`** goes through newlib → `write(1,...)` → `sceIoWrite(1,...)`. This is NOT captured by PPSSPP&#x27;s log (which captures `sceKernelPrintf` syscalls).
+- **C `fopen()`** needs the full `ms0:/` device prefix — bare `/` paths may point to unwritable flash.
+- **Working channels (PSP):**
+  - Native file API: `sceIoOpen(&quot;ms0:/debug.txt&quot;, PSP_O_WRONLY|PSP_O_CREAT, 0777)` + `sceIoWrite()` + `sceIoClose()` — requires `&lt;pspiofilemgr.h&gt;`
+  - On-screen: `pspDebugScreenInit()` + `pspDebugScreenPrintf()` — writes to VRAM. Must be called BEFORE SDL2 takes over the display; the text may be overwritten by GPU rendering.
+  - Kernel printf: `sceKernelPrintf()` captured by PPSSPP, but NOT directly callable from user-space. Install via `pspDebugInstallKprintfHandler()`.
+- **Verify the debug channel works** with a known marker string before trusting it for diagnostic data.
+- For other platforms (Vita, 3DS), check the reference fork for their equivalent debug channel.
+
+### 6. Build &amp; Deploy Loop
+1. Commit, push to GitHub
+2. SSH to cross-compilation host, pull, build
+3. Deploy EBOOT.PBP to emulator memstick
+4. Run emulator, capture screenshots or log output
+5. Iterate
+
+Use `ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null` if host key caching causes connection hangs (common with Tailscale/residential proxies).
+
+### 7. Rendering Pitfalls (PSP-specific)
+- The PSP SDL2 backend uses a **16-bit RGB565** framebuffer via `sceGu`. The game engine creates an **8-bit paletted surface** (`SDL_CreateRGBSurface(depth=8, ...)`) and calls `SDL_SetPaletteColors()`. The INDEX8 → RGB565 conversion during `SDL_BlitSurface` may silently fail or produce wrong colors.
+- Direct pixel writes to `gSdlTextureSurface-&gt;pixels` may NOT reach the screen — the PSP SDL2 backend uses GPU-managed texture memory.
+- Do NOT modify `SDL_HINT_RENDER_DRIVER=&quot;opengl&quot;` or `SDL_WINDOW_OPENGL` — the PSP SDL2 backend ignores these gracefully. Removing them causes regressions.
+- Do NOT change the internal resolution from 640×480 to 480×272 — the engine coordinates depend on 640×480.
+- **To diagnose palette issues, use `sceIoWrite` to dump palette entries to a file** — on-screen debug may be overwritten by GPU.
+
+## Platform-Specific Libraries to Link
+
+### PSP (pspdev toolchain)
+```
+pspctrl    — controller input
+pspdebug   — pspDebugScreenInit/Printf (link explicitly)
+pspgu      — graphics engine
+pspgum     — matrix utilities
+pspvfpu    — vector FPU
+pspiofilemgr — file I/O (header only for sceIoOpen/Write/Close)
+```
+
+## Reference Files
+- `references/psp-debug-output.md` — full transcript of which debug channels work on PSP and PPSSPP
+
+## Pitfalls
+- **PSPDEV env var must be set** before running cmake: `export PSPDEV=/usr/local/pspdev &amp;&amp; export PATH=$PSPDEV/bin:$PATH`
+- **pspdebug library is NOT auto-linked by pspdev.cmake** — must be added to `target_link_libraries()` explicitly (unlike pspctrl/pspgu which come through the toolchain default libs)
+- **fopen(&quot;ms0:/...&quot;) may still work**, but sceIoOpen is more reliable. If fopen returns NULL, try sceIoOpen — don&#x27;t assume the path is wrong.
+- **SSH connectivity** to the cross-compilation host may appear intermittent because of host key verification mismatches. Use the flags above to avoid false &quot;host unreachable&quot; conclusions.
+- **Force-push never** — always `git push origin main` without `--force`. The user has explicitly rejected force-push.
+</pre>
+<script>
+function copyRaw(){var t=document.getElementById('raw').textContent;navigator.clipboard.writeText(t).then(function(){var m=document.getElementById('copied-msg');m.textContent='COPIED!';setTimeout(function(){m.textContent='';},2000);});}
+</script>
 </body>
 </html>

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>circuit-design // SKILL</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 *{box-sizing:border-box}
 body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
@@ -30,15 +31,24 @@ footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8
 .cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
 @keyframes blink{50%{opacity:0}}
 .badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+.catbtn{display:inline-block;border:2px solid #44ff77;color:#44ff77;background:#061106;padding:7px 13px;margin:5px 7px 5px 0;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(0,255,100,.2);text-transform:uppercase;text-decoration:none;letter-spacing:.5px}
+.catbtn:hover{background:#44ff77;color:#050a05}
+.logo{width:44px;height:44px;vertical-align:middle;image-rendering:pixelated;margin-right:12px}
+.get{margin:16px 0}
 </style>
 </head>
 <body>
 <header>
 <p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
-<h1 class="px">circuit-design</h1>
+<h1 class="px"><img class="logo" src="favicon.svg" alt="logo">circuit-design</h1>
 <div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
 <span class='tag' style='border-color:#ff77cc'>kicad</span><span class='tag' style='border-color:#ff77cc'>skidl</span><span class='tag' style='border-color:#ff77cc'>electronics</span><span class='tag' style='border-color:#ff77cc'>netlist</span></div>
 <p style="color:#8affa8">Design electrical circuits programmatically — SKiDL netlist generation, custom SVG schematic renderer with 45° routing and IEEE 315 compliance, and raw KiCad S-expression authoring for full control. Covers the full pipeline from text-based circuit description to rendered SVG or KiCad netlist.</p>
+<div class="get">
+<button class="catbtn" onclick="copyRaw()">[ COPY SKILL.MD ]</button>
+<a class="catbtn" download="SKILL.md" href="data:text/markdown;charset=utf-8,---%0Aname%3A%20circuit-design%0Adescription%3A%20%3E-%0A%20%20Design%20electrical%20circuits%20programmatically%20%E2%80%94%20SKiDL%20netlist%20generation%2C%20custom%0A%20%20SVG%20schematic%20renderer%20with%2045%C2%B0%20routing%20and%20IEEE%20315%20compliance%2C%20and%20raw%20KiCad%0A%20%20S-expression%20authoring%20for%20full%20control.%20Covers%20the%20full%20pipeline%20from%0A%20%20text-based%20circuit%20description%20to%20rendered%20SVG%20or%20KiCad%20netlist.%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%0Alicense%3A%20MIT%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Bkicad%2C%20skidl%2C%20electronics%2C%20netlist%5D%0A%20%20%20%20category%3A%20software-development%0A---%0A%0A%0A%23%20Circuit%20Design%20%28Programmatic%29%0A%0AThree%20approaches%20for%20generating%20electrical%20circuit%20schematics%20from%20code%2C%20%0Adepending%20on%20what%20you%20need%3A%0A%0A%7C%20Method%20%7C%20Output%20%7C%20Best%20For%20%7C%0A%7C--------%7C--------%7C----------%7C%0A%7C%20%2A%2AA%3A%20SKiDL%20Pipeline%2A%2A%20%7C%20KiCad%20netlist%20%28%60.kicad_sch%60%29%20%7C%20Full%20KiCad%20integration%2C%20ERC%2C%20BOM%20%7C%0A%7C%20%2A%2AB%3A%20SVG%20Renderer%2A%2A%20%7C%20SVG%20image%20%28%60.svg%60%29%20%7C%20Quick%20visualization%2C%20documentation%2C%20shareable%20diagrams%20%7C%0A%7C%20%2A%2AC%3A%20Raw%20S-Expression%2A%2A%20%7C%20KiCad%20%60.kicad_sch%60%20%7C%20Full%20control%2C%20custom%20symbols%2C%20no%20library%20dependency%20%7C%0A%0A%23%23%20Method%20A%3A%20SKiDL%20Pipeline%0A%0A%5BSKiDL%5D%28https%3A%2F%2Fgithub.com%2Fdevbisme%2Fskidl%29%20lets%20you%20describe%20circuits%20in%20Python%0Aand%20output%20KiCad%20netlists%2Fschematics.%0A%0A%23%23%23%20Workflow%0A%0A%60%60%60python%0Afrom%20skidl%20import%20Net%2C%20Part%0A%0A%23%20Create%20parts%0Ar%20%3D%20Part%28%27Device%27%2C%20%27R%27%2C%20value%3D%2710k%27%2C%20footprint%3D%27Resistor_SMD%3AR_0603_1608Metric%27%29%0Aled%20%3D%20Part%28%27Device%27%2C%20%27LED%27%2C%20value%3D%27RED%27%29%0Agnd%20%3D%20Net%28%27GND%27%29%0Avcc%20%3D%20Net%28%27VCC%27%29%0A%0A%23%20Connect%0Ar%5B1%5D%20%2B%3D%20vcc%0Ar%5B2%5D%20%2B%3D%20led%5B%27A%27%5D%0Aled%5B%27K%27%5D%20%2B%3D%20gnd%0A%0A%23%20Generate%0AERC%28%29%0Agenerate_netlist%28%29%0A%60%60%60%0A%0A%23%23%23%20Key%20commands%0A%60%60%60bash%0A%23%20Generate%20KiCad%20schematic%0Apython3%20-c%20%22from%20skidl%20import%20generate_schematic%3B%20generate_schematic%28%29%22%0A%0A%23%20ERC%20check%0Apython3%20-c%20%22from%20skidl%20import%20ERC%3B%20ERC%28%29%22%0A%60%60%60%0A%0A%23%23%23%20Pitfalls%0A-%20%2A%2APin%20names%20vs%20numbers%2A%2A%3A%20SKiDL%20accepts%20both.%20Use%20%60Part%5B%27VCC%27%5D%60%20or%20%60Part%5B1%5D%60.%0A-%20%2A%2AFootprint%20assignment%2A%2A%3A%20Some%20%60Device%60%20parts%20lack%20default%20footprints%20%E2%80%94%20set%0A%20%20explicitly%20for%20BOM%20generation.%0A-%20%2A%2AERC%20warnings%2A%2A%3A%20Unconnected%20pins%20on%20multi-unit%20packages%20%28op-amps%20with%0A%20%20unused%20channels%29%20generate%20warnings%20unless%20you%20explicitly%20connect%20them%20to%20NC.%0A-%20%2A%2AKiCad%20version%2A%2A%3A%20SKiDL%200.x%20targets%20KiCad%206%2B.%20For%20KiCad%207%2F8%2C%20test%20your%0A%20%20output%3B%20some%20symbol%20library%20paths%20changed.%0A%0A%23%23%20Method%20B%3A%20Custom%20SVG%20Renderer%0A%0AA%20custom%20SVG%20schematic%20renderer%20with%20Manhattan%20%2890%C2%B0%29%20and%2045%C2%B0%20diagonal%20routing%2C%0Aplus%20a%20Lee%20maze%20autorouter%20for%20complex%20multi-net%20layouts.%20Produces%20IEEE%20315-style%0Adiagrams.%0A%0A%23%23%23%20Usage%0A%0A%60%60%60python%0Afrom%20renderer%20import%20SchematicRenderer%0A%0Ar%20%3D%20SchematicRenderer%28cell_size%3D110%29%0Ar.add_component%28%22U1%22%2C%20%22ic%22%2C%20grid_x%3D0%2C%20grid_y%3D0%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20pins_left%3D%5B%7B%22num%22%3A%206%2C%20%22name%22%3A%20%22GPIO2%22%7D%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20pins_right%3D%5B%7B%22num%22%3A%2033%2C%20%22name%22%3A%20%22GND%22%7D%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20name%3D%22ESP32-C3%22%29%0Ar.add_component%28%22R1%22%2C%20%22resistor%22%2C%20grid_x%3D4%2C%20grid_y%3D2%2C%20value%3D%22330%22%29%0Ar.add_component%28%22D1%22%2C%20%22led%22%2C%20grid_x%3D7%2C%20grid_y%3D2%2C%20value%3D%22RED%22%29%0Ar.add_net%28%22GPIO2%22%2C%20%5B%28%22U1%22%2C%206%29%2C%20%28%22R1%22%2C%201%29%5D%29%0Ar.render%28%22output.svg%22%29%0A%60%60%60%0A%0A%23%23%23%20Scripts%0A%0AThe%20%60scripts%2F%60%20directory%20contains%3A%0A-%20%2A%2A%60renderer.py%60%2A%2A%20%E2%80%94%20Core%20renderer%3A%20grid%20layout%2C%20wire%20routing%20%28Manhattan%2C%2045%C2%B0%20%0A%20%20diagonal%2C%20or%20maze%20autorouter%29%2C%20SVG%20output%0A-%20%2A%2A%60symbols.py%60%2A%2A%20%E2%80%94%20Component%20symbol%20drawing%20%28resistor%2C%20capacitor%2C%20diode%2C%20LED%2C%20%0A%20%20IC%2C%20ground%2C%20VCC%2C%20header%29%0A-%20%2A%2A%60generate_examples.py%60%2A%2A%20%E2%80%94%20Generates%20horizontal%2C%20diagonal%2C%20vertical%2C%20and%0A%20%20complex%20multi-net%20example%20schematics%0A-%20%2A%2A%60demo.py%60%2A%2A%20%E2%80%94%20Quick%20demo%3A%20ESP32-C3%20%2B%20resistor%20%2B%20LED%20circuit%0A%0ARun%3A%20%60python3%20scripts%2Fdemo.py%60%0A%0A%23%23%23%20Routing%20modes%0A%0A%7C%20Mode%20%7C%20Quality%20%7C%20Speed%20%7C%20Use%20When%20%7C%0A%7C------%7C---------%7C-------%7C----------%7C%0A%7C%20Manhattan%20%7C%20Clean%20orthogonal%20%7C%20Fast%20%7C%20Simple%20circuits%2C%20no%20component%20overlap%20%7C%0A%7C%2045%C2%B0%20diagonal%20%7C%20Professional%20look%20%7C%20Medium%20%7C%20Components%20at%20y-offsets%20%7C%0A%7C%20Maze%20%28Lee%29%20%7C%20Optimal%20pathfinding%20%7C%20Slow%20%7C%20Dense%20boards%2C%20narrow%20channels%20%7C%0A%0A%23%23%23%20Pitfalls%0A-%20%2A%2Asvgwrite%20module%2A%2A%3A%20Install%20with%20%60pip%20install%20svgwrite%60%0A-%20%2A%2AGrid%20positioning%2A%2A%3A%20Components%20are%20placed%20on%20a%20grid%20%28default%20100px%20cells%29.%0A%20%20Off-grid%20positions%20produce%20unaligned%20wire%20stubs.%0A-%20%2A%2APin%20direction%2A%2A%3A%20Pins%20exit%20the%20component%20body%20in%20the%20direction%20specified%0A%20%20%28%27L%27%2C%20%27R%27%2C%20%27U%27%2C%20%27D%27%29.%20Wrong%20direction%20produces%20wires%20through%20the%20component.%0A-%20%2A%2APort%20conflicts%2A%2A%3A%20The%20renderer%20does%20not%20check%20for%20overlapping%20components.%0A%20%20Place%20them%20on%20distinct%20grid%20coordinates.%0A%0A%23%23%20Method%20C%3A%20Raw%20KiCad%20S-Expression%0A%0ADirectly%20author%20%60.kicad_sch%60%20files%20as%20S-expressions%20using%20the%20KiCad%2010%20format.%0AGives%20full%20control%20over%20symbol%20placement%2C%20wire%20routing%2C%20and%20component%20definitions%0Awithout%20going%20through%20the%20KiCad%20GUI%20or%20any%20library%20middleware.%0A%0A%23%23%23%20When%20to%20use%0A-%20You%20need%20custom%20inline%20symbols%20%28no%20external%20library%20dependency%29%0A-%20You%27re%20automating%20schematic%20generation%20from%20a%20non-Python%20source%0A-%20You%20need%20exact%20control%20over%20every%20coordinate%20and%20property%0A%0A%23%23%23%20Tools%0A%0A%7C%20Tool%20%7C%20Purpose%20%7C%0A%7C------%7C---------%7C%0A%7C%20%60kiutils%60%20%7C%20Python%20library%20for%20reading%2Fwriting%20KiCad%20files%20%28S-expr%20parser%29%20%7C%0A%7C%20%60kicad-skip%60%20%7C%20Older%20library%20for%20symbol%20and%20footprint%20editing%20%7C%0A%7C%20Raw%20string%20templates%20%7C%20Build%20S-expressions%20manually%20via%20Python%20f-strings%20%7C%0A%0A%23%23%23%20Example%20structure%0A%60%60%60python%0A%23%20Using%20kiutils%20to%20build%20a%20schematic%0Afrom%20kiutils.schematic%20import%20Schematic%0Afrom%20kiutils.items.sch_items%20import%20SchSymbol%2C%20SchSymbolPin%0A%0Asym%20%3D%20SchSymbol%28%0A%20%20%20%20libId%3D%22Device%3AR%22%2C%0A%20%20%20%20position%3D%5B100.0%2C%20100.0%5D%2C%0A%20%20%20%20reference%3D%22R1%22%2C%0A%20%20%20%20value%3D%2210k%22%0A%29%0A%23%20Append%20to%20schematic%20symbols%20list%2C%20write%20via%20sch.to_file%28%29%0A%60%60%60%0A%0A%23%23%23%20See%20also%0A-%20%60references%2Fraw-sexpr-kicad.md%60%20for%20a%20complete%20indicator-panel%20example%0A%20%20with%206%20inline%20custom%20symbols%20and%20their%20S-expression%20definition%0A%0A%23%23%23%20Pitfalls%0A-%20%2A%2ACoordinate%20system%2A%2A%3A%20KiCad%20uses%20mm%20with%20Y-up.%20A%202.54mm%20grid%20is%20standard.%0A-%20%2A%2AUUIDs%2A%2A%3A%20Every%20symbol%20and%20symbol%20instance%20needs%20a%20unique%20UUID.%0A-%20%2A%2AVersion%20field%2A%2A%3A%20The%20%60%28version%2020221018%29%60%20header%20is%20required%20by%20KiCad%207%2B.%0A-%20%2A%2ALib%20symbols%20vs%20inline%2A%2A%3A%20Inline%20symbols%20go%20inside%20%60%28lib_symbols%20...%29%60%20in%20the%0A%20%20%60.kicad_sch%60%20file%3B%20library-referenced%20symbols%20need%20the%20library%20registered.%0A%0A%23%23%20Verification%20Checklist%0A%0A-%20%5B%20%5D%20All%20component%20pins%20are%20connected%20to%20a%20net%0A-%20%5B%20%5D%20No%20unconnected%20pins%20%28use%20NC%20markers%20for%20intentional%20disconnects%29%0A-%20%5B%20%5D%20Each%20net%20has%20exactly%20one%20label%20%28no%20floating%20labels%29%0A-%20%5B%20%5D%20Power%20nets%20%28VCC%2C%20GND%29%20have%20PWR_FLAG%20components%0A-%20%5B%20%5D%20Wire%20endpoints%20snap%20to%20grid%20%28standard%202.54mm%20KiCad%20grid%29%0A-%20%5B%20%5D%20No%20overlapping%20wires%20across%20component%20bodies%0A-%20%5B%20%5D%20ERC%20passes%20with%20zero%20errors%0A-%20%5B%20%5D%20Netlist%20generation%20produces%20valid%20output%0A">[ DOWNLOAD SKILL.MD ]</a>
+<span id="copied-msg" style="color:#8affa8">&nbsp;</span>
+</div>
 </header>
 <main>
 
@@ -220,5 +230,188 @@ sym = SchSymbol(
 <div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : circuit-design // software-development</div>
 <div>MIT — generated by tools/publish.py; source: skills/circuit-design/SKILL.md</div>
 </footer>
+<pre id="raw" hidden>---
+name: circuit-design
+description: &gt;-
+  Design electrical circuits programmatically — SKiDL netlist generation, custom
+  SVG schematic renderer with 45° routing and IEEE 315 compliance, and raw KiCad
+  S-expression authoring for full control. Covers the full pipeline from
+  text-based circuit description to rendered SVG or KiCad netlist.
+version: 1.0.0
+author: Hermes Agent
+license: MIT
+metadata:
+  hermes:
+    tags: [kicad, skidl, electronics, netlist]
+    category: software-development
+---
+
+
+# Circuit Design (Programmatic)
+
+Three approaches for generating electrical circuit schematics from code, 
+depending on what you need:
+
+| Method | Output | Best For |
+|--------|--------|----------|
+| **A: SKiDL Pipeline** | KiCad netlist (`.kicad_sch`) | Full KiCad integration, ERC, BOM |
+| **B: SVG Renderer** | SVG image (`.svg`) | Quick visualization, documentation, shareable diagrams |
+| **C: Raw S-Expression** | KiCad `.kicad_sch` | Full control, custom symbols, no library dependency |
+
+## Method A: SKiDL Pipeline
+
+[SKiDL](https://github.com/devbisme/skidl) lets you describe circuits in Python
+and output KiCad netlists/schematics.
+
+### Workflow
+
+```python
+from skidl import Net, Part
+
+# Create parts
+r = Part(&#x27;Device&#x27;, &#x27;R&#x27;, value=&#x27;10k&#x27;, footprint=&#x27;Resistor_SMD:R_0603_1608Metric&#x27;)
+led = Part(&#x27;Device&#x27;, &#x27;LED&#x27;, value=&#x27;RED&#x27;)
+gnd = Net(&#x27;GND&#x27;)
+vcc = Net(&#x27;VCC&#x27;)
+
+# Connect
+r[1] += vcc
+r[2] += led[&#x27;A&#x27;]
+led[&#x27;K&#x27;] += gnd
+
+# Generate
+ERC()
+generate_netlist()
+```
+
+### Key commands
+```bash
+# Generate KiCad schematic
+python3 -c &quot;from skidl import generate_schematic; generate_schematic()&quot;
+
+# ERC check
+python3 -c &quot;from skidl import ERC; ERC()&quot;
+```
+
+### Pitfalls
+- **Pin names vs numbers**: SKiDL accepts both. Use `Part[&#x27;VCC&#x27;]` or `Part[1]`.
+- **Footprint assignment**: Some `Device` parts lack default footprints — set
+  explicitly for BOM generation.
+- **ERC warnings**: Unconnected pins on multi-unit packages (op-amps with
+  unused channels) generate warnings unless you explicitly connect them to NC.
+- **KiCad version**: SKiDL 0.x targets KiCad 6+. For KiCad 7/8, test your
+  output; some symbol library paths changed.
+
+## Method B: Custom SVG Renderer
+
+A custom SVG schematic renderer with Manhattan (90°) and 45° diagonal routing,
+plus a Lee maze autorouter for complex multi-net layouts. Produces IEEE 315-style
+diagrams.
+
+### Usage
+
+```python
+from renderer import SchematicRenderer
+
+r = SchematicRenderer(cell_size=110)
+r.add_component(&quot;U1&quot;, &quot;ic&quot;, grid_x=0, grid_y=0,
+                pins_left=[{&quot;num&quot;: 6, &quot;name&quot;: &quot;GPIO2&quot;}],
+                pins_right=[{&quot;num&quot;: 33, &quot;name&quot;: &quot;GND&quot;}],
+                name=&quot;ESP32-C3&quot;)
+r.add_component(&quot;R1&quot;, &quot;resistor&quot;, grid_x=4, grid_y=2, value=&quot;330&quot;)
+r.add_component(&quot;D1&quot;, &quot;led&quot;, grid_x=7, grid_y=2, value=&quot;RED&quot;)
+r.add_net(&quot;GPIO2&quot;, [(&quot;U1&quot;, 6), (&quot;R1&quot;, 1)])
+r.render(&quot;output.svg&quot;)
+```
+
+### Scripts
+
+The `scripts/` directory contains:
+- **`renderer.py`** — Core renderer: grid layout, wire routing (Manhattan, 45° 
+  diagonal, or maze autorouter), SVG output
+- **`symbols.py`** — Component symbol drawing (resistor, capacitor, diode, LED, 
+  IC, ground, VCC, header)
+- **`generate_examples.py`** — Generates horizontal, diagonal, vertical, and
+  complex multi-net example schematics
+- **`demo.py`** — Quick demo: ESP32-C3 + resistor + LED circuit
+
+Run: `python3 scripts/demo.py`
+
+### Routing modes
+
+| Mode | Quality | Speed | Use When |
+|------|---------|-------|----------|
+| Manhattan | Clean orthogonal | Fast | Simple circuits, no component overlap |
+| 45° diagonal | Professional look | Medium | Components at y-offsets |
+| Maze (Lee) | Optimal pathfinding | Slow | Dense boards, narrow channels |
+
+### Pitfalls
+- **svgwrite module**: Install with `pip install svgwrite`
+- **Grid positioning**: Components are placed on a grid (default 100px cells).
+  Off-grid positions produce unaligned wire stubs.
+- **Pin direction**: Pins exit the component body in the direction specified
+  (&#x27;L&#x27;, &#x27;R&#x27;, &#x27;U&#x27;, &#x27;D&#x27;). Wrong direction produces wires through the component.
+- **Port conflicts**: The renderer does not check for overlapping components.
+  Place them on distinct grid coordinates.
+
+## Method C: Raw KiCad S-Expression
+
+Directly author `.kicad_sch` files as S-expressions using the KiCad 10 format.
+Gives full control over symbol placement, wire routing, and component definitions
+without going through the KiCad GUI or any library middleware.
+
+### When to use
+- You need custom inline symbols (no external library dependency)
+- You&#x27;re automating schematic generation from a non-Python source
+- You need exact control over every coordinate and property
+
+### Tools
+
+| Tool | Purpose |
+|------|---------|
+| `kiutils` | Python library for reading/writing KiCad files (S-expr parser) |
+| `kicad-skip` | Older library for symbol and footprint editing |
+| Raw string templates | Build S-expressions manually via Python f-strings |
+
+### Example structure
+```python
+# Using kiutils to build a schematic
+from kiutils.schematic import Schematic
+from kiutils.items.sch_items import SchSymbol, SchSymbolPin
+
+sym = SchSymbol(
+    libId=&quot;Device:R&quot;,
+    position=[100.0, 100.0],
+    reference=&quot;R1&quot;,
+    value=&quot;10k&quot;
+)
+# Append to schematic symbols list, write via sch.to_file()
+```
+
+### See also
+- `references/raw-sexpr-kicad.md` for a complete indicator-panel example
+  with 6 inline custom symbols and their S-expression definition
+
+### Pitfalls
+- **Coordinate system**: KiCad uses mm with Y-up. A 2.54mm grid is standard.
+- **UUIDs**: Every symbol and symbol instance needs a unique UUID.
+- **Version field**: The `(version 20221018)` header is required by KiCad 7+.
+- **Lib symbols vs inline**: Inline symbols go inside `(lib_symbols ...)` in the
+  `.kicad_sch` file; library-referenced symbols need the library registered.
+
+## Verification Checklist
+
+- [ ] All component pins are connected to a net
+- [ ] No unconnected pins (use NC markers for intentional disconnects)
+- [ ] Each net has exactly one label (no floating labels)
+- [ ] Power nets (VCC, GND) have PWR_FLAG components
+- [ ] Wire endpoints snap to grid (standard 2.54mm KiCad grid)
+- [ ] No overlapping wires across component bodies
+- [ ] ERC passes with zero errors
+- [ ] Netlist generation produces valid output
+</pre>
+<script>
+function copyRaw(){var t=document.getElementById('raw').textContent;navigator.clipboard.writeText(t).then(function(){var m=document.getElementById('copied-msg');m.textContent='COPIED!';setTimeout(function(){m.textContent='';},2000);});}
+</script>
 </body>
 </html>

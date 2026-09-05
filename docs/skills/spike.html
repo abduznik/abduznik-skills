@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>spike // SKILL</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 *{box-sizing:border-box}
 body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
@@ -30,15 +31,24 @@ footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8
 .cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
 @keyframes blink{50%{opacity:0}}
 .badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+.catbtn{display:inline-block;border:2px solid #44ff77;color:#44ff77;background:#061106;padding:7px 13px;margin:5px 7px 5px 0;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(0,255,100,.2);text-transform:uppercase;text-decoration:none;letter-spacing:.5px}
+.catbtn:hover{background:#44ff77;color:#050a05}
+.logo{width:44px;height:44px;vertical-align:middle;image-rendering:pixelated;margin-right:12px}
+.get{margin:16px 0}
 </style>
 </head>
 <body>
 <header>
 <p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
-<h1 class="px">spike</h1>
+<h1 class="px"><img class="logo" src="favicon.svg" alt="logo">spike</h1>
 <div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
 <span class='tag' style='border-color:#ff77cc'>spike</span><span class='tag' style='border-color:#ff77cc'>prototype</span><span class='tag' style='border-color:#ff77cc'>experiment</span><span class='tag' style='border-color:#ff77cc'>feasibility</span><span class='tag' style='border-color:#ff77cc'>throwaway</span><span class='tag' style='border-color:#ff77cc'>exploration</span><span class='tag' style='border-color:#ff77cc'>research</span><span class='tag' style='border-color:#ff77cc'>planning</span><span class='tag' style='border-color:#ff77cc'>mvp</span><span class='tag' style='border-color:#ff77cc'>proof-of-concept</span></div>
 <p style="color:#8affa8">Throwaway experiments to validate an idea before build.</p>
+<div class="get">
+<button class="catbtn" onclick="copyRaw()">[ COPY SKILL.MD ]</button>
+<a class="catbtn" download="SKILL.md" href="data:text/markdown;charset=utf-8,---%0Aname%3A%20spike%0Adescription%3A%20%22Throwaway%20experiments%20to%20validate%20an%20idea%20before%20build.%22%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%20%28adapted%20from%20gsd-build%2Fget-shit-done%29%0Alicense%3A%20MIT%0Aplatforms%3A%20%5Blinux%2C%20macos%2C%20windows%5D%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Bspike%2C%20prototype%2C%20experiment%2C%20feasibility%2C%20throwaway%2C%20exploration%2C%20research%2C%20planning%2C%20mvp%2C%20proof-of-concept%5D%0A%20%20%20%20related_skills%3A%20%5Bsketch%2C%20subagent-driven-development%2C%20plan%5D%0A---%0A%0A%0A%23%20Spike%0A%0AUse%20this%20skill%20when%20the%20user%20wants%20to%20%2A%2Afeel%20out%20an%20idea%2A%2A%20before%20committing%20to%20a%20real%20build%20%E2%80%94%20validating%20feasibility%2C%20comparing%20approaches%2C%20or%20surfacing%20unknowns%20that%20no%20amount%20of%20research%20will%20answer.%20Spikes%20are%20disposable%20by%20design.%20Throw%20them%20away%20once%20they%27ve%20paid%20their%20debt.%0A%0ALoad%20this%20when%20the%20user%20says%20things%20like%20%22let%20me%20try%20this%22%2C%20%22I%20want%20to%20see%20if%20X%20works%22%2C%20%22spike%20this%20out%22%2C%20%22before%20I%20commit%20to%20Y%22%2C%20%22quick%20prototype%20of%20Z%22%2C%20%22is%20this%20even%20possible%3F%22%2C%20or%20%22compare%20A%20vs%20B%22.%0A%0A%23%23%20When%20NOT%20to%20use%20this%0A%0A-%20The%20answer%20is%20knowable%20from%20docs%20or%20reading%20code%20%E2%80%94%20just%20do%20research%2C%20don%27t%20build%0A-%20The%20work%20is%20production%20path%20%E2%80%94%20use%20the%20%60plan%60%20skill%20instead%0A-%20The%20idea%20is%20already%20validated%20%E2%80%94%20jump%20straight%20to%20implementation%0A%0A%23%23%20If%20the%20user%20has%20the%20full%20GSD%20system%20installed%0A%0AIf%20%60gsd-spike%60%20shows%20up%20as%20a%20sibling%20skill%20%28installed%20via%20%60npx%20get-shit-done-cc%20--hermes%60%29%2C%20prefer%20%2A%2A%60gsd-spike%60%2A%2A%20when%20the%20user%20wants%20the%20full%20GSD%20workflow%3A%20persistent%20%60.planning%2Fspikes%2F%60%20state%2C%20MANIFEST%20tracking%20across%20sessions%2C%20Given%2FWhen%2FThen%20verdict%20format%2C%20and%20commit%20patterns%20that%20integrate%20with%20the%20rest%20of%20GSD.%20This%20skill%20is%20the%20lightweight%20standalone%20version%20for%20users%20who%20don%27t%20have%20%28or%20don%27t%20want%29%20the%20full%20system.%0A%0A%23%23%20Core%20method%0A%0ARegardless%20of%20scale%2C%20every%20spike%20follows%20this%20loop%3A%0A%0A%60%60%60%0Adecompose%20%20%E2%86%92%20%20research%20%20%E2%86%92%20%20build%20%20%E2%86%92%20%20verdict%0A%20%20%20%E2%86%91__________________________________________%E2%86%93%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20iterate%20on%20findings%0A%60%60%60%0A%0A%23%23%23%201.%20Decompose%0A%0ABreak%20the%20user%27s%20idea%20into%20%2A%2A2-5%20independent%20feasibility%20questions%2A%2A.%20Each%20question%20is%20one%20spike.%20Present%20them%20as%20a%20table%20with%20Given%2FWhen%2FThen%20framing%3A%0A%0A%7C%20%23%20%7C%20Spike%20%7C%20Validates%20%28Given%2FWhen%2FThen%29%20%7C%20Risk%20%7C%0A%7C---%7C-------%7C----------------------------%7C------%7C%0A%7C%20001%20%7C%20websocket-streaming%20%7C%20Given%20a%20WS%20connection%2C%20when%20LLM%20streams%20tokens%2C%20then%20client%20receives%20chunks%20%3C%20100ms%20%7C%20High%20%7C%0A%7C%20002a%20%7C%20pdf-parse-pdfjs%20%7C%20Given%20a%20multi-page%20PDF%2C%20when%20parsed%20with%20pdfjs%2C%20then%20structured%20text%20is%20extractable%20%7C%20Medium%20%7C%0A%7C%20002b%20%7C%20pdf-parse-camelot%20%7C%20Given%20a%20multi-page%20PDF%2C%20when%20parsed%20with%20camelot%2C%20then%20structured%20text%20is%20extractable%20%7C%20Medium%20%7C%0A%0A%2A%2ASpike%20types%3A%2A%2A%0A-%20%2A%2Astandard%2A%2A%20%E2%80%94%20one%20approach%20answering%20one%20question%0A-%20%2A%2Acomparison%2A%2A%20%E2%80%94%20same%20question%2C%20different%20approaches%20%28shared%20number%2C%20letter%20suffix%20%60a%60%2F%60b%60%2F%60c%60%29%0A%0A%2A%2AGood%20spike%20questions%3A%2A%2A%20specific%20feasibility%20with%20observable%20output.%0A%2A%2ABad%20spike%20questions%3A%2A%2A%20too%20broad%2C%20no%20observable%20output%2C%20or%20just%20%22read%20the%20docs%20about%20X%22.%0A%0A%2A%2AOrder%20by%20risk.%2A%2A%20The%20spike%20most%20likely%20to%20kill%20the%20idea%20runs%20first.%20No%20point%20prototyping%20the%20easy%20parts%20if%20the%20hard%20part%20doesn%27t%20work.%0A%0A%2A%2ASkip%20decomposition%2A%2A%20only%20if%20the%20user%20already%20knows%20exactly%20what%20they%20want%20to%20spike%20and%20says%20so.%20Then%20take%20their%20idea%20as%20a%20single%20spike.%0A%0A%23%23%23%202.%20Align%20%28for%20multi-spike%20ideas%29%0A%0APresent%20the%20spike%20table.%20Ask%3A%20%22Build%20all%20in%20this%20order%2C%20or%20adjust%3F%22%20Let%20the%20user%20drop%2C%20reorder%2C%20or%20re-frame%20before%20you%20write%20any%20code.%0A%0A%23%23%23%203.%20Research%20%28per%20spike%2C%20before%20building%29%0A%0ASpikes%20are%20not%20research-free%20%E2%80%94%20you%20research%20enough%20to%20pick%20the%20right%20approach%2C%20then%20you%20build.%20Per%20spike%3A%0A%0A1.%20%2A%2ABrief%20it.%2A%2A%202-3%20sentences%3A%20what%20this%20spike%20is%2C%20why%20it%20matters%2C%20key%20risk.%0A2.%20%2A%2ASurface%20competing%20approaches%2A%2A%20if%20there%27s%20real%20choice%3A%0A%0A%20%20%20%7C%20Approach%20%7C%20Tool%2FLibrary%20%7C%20Pros%20%7C%20Cons%20%7C%20Status%20%7C%0A%20%20%20%7C----------%7C-------------%7C------%7C------%7C--------%7C%0A%20%20%20%7C%20...%20%7C%20...%20%7C%20...%20%7C%20...%20%7C%20maintained%20%2F%20abandoned%20%2F%20beta%20%7C%0A%0A3.%20%2A%2APick%20one.%2A%2A%20State%20why.%20If%202%2B%20are%20credible%2C%20build%20quick%20variants%20within%20the%20spike.%0A4.%20%2A%2ASkip%20research%2A%2A%20for%20pure%20logic%20with%20no%20external%20dependencies.%0A%0AUse%20Hermes%20tools%20for%20the%20research%20step%3A%0A%0A-%20%60web_search%28%22python%20websocket%20streaming%20libraries%202025%22%29%60%20%E2%80%94%20find%20candidates%0A-%20%60web_extract%28urls%3D%5B%22https%3A%2F%2Fwebsockets.readthedocs.io%2F...%22%5D%29%60%20%E2%80%94%20read%20the%20actual%20docs%20%28returns%20markdown%29%0A-%20%60terminal%28%22pip%20show%20websockets%20%7C%20grep%20Version%22%29%60%20%E2%80%94%20check%20what%27s%20installed%20in%20the%20project%27s%20venv%0A%0AFor%20libraries%20without%20docs%20pages%2C%20clone%20and%20read%20their%20%60README.md%60%20%2F%20%60examples%2F%60%20via%20%60read_file%60.%20Context7%20MCP%20%28if%20the%20user%20has%20it%20configured%29%20is%20also%20a%20good%20source%20%E2%80%94%20%60mcp_%2A_resolve-library-id%60%20then%20%60mcp_%2A_query-docs%60.%0A%0A%23%23%23%204.%20Build%0A%0AOne%20directory%20per%20spike.%20Keep%20it%20standalone.%0A%0A%60%60%60%0Aspikes%2F%0A%E2%94%9C%E2%94%80%E2%94%80%20001-websocket-streaming%2F%0A%E2%94%82%20%20%20%E2%94%9C%E2%94%80%E2%94%80%20README.md%0A%E2%94%82%20%20%20%E2%94%94%E2%94%80%E2%94%80%20main.py%0A%E2%94%9C%E2%94%80%E2%94%80%20002a-pdf-parse-pdfjs%2F%0A%E2%94%82%20%20%20%E2%94%9C%E2%94%80%E2%94%80%20README.md%0A%E2%94%82%20%20%20%E2%94%94%E2%94%80%E2%94%80%20parse.js%0A%E2%94%94%E2%94%80%E2%94%80%20002b-pdf-parse-camelot%2F%0A%20%20%20%20%E2%94%9C%E2%94%80%E2%94%80%20README.md%0A%20%20%20%20%E2%94%94%E2%94%80%E2%94%80%20parse.py%0A%60%60%60%0A%0A%2A%2ABias%20toward%20something%20the%20user%20can%20interact%20with.%2A%2A%20Spikes%20fail%20when%20the%20only%20output%20is%20a%20log%20line%20that%20says%20%22it%20works.%22%20The%20user%20wants%20to%20%2Afeel%2A%20the%20spike%20working.%20Default%20choices%2C%20in%20order%20of%20preference%3A%0A%0A1.%20A%20runnable%20CLI%20that%20takes%20input%20and%20prints%20observable%20output%0A2.%20A%20minimal%20HTML%20page%20that%20demonstrates%20the%20behavior%0A3.%20A%20small%20web%20server%20with%20one%20endpoint%0A4.%20A%20unit%20test%20that%20exercises%20the%20question%20with%20recognizable%20assertions%0A%0A%2A%2ADepth%20over%20speed.%2A%2A%20Never%20declare%20%22it%20works%22%20after%20one%20happy-path%20run.%20Test%20edge%20cases.%20Follow%20surprising%20findings.%20The%20verdict%20is%20only%20trustworthy%20when%20the%20investigation%20was%20honest.%0A%0A%2A%2AAvoid%2A%2A%20unless%20the%20spike%20specifically%20requires%20it%3A%20complex%20package%20management%2C%20build%20tools%2Fbundlers%2C%20Docker%2C%20env%20files%2C%20config%20systems.%20Hardcode%20everything%20%E2%80%94%20it%27s%20a%20spike.%0A%0A%2A%2ABuilding%20one%20spike%2A%2A%20%E2%80%94%20a%20typical%20tool%20sequence%3A%0A%0A%60%60%60%0Aterminal%28%22mkdir%20-p%20spikes%2F001-websocket-streaming%22%29%0Awrite_file%28%22spikes%2F001-websocket-streaming%2FREADME.md%22%2C%20%22%23%20001%3A%20websocket-streaming%5Cn%5Cn...%22%29%0Awrite_file%28%22spikes%2F001-websocket-streaming%2Fmain.py%22%2C%20%22...%22%29%0Aterminal%28%22cd%20spikes%2F001-websocket-streaming%20%26%26%20python3%20main.py%22%29%0A%23%20Observe%20output%2C%20iterate.%0A%60%60%60%0A%0A%2A%2AParallel%20comparison%20spikes%20%28002a%20%2F%20002b%29%20%E2%80%94%20delegate.%2A%2A%20When%20two%20approaches%20can%20run%20in%20parallel%20and%20both%20need%20real%20engineering%20%28not%2010-line%20prototypes%29%2C%20fan%20out%20with%20%60delegate_task%60%3A%0A%0A%60%60%60%0Adelegate_task%28tasks%3D%5B%0A%20%20%20%20%7B%22goal%22%3A%20%22Build%20002a-pdf-parse-pdfjs%3A%20...%22%2C%20%22toolsets%22%3A%20%5B%22terminal%22%2C%20%22file%22%2C%20%22web%22%5D%7D%2C%0A%20%20%20%20%7B%22goal%22%3A%20%22Build%20002b-pdf-parse-camelot%3A%20...%22%2C%20%22toolsets%22%3A%20%5B%22terminal%22%2C%20%22file%22%2C%20%22web%22%5D%7D%2C%0A%5D%29%0A%60%60%60%0A%0AEach%20subagent%20returns%20its%20own%20verdict%3B%20you%20write%20the%20head-to-head.%0A%0A%23%23%23%205.%20Verdict%0A%0AEach%20spike%27s%20%60README.md%60%20closes%20with%3A%0A%0A%60%60%60markdown%0A%23%23%20Verdict%3A%20VALIDATED%20%7C%20PARTIAL%20%7C%20INVALIDATED%0A%0A%23%23%23%20What%20worked%0A-%20...%0A%0A%23%23%23%20What%20didn%27t%0A-%20...%0A%0A%23%23%23%20Surprises%0A-%20...%0A%0A%23%23%23%20Recommendation%20for%20the%20real%20build%0A-%20...%0A%60%60%60%0A%0A%2A%2AVALIDATED%2A%2A%20%3D%20the%20core%20question%20was%20answered%20yes%2C%20with%20evidence.%0A%2A%2APARTIAL%2A%2A%20%3D%20it%20works%20under%20constraints%20X%2C%20Y%2C%20Z%20%E2%80%94%20document%20them.%0A%2A%2AINVALIDATED%2A%2A%20%3D%20doesn%27t%20work%2C%20for%20this%20reason.%20This%20is%20a%20successful%20spike.%0A%0A%23%23%20Comparison%20spikes%0A%0AWhen%20two%20approaches%20answer%20the%20same%20question%20%28002a%20%2F%20002b%29%2C%20build%20them%20%2A%2Aback%20to%20back%2A%2A%2C%20then%20do%20a%20head-to-head%20comparison%20at%20the%20end%3A%0A%0A%60%60%60markdown%0A%23%23%20Head-to-head%3A%20pdfjs%20vs%20camelot%0A%0A%7C%20Dimension%20%7C%20pdfjs%20%28002a%29%20%7C%20camelot%20%28002b%29%20%7C%0A%7C-----------%7C--------------%7C----------------%7C%0A%7C%20Extraction%20quality%20%7C%209%2F10%20structured%20%7C%207%2F10%20table-only%20%7C%0A%7C%20Setup%20complexity%20%7C%20npm%20install%2C%201%20line%20%7C%20pip%20%2B%20ghostscript%20%7C%0A%7C%20Perf%20on%20100-page%20PDF%20%7C%203s%20%7C%2018s%20%7C%0A%7C%20Handles%20rotated%20text%20%7C%20no%20%7C%20yes%20%7C%0A%0A%2A%2AWinner%3A%2A%2A%20pdfjs%20for%20our%20use%20case.%20Camelot%20if%20we%20need%20table-first%20extraction%20later.%0A%60%60%60%0A%0A%23%23%20Frontier%20mode%20%28picking%20what%20to%20spike%20next%29%0A%0AIf%20spikes%20already%20exist%20and%20the%20user%20says%20%22what%20should%20I%20spike%20next%3F%22%2C%20walk%20the%20existing%20directories%20and%20look%20for%3A%0A%0A-%20%2A%2AIntegration%20risks%2A%2A%20%E2%80%94%20two%20validated%20spikes%20that%20touch%20the%20same%20resource%20but%20were%20tested%20independently%0A-%20%2A%2AData%20handoffs%2A%2A%20%E2%80%94%20spike%20A%27s%20output%20was%20assumed%20compatible%20with%20spike%20B%27s%20input%3B%20never%20proven%0A-%20%2A%2AGaps%20in%20the%20vision%2A%2A%20%E2%80%94%20capabilities%20assumed%20but%20unproven%0A-%20%2A%2AAlternative%20approaches%2A%2A%20%E2%80%94%20different%20angles%20for%20PARTIAL%20or%20INVALIDATED%20spikes%0A%0APropose%202-4%20candidates%20as%20Given%2FWhen%2FThen.%20Let%20the%20user%20pick.%0A%0A%23%23%20Output%0A%0A-%20Create%20%60spikes%2F%60%20%28or%20%60.planning%2Fspikes%2F%60%20if%20the%20user%20is%20using%20GSD%20conventions%29%20in%20the%20repo%20root%0A-%20One%20dir%20per%20spike%3A%20%60NNN-descriptive-name%2F%60%0A-%20%60README.md%60%20per%20spike%20captures%20question%2C%20approach%2C%20results%2C%20verdict%0A-%20Keep%20the%20code%20throwaway%20%E2%80%94%20a%20spike%20that%20takes%202%20days%20to%20%22clean%20up%20for%20production%22%20was%20a%20bad%20spike%0A%0A%23%23%20Attribution%0A%0AAdapted%20from%20the%20GSD%20%28Get%20Shit%20Done%29%20project%27s%20%60%2Fgsd-spike%60%20workflow%20%E2%80%94%20MIT%20%C2%A9%202025%20Lex%20Christopherson%20%28%5Bgsd-build%2Fget-shit-done%5D%28https%3A%2F%2Fgithub.com%2Fgsd-build%2Fget-shit-done%29%29.%20The%20full%20GSD%20system%20offers%20persistent%20spike%20state%2C%20MANIFEST%20tracking%2C%20and%20integration%20with%20a%20broader%20spec-driven%20development%20pipeline%3B%20install%20with%20%60npx%20get-shit-done-cc%20--hermes%20--global%60.%0A">[ DOWNLOAD SKILL.MD ]</a>
+<span id="copied-msg" style="color:#8affa8">&nbsp;</span>
+</div>
 </header>
 <main>
 
@@ -232,5 +242,207 @@ terminal(&quot;cd spikes/001-websocket-streaming &amp;&amp; python3 main.py&quot
 <div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : spike // software-development</div>
 <div>MIT — generated by tools/publish.py; source: skills/spike/SKILL.md</div>
 </footer>
+<pre id="raw" hidden>---
+name: spike
+description: &quot;Throwaway experiments to validate an idea before build.&quot;
+version: 1.0.0
+author: Hermes Agent (adapted from gsd-build/get-shit-done)
+license: MIT
+platforms: [linux, macos, windows]
+metadata:
+  hermes:
+    tags: [spike, prototype, experiment, feasibility, throwaway, exploration, research, planning, mvp, proof-of-concept]
+    related_skills: [sketch, subagent-driven-development, plan]
+---
+
+
+# Spike
+
+Use this skill when the user wants to **feel out an idea** before committing to a real build — validating feasibility, comparing approaches, or surfacing unknowns that no amount of research will answer. Spikes are disposable by design. Throw them away once they&#x27;ve paid their debt.
+
+Load this when the user says things like &quot;let me try this&quot;, &quot;I want to see if X works&quot;, &quot;spike this out&quot;, &quot;before I commit to Y&quot;, &quot;quick prototype of Z&quot;, &quot;is this even possible?&quot;, or &quot;compare A vs B&quot;.
+
+## When NOT to use this
+
+- The answer is knowable from docs or reading code — just do research, don&#x27;t build
+- The work is production path — use the `plan` skill instead
+- The idea is already validated — jump straight to implementation
+
+## If the user has the full GSD system installed
+
+If `gsd-spike` shows up as a sibling skill (installed via `npx get-shit-done-cc --hermes`), prefer **`gsd-spike`** when the user wants the full GSD workflow: persistent `.planning/spikes/` state, MANIFEST tracking across sessions, Given/When/Then verdict format, and commit patterns that integrate with the rest of GSD. This skill is the lightweight standalone version for users who don&#x27;t have (or don&#x27;t want) the full system.
+
+## Core method
+
+Regardless of scale, every spike follows this loop:
+
+```
+decompose  →  research  →  build  →  verdict
+   ↑__________________________________________↓
+                  iterate on findings
+```
+
+### 1. Decompose
+
+Break the user&#x27;s idea into **2-5 independent feasibility questions**. Each question is one spike. Present them as a table with Given/When/Then framing:
+
+| # | Spike | Validates (Given/When/Then) | Risk |
+|---|-------|----------------------------|------|
+| 001 | websocket-streaming | Given a WS connection, when LLM streams tokens, then client receives chunks &lt; 100ms | High |
+| 002a | pdf-parse-pdfjs | Given a multi-page PDF, when parsed with pdfjs, then structured text is extractable | Medium |
+| 002b | pdf-parse-camelot | Given a multi-page PDF, when parsed with camelot, then structured text is extractable | Medium |
+
+**Spike types:**
+- **standard** — one approach answering one question
+- **comparison** — same question, different approaches (shared number, letter suffix `a`/`b`/`c`)
+
+**Good spike questions:** specific feasibility with observable output.
+**Bad spike questions:** too broad, no observable output, or just &quot;read the docs about X&quot;.
+
+**Order by risk.** The spike most likely to kill the idea runs first. No point prototyping the easy parts if the hard part doesn&#x27;t work.
+
+**Skip decomposition** only if the user already knows exactly what they want to spike and says so. Then take their idea as a single spike.
+
+### 2. Align (for multi-spike ideas)
+
+Present the spike table. Ask: &quot;Build all in this order, or adjust?&quot; Let the user drop, reorder, or re-frame before you write any code.
+
+### 3. Research (per spike, before building)
+
+Spikes are not research-free — you research enough to pick the right approach, then you build. Per spike:
+
+1. **Brief it.** 2-3 sentences: what this spike is, why it matters, key risk.
+2. **Surface competing approaches** if there&#x27;s real choice:
+
+   | Approach | Tool/Library | Pros | Cons | Status |
+   |----------|-------------|------|------|--------|
+   | ... | ... | ... | ... | maintained / abandoned / beta |
+
+3. **Pick one.** State why. If 2+ are credible, build quick variants within the spike.
+4. **Skip research** for pure logic with no external dependencies.
+
+Use Hermes tools for the research step:
+
+- `web_search(&quot;python websocket streaming libraries 2025&quot;)` — find candidates
+- `web_extract(urls=[&quot;https://websockets.readthedocs.io/...&quot;])` — read the actual docs (returns markdown)
+- `terminal(&quot;pip show websockets | grep Version&quot;)` — check what&#x27;s installed in the project&#x27;s venv
+
+For libraries without docs pages, clone and read their `README.md` / `examples/` via `read_file`. Context7 MCP (if the user has it configured) is also a good source — `mcp_*_resolve-library-id` then `mcp_*_query-docs`.
+
+### 4. Build
+
+One directory per spike. Keep it standalone.
+
+```
+spikes/
+├── 001-websocket-streaming/
+│   ├── README.md
+│   └── main.py
+├── 002a-pdf-parse-pdfjs/
+│   ├── README.md
+│   └── parse.js
+└── 002b-pdf-parse-camelot/
+    ├── README.md
+    └── parse.py
+```
+
+**Bias toward something the user can interact with.** Spikes fail when the only output is a log line that says &quot;it works.&quot; The user wants to *feel* the spike working. Default choices, in order of preference:
+
+1. A runnable CLI that takes input and prints observable output
+2. A minimal HTML page that demonstrates the behavior
+3. A small web server with one endpoint
+4. A unit test that exercises the question with recognizable assertions
+
+**Depth over speed.** Never declare &quot;it works&quot; after one happy-path run. Test edge cases. Follow surprising findings. The verdict is only trustworthy when the investigation was honest.
+
+**Avoid** unless the spike specifically requires it: complex package management, build tools/bundlers, Docker, env files, config systems. Hardcode everything — it&#x27;s a spike.
+
+**Building one spike** — a typical tool sequence:
+
+```
+terminal(&quot;mkdir -p spikes/001-websocket-streaming&quot;)
+write_file(&quot;spikes/001-websocket-streaming/README.md&quot;, &quot;# 001: websocket-streaming\n\n...&quot;)
+write_file(&quot;spikes/001-websocket-streaming/main.py&quot;, &quot;...&quot;)
+terminal(&quot;cd spikes/001-websocket-streaming &amp;&amp; python3 main.py&quot;)
+# Observe output, iterate.
+```
+
+**Parallel comparison spikes (002a / 002b) — delegate.** When two approaches can run in parallel and both need real engineering (not 10-line prototypes), fan out with `delegate_task`:
+
+```
+delegate_task(tasks=[
+    {&quot;goal&quot;: &quot;Build 002a-pdf-parse-pdfjs: ...&quot;, &quot;toolsets&quot;: [&quot;terminal&quot;, &quot;file&quot;, &quot;web&quot;]},
+    {&quot;goal&quot;: &quot;Build 002b-pdf-parse-camelot: ...&quot;, &quot;toolsets&quot;: [&quot;terminal&quot;, &quot;file&quot;, &quot;web&quot;]},
+])
+```
+
+Each subagent returns its own verdict; you write the head-to-head.
+
+### 5. Verdict
+
+Each spike&#x27;s `README.md` closes with:
+
+```markdown
+## Verdict: VALIDATED | PARTIAL | INVALIDATED
+
+### What worked
+- ...
+
+### What didn&#x27;t
+- ...
+
+### Surprises
+- ...
+
+### Recommendation for the real build
+- ...
+```
+
+**VALIDATED** = the core question was answered yes, with evidence.
+**PARTIAL** = it works under constraints X, Y, Z — document them.
+**INVALIDATED** = doesn&#x27;t work, for this reason. This is a successful spike.
+
+## Comparison spikes
+
+When two approaches answer the same question (002a / 002b), build them **back to back**, then do a head-to-head comparison at the end:
+
+```markdown
+## Head-to-head: pdfjs vs camelot
+
+| Dimension | pdfjs (002a) | camelot (002b) |
+|-----------|--------------|----------------|
+| Extraction quality | 9/10 structured | 7/10 table-only |
+| Setup complexity | npm install, 1 line | pip + ghostscript |
+| Perf on 100-page PDF | 3s | 18s |
+| Handles rotated text | no | yes |
+
+**Winner:** pdfjs for our use case. Camelot if we need table-first extraction later.
+```
+
+## Frontier mode (picking what to spike next)
+
+If spikes already exist and the user says &quot;what should I spike next?&quot;, walk the existing directories and look for:
+
+- **Integration risks** — two validated spikes that touch the same resource but were tested independently
+- **Data handoffs** — spike A&#x27;s output was assumed compatible with spike B&#x27;s input; never proven
+- **Gaps in the vision** — capabilities assumed but unproven
+- **Alternative approaches** — different angles for PARTIAL or INVALIDATED spikes
+
+Propose 2-4 candidates as Given/When/Then. Let the user pick.
+
+## Output
+
+- Create `spikes/` (or `.planning/spikes/` if the user is using GSD conventions) in the repo root
+- One dir per spike: `NNN-descriptive-name/`
+- `README.md` per spike captures question, approach, results, verdict
+- Keep the code throwaway — a spike that takes 2 days to &quot;clean up for production&quot; was a bad spike
+
+## Attribution
+
+Adapted from the GSD (Get Shit Done) project&#x27;s `/gsd-spike` workflow — MIT © 2025 Lex Christopherson ([gsd-build/get-shit-done](https://github.com/gsd-build/get-shit-done)). The full GSD system offers persistent spike state, MANIFEST tracking, and integration with a broader spec-driven development pipeline; install with `npx get-shit-done-cc --hermes --global`.
+</pre>
+<script>
+function copyRaw(){var t=document.getElementById('raw').textContent;navigator.clipboard.writeText(t).then(function(){var m=document.getElementById('copied-msg');m.textContent='COPIED!';setTimeout(function(){m.textContent='';},2000);});}
+</script>
 </body>
 </html>

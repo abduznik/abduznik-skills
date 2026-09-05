@@ -1,4 +1,4 @@
-# Hermes Skill Pack
+# abduznik-skills
 
 A curated collection of reusable skills for [Hermes Agent](https://github.com/NousResearch/hermes-agent),
 battle-tested in a production deployment and scrubbed clean of any private

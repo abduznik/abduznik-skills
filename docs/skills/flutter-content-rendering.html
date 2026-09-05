@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>flutter-content-rendering // SKILL</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 *{box-sizing:border-box}
 body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
@@ -30,15 +31,24 @@ footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8
 .cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
 @keyframes blink{50%{opacity:0}}
 .badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+.catbtn{display:inline-block;border:2px solid #44ff77;color:#44ff77;background:#061106;padding:7px 13px;margin:5px 7px 5px 0;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(0,255,100,.2);text-transform:uppercase;text-decoration:none;letter-spacing:.5px}
+.catbtn:hover{background:#44ff77;color:#050a05}
+.logo{width:44px;height:44px;vertical-align:middle;image-rendering:pixelated;margin-right:12px}
+.get{margin:16px 0}
 </style>
 </head>
 <body>
 <header>
 <p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
-<h1 class="px">flutter-content-rendering</h1>
+<h1 class="px"><img class="logo" src="favicon.svg" alt="logo">flutter-content-rendering</h1>
 <div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
 <span class='tag' style='border-color:#ff77cc'>flutter</span><span class='tag' style='border-color:#ff77cc'>rendering</span><span class='tag' style='border-color:#ff77cc'>html</span><span class='tag' style='border-color:#ff77cc'>pdf</span></div>
 <p style="color:#8affa8">Show HTML/links/PDFs in Flutter — viewers, clickable URLs.</p>
+<div class="get">
+<button class="catbtn" onclick="copyRaw()">[ COPY SKILL.MD ]</button>
+<a class="catbtn" download="SKILL.md" href="data:text/markdown;charset=utf-8,---%0Aname%3A%20flutter-content-rendering%0Adescription%3A%20%22Show%20HTML%2Flinks%2FPDFs%20in%20Flutter%20%E2%80%94%20viewers%2C%20clickable%20URLs.%22%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%0Alicense%3A%20MIT%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Bflutter%2C%20rendering%2C%20html%2C%20pdf%5D%0A%20%20%20%20category%3A%20software-development%0Atags%3A%20flutter%2C%20dart%2C%20html%2C%20links%2C%20webview%2C%20pdf%2C%20url-launcher%2C%20rendering%0A---%0A%0A%0A%23%20Flutter%20Content%20Rendering%20%28HTML%2C%20links%2C%20PDFs%2C%20local%20files%29%0A%0APackage-level%20quirks%20for%20rendering%20dynamic%20content%20in%20Flutter%20apps%20%28task%0Adescriptions%2C%20attachment%20viewers%2C%20rich%20text%29.%20Verified%20against%20the%20Vikunja%0AFlutter%20app%20on%20Flutter%203.44.8%20%2F%20Dart%203.12%20%2F%20webview_flutter%204.13.%0A%0A%23%23%20Clickable%20links%20inside%20rendered%20HTML%0A%0A%60flutter_widget_from_html%60%27s%20%60HtmlWidget%60%3A%0A-%20Does%20%2A%2ANOT%2A%2A%20auto-linkify%20bare%20%60https%3A%2F%2F%60%20%2F%20%60www.%60%20URLs%20%E2%80%94%20they%20render%20as%20inert%20text.%0A-%20%60%3Ca%20href%3E%60%20tags%20are%20only%20tappable%20when%20%60onTapUrl%60%20is%20supplied.%0A-%20%60onTapUrl%60%20signature%3A%20%60FutureOr%3Cbool%3E%20Function%28String%20url%29%3F%60%20%E2%80%94%20return%20true%20%3D%20handled.%0A%0ARecipe%20%28works%20for%20plain%20text%20or%20HTML%20strings%29%3A%0A1.%20Linkify%20first%3A%20wrap%20bare%20URLs%20in%20%60%3Ca%20href%3E%60%20%28regex%20below%29%2C%20skipping%20URLs%20already%20inside%20an%20href%20attribute.%0A2.%20%60HtmlWidget%28linkifyHtml%28desc%29%2C%20onTapUrl%3A%20%28url%29%20%3D%3E%20launchUrl%28Uri.parse%28url%29%2C%20mode%3A%20LaunchMode.externalApplication%29%29%60%20%E2%80%94%20%60url_launcher%60%2C%20already%20available%20in%20most%20apps.%0A3.%20%2A%2AAndroidManifest%2A%2A%3A%20add%20a%20%60%3Cqueries%3E%60%20block%20%28VIEW%20intent%2C%20%60http%60%20%2B%20%60https%60%20schemes%29%20for%20Android%2011%2B%20package%20visibility%2C%20or%20browser%20launch%20can%20fail%20silently.%0A%0ACopy-paste%20linkify%20%28mind%20the%20raw-string%20trap%20%E2%80%94%20see%20below%29%3A%0A%0A%60%60%60dart%0Afinal%20RegExp%20_bareUrlPattern%20%3D%20RegExp%28%0A%20%20r%27%28%3F%3C%21%5B%3D%22%5D%29%28%28%3F%3Ahttps%3F%3A%2F%2F%7Cwww%5C.%29%5B%5E%5Cs%3C%3E%5D%2B%29%27%2C%0A%20%20caseSensitive%3A%20false%2C%0A%29%3B%0Afinal%20RegExp%20_trailingJunk%20%3D%20RegExp%28r%27%5B.%2C%3B%3A%21%3F%E2%80%A6%29%22%27%20r%22%27%5D%2B%24%22%29%3B%0A%0AString%20linkifyHtml%28String%20input%29%20%3D%3E%20input.replaceAllMapped%28_bareUrlPattern%2C%20%28m%29%20%7B%0A%20%20var%20url%20%3D%20m.group%281%29%21.replaceAll%28_trailingJunk%2C%20%27%27%29%3B%0A%20%20if%20%28url.isEmpty%29%20return%20m.group%280%29%21%3B%0A%20%20final%20href%20%3D%20url.startsWith%28%27http%27%29%20%3F%20url%20%3A%20%27https%3A%2F%2F%24url%27%3B%0A%20%20return%20%27%3Ca%20href%3D%22%24href%22%3E%24url%3C%2Fa%3E%27%3B%0A%7D%29%3B%0A%60%60%60%0A%0A%23%23%20WebView%20%28webview_flutter%204.x%29%0A%0A-%20%60loadFile%28%29%60%3A%20pass%20%60%27file%3A%2F%2F%24path%27%60.%20The%204.x%20Android%20impl%20hands%20the%20string%0A%20%20straight%20to%20%60loadUrl%60%20%28no%20prefix%20added%29%3B%20the%20legacy%20impl%20prefixes%20%60file%3A%2F%2F%60%0A%20%20itself.%20The%20explicit%20prefix%20works%20for%20both%2C%20and%20the%20plugin%20sets%0A%20%20%60setAllowFileAccess%28true%29%60%20for%20you.%0A-%20%60setDomStorageEnabled%60%20was%20REMOVED%20from%20the%20API%20%E2%80%94%20DOM%20storage%20is%20always%20on%0A%20%20%28AndroidWebViewController%20ctor%20enables%20it%29.%0A-%20Pinch%20zoom%20is%20ON%20by%20default%20%28ctor%3A%20%60setBuiltInZoomControls%28true%29%60%2C%0A%20%20%60setDisplayZoomControls%28false%29%60%29%20%E2%80%94%20no%20code%20needed.%0A-%20CDN-script%20pages%20%28Tailwind%20etc.%29%3A%20%60setJavaScriptMode%28JavaScriptMode.unrestricted%29%60.%0A-%20Loading%20UX%3A%20%60NavigationDelegate%28onPageStarted%2FonPageFinished%29%60%20%2B%20spinner%3B%0A%20%20WebView%20stays%20blank%20until%20the%20first%20frame.%0A-%20HTML%20in%20a%20WebView%20renders%20CSS%2FJS%2FRTL%20exactly%20like%20a%20browser%3B%20a%20plain%0A%20%20%60HtmlWidget%60%20view%20strips%20styles%20%E2%80%94%20choose%20per%20use%20case.%0A%0A%23%23%20PDFs%20%28flutter_pdfview%29%0A%0A-%20Android%20native%20%60PdfRenderer%60%20%E2%86%92%20handles%20Hebrew%2FRTL%20PDFs%20and%20generated%20docs%20well.%0A-%20Needs%20a%20real%20local%20file%20path%20%28app-private%20dirs%20like%20applicationSupport%20work%29.%0A-%20Default%20view%3A%20%60PDFView%28filePath%3A%20path%2C%20autoSpacing%3A%20true%2C%20pageFling%3A%20false%29%60%3B%0A%20%20errors%20surface%20via%20%60onError%60%20%2F%20%60onPageError%60.%0A%0A%23%23%20Local%20file%20download%20%2B%20cache%20%28background_downloader%29%0A%0A-%20Cache%20pattern%3A%20build%20the%20%60DownloadTask%60%20%28same%20URL%2Fheaders%20as%20the%20download%29%2C%0A%20%20call%20%60task.filePath%28%29%60%20%E2%80%94%20returns%20%60Future%3CString%3E%60%20%28%2A%2Anon-nullable%2A%2A%29%20%E2%80%94%20then%0A%20%20%60File%28path%29.existsSync%28%29%60%20to%20skip%20re-downloads.%0A-%20Open%20a%20cached%20local%20file%20in%20an%20external%20app%3A%0A%20%20%60FileDownloader%28%29.openFile%28filePath%3A%20path%2C%20mimeType%3A%20mime%29%60%20%28exposes%20via%0A%20%20content%20URI%3B%20plain%20%60url_launcher%60%20%60Uri.file%60%20does%20NOT%20work%20on%20Android%207%2B%20for%0A%20%20app-private%20files%29.%0A%0A%23%23%20Dart%20raw%20strings%20%E2%80%94%20no%20escapes%0A%0A-%20In%20a%20raw%20string%20%28%60r%27...%27%60%29%2C%20backslash%20escaping%20does%20NOT%20exist%3A%20%60r%27...%5C%27...%27%60%0A%20%20terminates%20at%20the%20quote%20%E2%86%92%20parse%20error%20%28this%20is%20NOT%20a%20regex%20bug%29.%0A-%20Include%20both%20quote%20types%20in%20one%20regex%20by%20concatenating%20adjacent%20raw%20literals%0A%20%20with%20alternating%20quotes%3A%20%60r%27%5B.%2C%3B%3A%21%3F%E2%80%A6%29%22%27%20r%22%27%5D%2B%24%22%60.%0A-%20The%20analyzer%20lint%20%60prefer_adjacent_string_concatenation%60%20demands%20adjacent%0A%20%20literals%20%28no%20%60%2B%60%20operator%29.%0A%0A%23%23%20Verification%0A%0A-%20%60flutter%20analyze%60%20must%20reach%20zero%20errors%20in%20touched%20files.%0A-%20After%20any%20multi-line%20edit%3A%20%60dart%20format%20%3Cfile%3E%60%20%E2%80%94%20it%20FAILS%20loudly%20on%0A%20%20unbalanced%20braces%2C%20making%20it%20the%20fastest%20corruption%20detector.">[ DOWNLOAD SKILL.MD ]</a>
+<span id="copied-msg" style="color:#8affa8">&nbsp;</span>
+</div>
 </header>
 <main>
 
@@ -157,5 +167,104 @@ String linkifyHtml(String input) =&gt; input.replaceAllMapped(_bareUrlPattern, (
 <div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : flutter-content-rendering // software-development</div>
 <div>MIT — generated by tools/publish.py; source: skills/flutter-content-rendering/SKILL.md</div>
 </footer>
+<pre id="raw" hidden>---
+name: flutter-content-rendering
+description: &quot;Show HTML/links/PDFs in Flutter — viewers, clickable URLs.&quot;
+version: 1.0.0
+author: Hermes Agent
+license: MIT
+metadata:
+  hermes:
+    tags: [flutter, rendering, html, pdf]
+    category: software-development
+tags: flutter, dart, html, links, webview, pdf, url-launcher, rendering
+---
+
+
+# Flutter Content Rendering (HTML, links, PDFs, local files)
+
+Package-level quirks for rendering dynamic content in Flutter apps (task
+descriptions, attachment viewers, rich text). Verified against the Vikunja
+Flutter app on Flutter 3.44.8 / Dart 3.12 / webview_flutter 4.13.
+
+## Clickable links inside rendered HTML
+
+`flutter_widget_from_html`&#x27;s `HtmlWidget`:
+- Does **NOT** auto-linkify bare `https://` / `www.` URLs — they render as inert text.
+- `&lt;a href&gt;` tags are only tappable when `onTapUrl` is supplied.
+- `onTapUrl` signature: `FutureOr&lt;bool&gt; Function(String url)?` — return true = handled.
+
+Recipe (works for plain text or HTML strings):
+1. Linkify first: wrap bare URLs in `&lt;a href&gt;` (regex below), skipping URLs already inside an href attribute.
+2. `HtmlWidget(linkifyHtml(desc), onTapUrl: (url) =&gt; launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication))` — `url_launcher`, already available in most apps.
+3. **AndroidManifest**: add a `&lt;queries&gt;` block (VIEW intent, `http` + `https` schemes) for Android 11+ package visibility, or browser launch can fail silently.
+
+Copy-paste linkify (mind the raw-string trap — see below):
+
+```dart
+final RegExp _bareUrlPattern = RegExp(
+  r&#x27;(?&lt;![=&quot;])((?:https?://|www\.)[^\s&lt;&gt;]+)&#x27;,
+  caseSensitive: false,
+);
+final RegExp _trailingJunk = RegExp(r&#x27;[.,;:!?…)&quot;&#x27; r&quot;&#x27;]+$&quot;);
+
+String linkifyHtml(String input) =&gt; input.replaceAllMapped(_bareUrlPattern, (m) {
+  var url = m.group(1)!.replaceAll(_trailingJunk, &#x27;&#x27;);
+  if (url.isEmpty) return m.group(0)!;
+  final href = url.startsWith(&#x27;http&#x27;) ? url : &#x27;https://$url&#x27;;
+  return &#x27;&lt;a href=&quot;$href&quot;&gt;$url&lt;/a&gt;&#x27;;
+});
+```
+
+## WebView (webview_flutter 4.x)
+
+- `loadFile()`: pass `&#x27;file://$path&#x27;`. The 4.x Android impl hands the string
+  straight to `loadUrl` (no prefix added); the legacy impl prefixes `file://`
+  itself. The explicit prefix works for both, and the plugin sets
+  `setAllowFileAccess(true)` for you.
+- `setDomStorageEnabled` was REMOVED from the API — DOM storage is always on
+  (AndroidWebViewController ctor enables it).
+- Pinch zoom is ON by default (ctor: `setBuiltInZoomControls(true)`,
+  `setDisplayZoomControls(false)`) — no code needed.
+- CDN-script pages (Tailwind etc.): `setJavaScriptMode(JavaScriptMode.unrestricted)`.
+- Loading UX: `NavigationDelegate(onPageStarted/onPageFinished)` + spinner;
+  WebView stays blank until the first frame.
+- HTML in a WebView renders CSS/JS/RTL exactly like a browser; a plain
+  `HtmlWidget` view strips styles — choose per use case.
+
+## PDFs (flutter_pdfview)
+
+- Android native `PdfRenderer` → handles Hebrew/RTL PDFs and generated docs well.
+- Needs a real local file path (app-private dirs like applicationSupport work).
+- Default view: `PDFView(filePath: path, autoSpacing: true, pageFling: false)`;
+  errors surface via `onError` / `onPageError`.
+
+## Local file download + cache (background_downloader)
+
+- Cache pattern: build the `DownloadTask` (same URL/headers as the download),
+  call `task.filePath()` — returns `Future&lt;String&gt;` (**non-nullable**) — then
+  `File(path).existsSync()` to skip re-downloads.
+- Open a cached local file in an external app:
+  `FileDownloader().openFile(filePath: path, mimeType: mime)` (exposes via
+  content URI; plain `url_launcher` `Uri.file` does NOT work on Android 7+ for
+  app-private files).
+
+## Dart raw strings — no escapes
+
+- In a raw string (`r&#x27;...&#x27;`), backslash escaping does NOT exist: `r&#x27;...\&#x27;...&#x27;`
+  terminates at the quote → parse error (this is NOT a regex bug).
+- Include both quote types in one regex by concatenating adjacent raw literals
+  with alternating quotes: `r&#x27;[.,;:!?…)&quot;&#x27; r&quot;&#x27;]+$&quot;`.
+- The analyzer lint `prefer_adjacent_string_concatenation` demands adjacent
+  literals (no `+` operator).
+
+## Verification
+
+- `flutter analyze` must reach zero errors in touched files.
+- After any multi-line edit: `dart format &lt;file&gt;` — it FAILS loudly on
+  unbalanced braces, making it the fastest corruption detector.</pre>
+<script>
+function copyRaw(){var t=document.getElementById('raw').textContent;navigator.clipboard.writeText(t).then(function(){var m=document.getElementById('copied-msg');m.textContent='COPIED!';setTimeout(function(){m.textContent='';},2000);});}
+</script>
 </body>
 </html>

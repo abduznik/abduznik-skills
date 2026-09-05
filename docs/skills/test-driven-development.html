@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>test-driven-development // SKILL</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 *{box-sizing:border-box}
 body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
@@ -30,15 +31,24 @@ footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8
 .cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
 @keyframes blink{50%{opacity:0}}
 .badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+.catbtn{display:inline-block;border:2px solid #44ff77;color:#44ff77;background:#061106;padding:7px 13px;margin:5px 7px 5px 0;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(0,255,100,.2);text-transform:uppercase;text-decoration:none;letter-spacing:.5px}
+.catbtn:hover{background:#44ff77;color:#050a05}
+.logo{width:44px;height:44px;vertical-align:middle;image-rendering:pixelated;margin-right:12px}
+.get{margin:16px 0}
 </style>
 </head>
 <body>
 <header>
 <p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
-<h1 class="px">test-driven-development</h1>
+<h1 class="px"><img class="logo" src="favicon.svg" alt="logo">test-driven-development</h1>
 <div><span class="badge" style="border-color:#ffb000;color:#ffb000">software-development</span>
 <span class='tag' style='border-color:#ff77cc'>testing</span><span class='tag' style='border-color:#ff77cc'>tdd</span><span class='tag' style='border-color:#ff77cc'>development</span><span class='tag' style='border-color:#ff77cc'>quality</span><span class='tag' style='border-color:#ff77cc'>red-green-refactor</span></div>
 <p style="color:#8affa8">TDD: enforce RED-GREEN-REFACTOR, tests before code.</p>
+<div class="get">
+<button class="catbtn" onclick="copyRaw()">[ COPY SKILL.MD ]</button>
+<a class="catbtn" download="SKILL.md" href="data:text/markdown;charset=utf-8,---%0Aname%3A%20test-driven-development%0Adescription%3A%20%22TDD%3A%20enforce%20RED-GREEN-REFACTOR%2C%20tests%20before%20code.%22%0Aversion%3A%201.1.0%0Aauthor%3A%20Hermes%20Agent%20%28adapted%20from%20obra%2Fsuperpowers%29%0Alicense%3A%20MIT%0Aplatforms%3A%20%5Blinux%2C%20macos%2C%20windows%5D%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Btesting%2C%20tdd%2C%20development%2C%20quality%2C%20red-green-refactor%5D%0A%20%20%20%20related_skills%3A%20%5Bsystematic-debugging%2C%20plan%2C%20subagent-driven-development%5D%0A---%0A%0A%0A%23%20Test-Driven%20Development%20%28TDD%29%0A%0A%23%23%20Overview%0A%0AWrite%20the%20test%20first.%20Watch%20it%20fail.%20Write%20minimal%20code%20to%20pass.%0A%0A%2A%2ACore%20principle%3A%2A%2A%20If%20you%20didn%27t%20watch%20the%20test%20fail%2C%20you%20don%27t%20know%20if%20it%20tests%20the%20right%20thing.%0A%0A%2A%2AViolating%20the%20letter%20of%20the%20rules%20is%20violating%20the%20spirit%20of%20the%20rules.%2A%2A%0A%0A%23%23%20When%20to%20Use%0A%0A%2A%2AAlways%3A%2A%2A%0A-%20New%20features%0A-%20Bug%20fixes%0A-%20Refactoring%0A-%20Behavior%20changes%0A%0A%2A%2AExceptions%20%28ask%20the%20user%20first%29%3A%2A%2A%0A-%20Throwaway%20prototypes%0A-%20Generated%20code%0A-%20Configuration%20files%0A%0AThinking%20%22skip%20TDD%20just%20this%20once%22%3F%20Stop.%20That%27s%20rationalization.%0A%0A%23%23%20The%20Iron%20Law%0A%0A%60%60%60%0ANO%20PRODUCTION%20CODE%20WITHOUT%20A%20FAILING%20TEST%20FIRST%0A%60%60%60%0A%0AWrite%20code%20before%20the%20test%3F%20Delete%20it.%20Start%20over.%0A%0A%2A%2ANo%20exceptions%3A%2A%2A%0A-%20Don%27t%20keep%20it%20as%20%22reference%22%0A-%20Don%27t%20%22adapt%22%20it%20while%20writing%20tests%0A-%20Don%27t%20look%20at%20it%0A-%20Delete%20means%20delete%0A%0AImplement%20fresh%20from%20tests.%20Period.%0A%0A%23%23%20Red-Green-Refactor%20Cycle%0A%0A%23%23%23%20RED%20%E2%80%94%20Write%20Failing%20Test%0A%0AWrite%20one%20minimal%20test%20showing%20what%20should%20happen.%0A%0A%2A%2AGood%20test%3A%2A%2A%0A%60%60%60python%0Adef%20test_retries_failed_operations_3_times%28%29%3A%0A%20%20%20%20attempts%20%3D%200%0A%20%20%20%20def%20operation%28%29%3A%0A%20%20%20%20%20%20%20%20nonlocal%20attempts%0A%20%20%20%20%20%20%20%20attempts%20%2B%3D%201%0A%20%20%20%20%20%20%20%20if%20attempts%20%3C%203%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20raise%20Exception%28%27fail%27%29%0A%20%20%20%20%20%20%20%20return%20%27success%27%0A%0A%20%20%20%20result%20%3D%20retry_operation%28operation%29%0A%0A%20%20%20%20assert%20result%20%3D%3D%20%27success%27%0A%20%20%20%20assert%20attempts%20%3D%3D%203%0A%60%60%60%0AClear%20name%2C%20tests%20real%20behavior%2C%20one%20thing.%0A%0A%2A%2ABad%20test%3A%2A%2A%0A%60%60%60python%0Adef%20test_retry_works%28%29%3A%0A%20%20%20%20mock%20%3D%20MagicMock%28%29%0A%20%20%20%20mock.side_effect%20%3D%20%5BException%28%29%2C%20Exception%28%29%2C%20%27success%27%5D%0A%20%20%20%20result%20%3D%20retry_operation%28mock%29%0A%20%20%20%20assert%20result%20%3D%3D%20%27success%27%20%20%23%20What%20about%20retry%20count%3F%20Timing%3F%0A%60%60%60%0AVague%20name%2C%20tests%20mock%20not%20real%20code.%0A%0A%2A%2ARequirements%3A%2A%2A%0A-%20One%20behavior%20per%20test%0A-%20Clear%20descriptive%20name%20%28%22and%22%20in%20name%3F%20Split%20it%29%0A-%20Real%20code%2C%20not%20mocks%20%28unless%20truly%20unavoidable%29%0A-%20Name%20describes%20behavior%2C%20not%20implementation%0A%0A%23%23%23%20Verify%20RED%20%E2%80%94%20Watch%20It%20Fail%0A%0A%2A%2AMANDATORY.%20Never%20skip.%2A%2A%0A%0A%60%60%60bash%0A%23%20Use%20terminal%20tool%20to%20run%20the%20specific%20test%0Apytest%20tests%2Ftest_feature.py%3A%3Atest_specific_behavior%20-v%0A%60%60%60%0A%0AConfirm%3A%0A-%20Test%20fails%20%28not%20errors%20from%20typos%29%0A-%20Failure%20message%20is%20expected%0A-%20Fails%20because%20the%20feature%20is%20missing%0A%0A%2A%2ATest%20passes%20immediately%3F%2A%2A%20You%27re%20testing%20existing%20behavior.%20Fix%20the%20test.%0A%0A%2A%2ATest%20errors%3F%2A%2A%20Fix%20the%20error%2C%20re-run%20until%20it%20fails%20correctly.%0A%0A%23%23%23%20GREEN%20%E2%80%94%20Minimal%20Code%0A%0AWrite%20the%20simplest%20code%20to%20pass%20the%20test.%20Nothing%20more.%0A%0A%2A%2AGood%3A%2A%2A%0A%60%60%60python%0Adef%20add%28a%2C%20b%29%3A%0A%20%20%20%20return%20a%20%2B%20b%20%20%23%20Nothing%20extra%0A%60%60%60%0A%0A%2A%2ABad%3A%2A%2A%0A%60%60%60python%0Adef%20add%28a%2C%20b%29%3A%0A%20%20%20%20result%20%3D%20a%20%2B%20b%0A%20%20%20%20logging.info%28f%22Adding%20%7Ba%7D%20%2B%20%7Bb%7D%20%3D%20%7Bresult%7D%22%29%20%20%23%20Extra%21%0A%20%20%20%20return%20result%0A%60%60%60%0A%0ADon%27t%20add%20features%2C%20refactor%20other%20code%2C%20or%20%22improve%22%20beyond%20the%20test.%0A%0A%2A%2ACheating%20is%20OK%20in%20GREEN%3A%2A%2A%0A-%20Hardcode%20return%20values%0A-%20Copy-paste%0A-%20Duplicate%20code%0A-%20Skip%20edge%20cases%0A%0AWe%27ll%20fix%20it%20in%20REFACTOR.%0A%0A%23%23%23%20Verify%20GREEN%20%E2%80%94%20Watch%20It%20Pass%0A%0A%2A%2AMANDATORY.%2A%2A%0A%0A%60%60%60bash%0A%23%20Run%20the%20specific%20test%0Apytest%20tests%2Ftest_feature.py%3A%3Atest_specific_behavior%20-v%0A%0A%23%20Then%20run%20ALL%20tests%20to%20check%20for%20regressions%0Apytest%20tests%2F%20-q%0A%60%60%60%0A%0AConfirm%3A%0A-%20Test%20passes%0A-%20Other%20tests%20still%20pass%0A-%20Output%20pristine%20%28no%20errors%2C%20warnings%29%0A%0A%2A%2ATest%20fails%3F%2A%2A%20Fix%20the%20code%2C%20not%20the%20test.%0A%0A%2A%2AOther%20tests%20fail%3F%2A%2A%20Fix%20regressions%20now.%0A%0A%23%23%23%20REFACTOR%20%E2%80%94%20Clean%20Up%0A%0AAfter%20green%20only%3A%0A-%20Remove%20duplication%0A-%20Improve%20names%0A-%20Extract%20helpers%0A-%20Simplify%20expressions%0A%0AKeep%20tests%20green%20throughout.%20Don%27t%20add%20behavior.%0A%0A%2A%2AIf%20tests%20fail%20during%20refactor%3A%2A%2A%20Undo%20immediately.%20Take%20smaller%20steps.%0A%0A%23%23%23%20Repeat%0A%0ANext%20failing%20test%20for%20next%20behavior.%20One%20cycle%20at%20a%20time.%0A%0A%23%23%20Avoid%20Horizontal%20Slices%0A%0ADo%20%2A%2Anot%2A%2A%20write%20all%20tests%20first%20and%20then%20all%20implementation.%20That%20is%20horizontal%20slicing%3A%20RED%20becomes%20%22write%20a%20pile%20of%20imagined%20tests%22%20and%20GREEN%20becomes%20%22make%20the%20pile%20pass.%22%20It%20produces%20brittle%20tests%20because%20the%20tests%20are%20designed%20before%20the%20implementation%20has%20taught%20you%20what%20behavior%20and%20interface%20actually%20matter.%0A%0AUse%20vertical%20tracer%20bullets%20instead%3A%0A%0A%60%60%60text%0AWRONG%3A%0A%20%20RED%3A%20%20%20test1%2C%20test2%2C%20test3%2C%20test4%0A%20%20GREEN%3A%20impl1%2C%20impl2%2C%20impl3%2C%20impl4%0A%0ARIGHT%3A%0A%20%20RED%E2%86%92GREEN%3A%20test1%E2%86%92impl1%0A%20%20RED%E2%86%92GREEN%3A%20test2%E2%86%92impl2%0A%20%20RED%E2%86%92GREEN%3A%20test3%E2%86%92impl3%0A%60%60%60%0A%0AA%20tracer%20bullet%20is%20one%20end-to-end%20behavior%20slice.%20It%20proves%20the%20path%20works%2C%20teaches%20you%20about%20the%20interface%2C%20and%20keeps%20each%20next%20test%20grounded%20in%20what%20you%20just%20learned.%0A%0A%23%23%20Why%20Order%20Matters%0A%0A%2A%2A%22I%27ll%20write%20tests%20after%20to%20verify%20it%20works%22%2A%2A%0A%0ATests%20written%20after%20code%20pass%20immediately.%20Passing%20immediately%20proves%20nothing%3A%0A-%20Might%20test%20the%20wrong%20thing%0A-%20Might%20test%20implementation%2C%20not%20behavior%0A-%20Might%20miss%20edge%20cases%20you%20forgot%0A-%20You%20never%20saw%20it%20catch%20the%20bug%0A%0ATest-first%20forces%20you%20to%20see%20the%20test%20fail%2C%20proving%20it%20actually%20tests%20something.%0A%0A%2A%2A%22I%20already%20manually%20tested%20all%20the%20edge%20cases%22%2A%2A%0A%0AManual%20testing%20is%20ad-hoc.%20You%20think%20you%20tested%20everything%20but%3A%0A-%20No%20record%20of%20what%20you%20tested%0A-%20Can%27t%20re-run%20when%20code%20changes%0A-%20Easy%20to%20forget%20cases%20under%20pressure%0A-%20%22It%20worked%20when%20I%20tried%20it%22%20%E2%89%A0%20comprehensive%0A%0AAutomated%20tests%20are%20systematic.%20They%20run%20the%20same%20way%20every%20time.%0A%0A%2A%2A%22Deleting%20X%20hours%20of%20work%20is%20wasteful%22%2A%2A%0A%0ASunk%20cost%20fallacy.%20The%20time%20is%20already%20gone.%20Your%20choice%20now%3A%0A-%20Delete%20and%20rewrite%20with%20TDD%20%28high%20confidence%29%0A-%20Keep%20it%20and%20add%20tests%20after%20%28low%20confidence%2C%20likely%20bugs%29%0A%0AThe%20%22waste%22%20is%20keeping%20code%20you%20can%27t%20trust.%0A%0A%2A%2A%22TDD%20is%20dogmatic%2C%20being%20pragmatic%20means%20adapting%22%2A%2A%0A%0ATDD%20IS%20pragmatic%3A%0A-%20Finds%20bugs%20before%20commit%20%28faster%20than%20debugging%20after%29%0A-%20Prevents%20regressions%20%28tests%20catch%20breaks%20immediately%29%0A-%20Documents%20behavior%20%28tests%20show%20how%20to%20use%20code%29%0A-%20Enables%20refactoring%20%28change%20freely%2C%20tests%20catch%20breaks%29%0A%0A%22Pragmatic%22%20shortcuts%20%3D%20debugging%20in%20production%20%3D%20slower.%0A%0A%2A%2A%22Tests%20after%20achieve%20the%20same%20goals%20%E2%80%94%20it%27s%20spirit%20not%20ritual%22%2A%2A%0A%0ANo.%20Tests-after%20answer%20%22What%20does%20this%20do%3F%22%20Tests-first%20answer%20%22What%20should%20this%20do%3F%22%0A%0ATests-after%20are%20biased%20by%20your%20implementation.%20You%20test%20what%20you%20built%2C%20not%20what%27s%20required.%20Tests-first%20force%20edge%20case%20discovery%20before%20implementing.%0A%0A%23%23%20Common%20Rationalizations%0A%0A%7C%20Excuse%20%7C%20Reality%20%7C%0A%7C--------%7C---------%7C%0A%7C%20%22Too%20simple%20to%20test%22%20%7C%20Simple%20code%20breaks.%20Test%20takes%2030%20seconds.%20%7C%0A%7C%20%22I%27ll%20test%20after%22%20%7C%20Tests%20passing%20immediately%20prove%20nothing.%20%7C%0A%7C%20%22Tests%20after%20achieve%20same%20goals%22%20%7C%20Tests-after%20%3D%20%22what%20does%20this%20do%3F%22%20Tests-first%20%3D%20%22what%20should%20this%20do%3F%22%20%7C%0A%7C%20%22Already%20manually%20tested%22%20%7C%20Ad-hoc%20%E2%89%A0%20systematic.%20No%20record%2C%20can%27t%20re-run.%20%7C%0A%7C%20%22Deleting%20X%20hours%20is%20wasteful%22%20%7C%20Sunk%20cost%20fallacy.%20Keeping%20unverified%20code%20is%20technical%20debt.%20%7C%0A%7C%20%22Keep%20as%20reference%2C%20write%20tests%20first%22%20%7C%20You%27ll%20adapt%20it.%20That%27s%20testing%20after.%20Delete%20means%20delete.%20%7C%0A%7C%20%22Need%20to%20explore%20first%22%20%7C%20Fine.%20Throw%20away%20exploration%2C%20start%20with%20TDD.%20%7C%0A%7C%20%22Test%20hard%20%3D%20design%20unclear%22%20%7C%20Listen%20to%20the%20test.%20Hard%20to%20test%20%3D%20hard%20to%20use.%20%7C%0A%7C%20%22TDD%20will%20slow%20me%20down%22%20%7C%20TDD%20faster%20than%20debugging.%20Pragmatic%20%3D%20test-first.%20%7C%0A%7C%20%22Manual%20test%20faster%22%20%7C%20Manual%20doesn%27t%20prove%20edge%20cases.%20You%27ll%20re-test%20every%20change.%20%7C%0A%7C%20%22Existing%20code%20has%20no%20tests%22%20%7C%20You%27re%20improving%20it.%20Add%20tests%20for%20the%20code%20you%20touch.%20%7C%0A%0A%23%23%20Red%20Flags%20%E2%80%94%20STOP%20and%20Start%20Over%0A%0AIf%20you%20catch%20yourself%20doing%20any%20of%20these%2C%20delete%20the%20code%20and%20restart%20with%20TDD%3A%0A%0A-%20Code%20before%20test%0A-%20Test%20after%20implementation%0A-%20Test%20passes%20immediately%20on%20first%20run%0A-%20Can%27t%20explain%20why%20test%20failed%0A-%20Tests%20added%20%22later%22%0A-%20Rationalizing%20%22just%20this%20once%22%0A-%20%22I%20already%20manually%20tested%20it%22%0A-%20%22Tests%20after%20achieve%20the%20same%20purpose%22%0A-%20%22Keep%20as%20reference%22%20or%20%22adapt%20existing%20code%22%0A-%20%22Already%20spent%20X%20hours%2C%20deleting%20is%20wasteful%22%0A-%20%22TDD%20is%20dogmatic%2C%20I%27m%20being%20pragmatic%22%0A-%20%22This%20is%20different%20because...%22%0A%0A%2A%2AAll%20of%20these%20mean%3A%20Delete%20code.%20Start%20over%20with%20TDD.%2A%2A%0A%0A%23%23%20Verification%20Checklist%0A%0ABefore%20marking%20work%20complete%3A%0A%0A-%20%5B%20%5D%20Every%20new%20function%2Fmethod%20has%20a%20test%0A-%20%5B%20%5D%20Watched%20each%20test%20fail%20before%20implementing%0A-%20%5B%20%5D%20Each%20test%20failed%20for%20expected%20reason%20%28feature%20missing%2C%20not%20typo%29%0A-%20%5B%20%5D%20Wrote%20minimal%20code%20to%20pass%20each%20test%0A-%20%5B%20%5D%20All%20tests%20pass%0A-%20%5B%20%5D%20Output%20pristine%20%28no%20errors%2C%20warnings%29%0A-%20%5B%20%5D%20Tests%20use%20real%20code%20%28mocks%20only%20if%20unavoidable%29%0A-%20%5B%20%5D%20Edge%20cases%20and%20errors%20covered%0A%0ACan%27t%20check%20all%20boxes%3F%20You%20skipped%20TDD.%20Start%20over.%0A%0A%23%23%20When%20Stuck%0A%0A%7C%20Problem%20%7C%20Solution%20%7C%0A%7C---------%7C----------%7C%0A%7C%20Don%27t%20know%20how%20to%20test%20%7C%20Write%20the%20wished-for%20API.%20Write%20the%20assertion%20first.%20Ask%20the%20user.%20%7C%0A%7C%20Test%20too%20complicated%20%7C%20Design%20too%20complicated.%20Simplify%20the%20interface.%20%7C%0A%7C%20Must%20mock%20everything%20%7C%20Code%20too%20coupled.%20Use%20dependency%20injection.%20%7C%0A%7C%20Test%20setup%20huge%20%7C%20Extract%20helpers.%20Still%20complex%3F%20Simplify%20the%20design.%20%7C%0A%0A%23%23%20Hermes%20Agent%20Integration%0A%0A%23%23%23%20Running%20Tests%0A%0AUse%20the%20%60terminal%60%20tool%20to%20run%20tests%20at%20each%20step%3A%0A%0A%60%60%60python%0A%23%20RED%20%E2%80%94%20verify%20failure%0Aterminal%28%22pytest%20tests%2Ftest_feature.py%3A%3Atest_name%20-v%22%29%0A%0A%23%20GREEN%20%E2%80%94%20verify%20pass%0Aterminal%28%22pytest%20tests%2Ftest_feature.py%3A%3Atest_name%20-v%22%29%0A%0A%23%20Full%20suite%20%E2%80%94%20verify%20no%20regressions%0Aterminal%28%22pytest%20tests%2F%20-q%22%29%0A%60%60%60%0A%0A%23%23%23%20With%20delegate_task%0A%0AWhen%20dispatching%20subagents%20for%20implementation%2C%20enforce%20TDD%20in%20the%20goal%3A%0A%0A%60%60%60python%0Adelegate_task%28%0A%20%20%20%20goal%3D%22Implement%20%5Bfeature%5D%20using%20strict%20TDD%22%2C%0A%20%20%20%20context%3D%22%22%22%0A%20%20%20%20Follow%20test-driven-development%20skill%3A%0A%20%20%20%201.%20Write%20failing%20test%20FIRST%0A%20%20%20%202.%20Run%20test%20to%20verify%20it%20fails%0A%20%20%20%203.%20Write%20minimal%20code%20to%20pass%0A%20%20%20%204.%20Run%20test%20to%20verify%20it%20passes%0A%20%20%20%205.%20Refactor%20if%20needed%0A%20%20%20%206.%20Commit%0A%0A%20%20%20%20Project%20test%20command%3A%20pytest%20tests%2F%20-q%0A%20%20%20%20Project%20structure%3A%20%5Bdescribe%20relevant%20files%5D%0A%20%20%20%20%22%22%22%2C%0A%20%20%20%20toolsets%3D%5B%27terminal%27%2C%20%27file%27%5D%0A%29%0A%60%60%60%0A%0A%23%23%23%20With%20systematic-debugging%0A%0ABug%20found%3F%20Write%20failing%20test%20reproducing%20it.%20Follow%20TDD%20cycle.%20The%20test%20proves%20the%20fix%20and%20prevents%20regression.%0A%0ANever%20fix%20bugs%20without%20a%20test.%0A%0A%23%23%20Testing%20Anti-Patterns%0A%0A-%20%2A%2ATesting%20mock%20behavior%20instead%20of%20real%20behavior%2A%2A%20%E2%80%94%20mocks%20should%20verify%20interactions%2C%20not%20replace%20the%20system%20under%20test%0A-%20%2A%2ATesting%20implementation%20details%2A%2A%20%E2%80%94%20test%20behavior%2Fresults%2C%20not%20internal%20method%20calls%0A-%20%2A%2AHappy%20path%20only%2A%2A%20%E2%80%94%20always%20test%20edge%20cases%2C%20errors%2C%20and%20boundaries%0A-%20%2A%2ABrittle%20tests%2A%2A%20%E2%80%94%20tests%20should%20verify%20behavior%2C%20not%20structure%3B%20refactoring%20shouldn%27t%20break%20them%0A%0A%23%23%20Final%20Rule%0A%0A%60%60%60%0AProduction%20code%20%E2%86%92%20test%20exists%20and%20failed%20first%0AOtherwise%20%E2%86%92%20not%20TDD%0A%60%60%60%0A%0ANo%20exceptions%20without%20the%20user%27s%20explicit%20permission.%0A">[ DOWNLOAD SKILL.MD ]</a>
+<span id="copied-msg" style="color:#8affa8">&nbsp;</span>
+</div>
 </header>
 <main>
 
@@ -390,5 +400,372 @@ Otherwise → not TDD</code></pre>
 <div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : test-driven-development // software-development</div>
 <div>MIT — generated by tools/publish.py; source: skills/test-driven-development/SKILL.md</div>
 </footer>
+<pre id="raw" hidden>---
+name: test-driven-development
+description: &quot;TDD: enforce RED-GREEN-REFACTOR, tests before code.&quot;
+version: 1.1.0
+author: Hermes Agent (adapted from obra/superpowers)
+license: MIT
+platforms: [linux, macos, windows]
+metadata:
+  hermes:
+    tags: [testing, tdd, development, quality, red-green-refactor]
+    related_skills: [systematic-debugging, plan, subagent-driven-development]
+---
+
+
+# Test-Driven Development (TDD)
+
+## Overview
+
+Write the test first. Watch it fail. Write minimal code to pass.
+
+**Core principle:** If you didn&#x27;t watch the test fail, you don&#x27;t know if it tests the right thing.
+
+**Violating the letter of the rules is violating the spirit of the rules.**
+
+## When to Use
+
+**Always:**
+- New features
+- Bug fixes
+- Refactoring
+- Behavior changes
+
+**Exceptions (ask the user first):**
+- Throwaway prototypes
+- Generated code
+- Configuration files
+
+Thinking &quot;skip TDD just this once&quot;? Stop. That&#x27;s rationalization.
+
+## The Iron Law
+
+```
+NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
+```
+
+Write code before the test? Delete it. Start over.
+
+**No exceptions:**
+- Don&#x27;t keep it as &quot;reference&quot;
+- Don&#x27;t &quot;adapt&quot; it while writing tests
+- Don&#x27;t look at it
+- Delete means delete
+
+Implement fresh from tests. Period.
+
+## Red-Green-Refactor Cycle
+
+### RED — Write Failing Test
+
+Write one minimal test showing what should happen.
+
+**Good test:**
+```python
+def test_retries_failed_operations_3_times():
+    attempts = 0
+    def operation():
+        nonlocal attempts
+        attempts += 1
+        if attempts &lt; 3:
+            raise Exception(&#x27;fail&#x27;)
+        return &#x27;success&#x27;
+
+    result = retry_operation(operation)
+
+    assert result == &#x27;success&#x27;
+    assert attempts == 3
+```
+Clear name, tests real behavior, one thing.
+
+**Bad test:**
+```python
+def test_retry_works():
+    mock = MagicMock()
+    mock.side_effect = [Exception(), Exception(), &#x27;success&#x27;]
+    result = retry_operation(mock)
+    assert result == &#x27;success&#x27;  # What about retry count? Timing?
+```
+Vague name, tests mock not real code.
+
+**Requirements:**
+- One behavior per test
+- Clear descriptive name (&quot;and&quot; in name? Split it)
+- Real code, not mocks (unless truly unavoidable)
+- Name describes behavior, not implementation
+
+### Verify RED — Watch It Fail
+
+**MANDATORY. Never skip.**
+
+```bash
+# Use terminal tool to run the specific test
+pytest tests/test_feature.py::test_specific_behavior -v
+```
+
+Confirm:
+- Test fails (not errors from typos)
+- Failure message is expected
+- Fails because the feature is missing
+
+**Test passes immediately?** You&#x27;re testing existing behavior. Fix the test.
+
+**Test errors?** Fix the error, re-run until it fails correctly.
+
+### GREEN — Minimal Code
+
+Write the simplest code to pass the test. Nothing more.
+
+**Good:**
+```python
+def add(a, b):
+    return a + b  # Nothing extra
+```
+
+**Bad:**
+```python
+def add(a, b):
+    result = a + b
+    logging.info(f&quot;Adding {a} + {b} = {result}&quot;)  # Extra!
+    return result
+```
+
+Don&#x27;t add features, refactor other code, or &quot;improve&quot; beyond the test.
+
+**Cheating is OK in GREEN:**
+- Hardcode return values
+- Copy-paste
+- Duplicate code
+- Skip edge cases
+
+We&#x27;ll fix it in REFACTOR.
+
+### Verify GREEN — Watch It Pass
+
+**MANDATORY.**
+
+```bash
+# Run the specific test
+pytest tests/test_feature.py::test_specific_behavior -v
+
+# Then run ALL tests to check for regressions
+pytest tests/ -q
+```
+
+Confirm:
+- Test passes
+- Other tests still pass
+- Output pristine (no errors, warnings)
+
+**Test fails?** Fix the code, not the test.
+
+**Other tests fail?** Fix regressions now.
+
+### REFACTOR — Clean Up
+
+After green only:
+- Remove duplication
+- Improve names
+- Extract helpers
+- Simplify expressions
+
+Keep tests green throughout. Don&#x27;t add behavior.
+
+**If tests fail during refactor:** Undo immediately. Take smaller steps.
+
+### Repeat
+
+Next failing test for next behavior. One cycle at a time.
+
+## Avoid Horizontal Slices
+
+Do **not** write all tests first and then all implementation. That is horizontal slicing: RED becomes &quot;write a pile of imagined tests&quot; and GREEN becomes &quot;make the pile pass.&quot; It produces brittle tests because the tests are designed before the implementation has taught you what behavior and interface actually matter.
+
+Use vertical tracer bullets instead:
+
+```text
+WRONG:
+  RED:   test1, test2, test3, test4
+  GREEN: impl1, impl2, impl3, impl4
+
+RIGHT:
+  RED→GREEN: test1→impl1
+  RED→GREEN: test2→impl2
+  RED→GREEN: test3→impl3
+```
+
+A tracer bullet is one end-to-end behavior slice. It proves the path works, teaches you about the interface, and keeps each next test grounded in what you just learned.
+
+## Why Order Matters
+
+**&quot;I&#x27;ll write tests after to verify it works&quot;**
+
+Tests written after code pass immediately. Passing immediately proves nothing:
+- Might test the wrong thing
+- Might test implementation, not behavior
+- Might miss edge cases you forgot
+- You never saw it catch the bug
+
+Test-first forces you to see the test fail, proving it actually tests something.
+
+**&quot;I already manually tested all the edge cases&quot;**
+
+Manual testing is ad-hoc. You think you tested everything but:
+- No record of what you tested
+- Can&#x27;t re-run when code changes
+- Easy to forget cases under pressure
+- &quot;It worked when I tried it&quot; ≠ comprehensive
+
+Automated tests are systematic. They run the same way every time.
+
+**&quot;Deleting X hours of work is wasteful&quot;**
+
+Sunk cost fallacy. The time is already gone. Your choice now:
+- Delete and rewrite with TDD (high confidence)
+- Keep it and add tests after (low confidence, likely bugs)
+
+The &quot;waste&quot; is keeping code you can&#x27;t trust.
+
+**&quot;TDD is dogmatic, being pragmatic means adapting&quot;**
+
+TDD IS pragmatic:
+- Finds bugs before commit (faster than debugging after)
+- Prevents regressions (tests catch breaks immediately)
+- Documents behavior (tests show how to use code)
+- Enables refactoring (change freely, tests catch breaks)
+
+&quot;Pragmatic&quot; shortcuts = debugging in production = slower.
+
+**&quot;Tests after achieve the same goals — it&#x27;s spirit not ritual&quot;**
+
+No. Tests-after answer &quot;What does this do?&quot; Tests-first answer &quot;What should this do?&quot;
+
+Tests-after are biased by your implementation. You test what you built, not what&#x27;s required. Tests-first force edge case discovery before implementing.
+
+## Common Rationalizations
+
+| Excuse | Reality |
+|--------|---------|
+| &quot;Too simple to test&quot; | Simple code breaks. Test takes 30 seconds. |
+| &quot;I&#x27;ll test after&quot; | Tests passing immediately prove nothing. |
+| &quot;Tests after achieve same goals&quot; | Tests-after = &quot;what does this do?&quot; Tests-first = &quot;what should this do?&quot; |
+| &quot;Already manually tested&quot; | Ad-hoc ≠ systematic. No record, can&#x27;t re-run. |
+| &quot;Deleting X hours is wasteful&quot; | Sunk cost fallacy. Keeping unverified code is technical debt. |
+| &quot;Keep as reference, write tests first&quot; | You&#x27;ll adapt it. That&#x27;s testing after. Delete means delete. |
+| &quot;Need to explore first&quot; | Fine. Throw away exploration, start with TDD. |
+| &quot;Test hard = design unclear&quot; | Listen to the test. Hard to test = hard to use. |
+| &quot;TDD will slow me down&quot; | TDD faster than debugging. Pragmatic = test-first. |
+| &quot;Manual test faster&quot; | Manual doesn&#x27;t prove edge cases. You&#x27;ll re-test every change. |
+| &quot;Existing code has no tests&quot; | You&#x27;re improving it. Add tests for the code you touch. |
+
+## Red Flags — STOP and Start Over
+
+If you catch yourself doing any of these, delete the code and restart with TDD:
+
+- Code before test
+- Test after implementation
+- Test passes immediately on first run
+- Can&#x27;t explain why test failed
+- Tests added &quot;later&quot;
+- Rationalizing &quot;just this once&quot;
+- &quot;I already manually tested it&quot;
+- &quot;Tests after achieve the same purpose&quot;
+- &quot;Keep as reference&quot; or &quot;adapt existing code&quot;
+- &quot;Already spent X hours, deleting is wasteful&quot;
+- &quot;TDD is dogmatic, I&#x27;m being pragmatic&quot;
+- &quot;This is different because...&quot;
+
+**All of these mean: Delete code. Start over with TDD.**
+
+## Verification Checklist
+
+Before marking work complete:
+
+- [ ] Every new function/method has a test
+- [ ] Watched each test fail before implementing
+- [ ] Each test failed for expected reason (feature missing, not typo)
+- [ ] Wrote minimal code to pass each test
+- [ ] All tests pass
+- [ ] Output pristine (no errors, warnings)
+- [ ] Tests use real code (mocks only if unavoidable)
+- [ ] Edge cases and errors covered
+
+Can&#x27;t check all boxes? You skipped TDD. Start over.
+
+## When Stuck
+
+| Problem | Solution |
+|---------|----------|
+| Don&#x27;t know how to test | Write the wished-for API. Write the assertion first. Ask the user. |
+| Test too complicated | Design too complicated. Simplify the interface. |
+| Must mock everything | Code too coupled. Use dependency injection. |
+| Test setup huge | Extract helpers. Still complex? Simplify the design. |
+
+## Hermes Agent Integration
+
+### Running Tests
+
+Use the `terminal` tool to run tests at each step:
+
+```python
+# RED — verify failure
+terminal(&quot;pytest tests/test_feature.py::test_name -v&quot;)
+
+# GREEN — verify pass
+terminal(&quot;pytest tests/test_feature.py::test_name -v&quot;)
+
+# Full suite — verify no regressions
+terminal(&quot;pytest tests/ -q&quot;)
+```
+
+### With delegate_task
+
+When dispatching subagents for implementation, enforce TDD in the goal:
+
+```python
+delegate_task(
+    goal=&quot;Implement [feature] using strict TDD&quot;,
+    context=&quot;&quot;&quot;
+    Follow test-driven-development skill:
+    1. Write failing test FIRST
+    2. Run test to verify it fails
+    3. Write minimal code to pass
+    4. Run test to verify it passes
+    5. Refactor if needed
+    6. Commit
+
+    Project test command: pytest tests/ -q
+    Project structure: [describe relevant files]
+    &quot;&quot;&quot;,
+    toolsets=[&#x27;terminal&#x27;, &#x27;file&#x27;]
+)
+```
+
+### With systematic-debugging
+
+Bug found? Write failing test reproducing it. Follow TDD cycle. The test proves the fix and prevents regression.
+
+Never fix bugs without a test.
+
+## Testing Anti-Patterns
+
+- **Testing mock behavior instead of real behavior** — mocks should verify interactions, not replace the system under test
+- **Testing implementation details** — test behavior/results, not internal method calls
+- **Happy path only** — always test edge cases, errors, and boundaries
+- **Brittle tests** — tests should verify behavior, not structure; refactoring shouldn&#x27;t break them
+
+## Final Rule
+
+```
+Production code → test exists and failed first
+Otherwise → not TDD
+```
+
+No exceptions without the user&#x27;s explicit permission.
+</pre>
+<script>
+function copyRaw(){var t=document.getElementById('raw').textContent;navigator.clipboard.writeText(t).then(function(){var m=document.getElementById('copied-msg');m.textContent='COPIED!';setTimeout(function(){m.textContent='';},2000);});}
+</script>
 </body>
 </html>

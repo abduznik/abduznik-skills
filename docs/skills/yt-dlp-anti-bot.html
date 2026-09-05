@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>yt-dlp-anti-bot // SKILL</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 *{box-sizing:border-box}
 body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
@@ -30,15 +31,24 @@ footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8
 .cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
 @keyframes blink{50%{opacity:0}}
 .badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+.catbtn{display:inline-block;border:2px solid #44ff77;color:#44ff77;background:#061106;padding:7px 13px;margin:5px 7px 5px 0;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(0,255,100,.2);text-transform:uppercase;text-decoration:none;letter-spacing:.5px}
+.catbtn:hover{background:#44ff77;color:#050a05}
+.logo{width:44px;height:44px;vertical-align:middle;image-rendering:pixelated;margin-right:12px}
+.get{margin:16px 0}
 </style>
 </head>
 <body>
 <header>
 <p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
-<h1 class="px">yt-dlp-anti-bot</h1>
+<h1 class="px"><img class="logo" src="favicon.svg" alt="logo">yt-dlp-anti-bot</h1>
 <div><span class="badge" style="border-color:#ffb000;color:#ffb000">media</span>
 <span class='tag' style='border-color:#55ddff'>youtube</span><span class='tag' style='border-color:#55ddff'>yt-dlp</span><span class='tag' style='border-color:#55ddff'>download</span><span class='tag' style='border-color:#55ddff'>403</span></div>
 <p style="color:#8affa8">When yt-dlp hits 403s, harden with impersonation + backoff.</p>
+<div class="get">
+<button class="catbtn" onclick="copyRaw()">[ COPY SKILL.MD ]</button>
+<a class="catbtn" download="SKILL.md" href="data:text/markdown;charset=utf-8,---%0Aname%3A%20yt-dlp-anti-bot%0Adescription%3A%20When%20yt-dlp%20hits%20403s%2C%20harden%20with%20impersonation%20%2B%20backoff.%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%0Alicense%3A%20MIT%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Byoutube%2C%20yt-dlp%2C%20download%2C%20403%5D%0A%20%20%20%20category%3A%20media%0Atriggers%3A%0A%20%20-%20yt-dlp%20returns%20HTTP%20Error%20403%3A%20Forbidden%0A%20%20-%20YouTube%20downloads%20intermittently%20fail%20or%20skip%20tracks%0A%20%20-%20user%20reports%20missing%20songs%2Ftracks%20after%20a%20playlist%20download%0A%20%20-%20setting%20up%20impersonation%20%2F%20curl_cffi%20for%20yt-dlp%0A---%0A%0A%0A%23%20yt-dlp%20Anti-Bot%20Hardening%20%28YouTube%20403s%29%0A%0AYouTube%20intermittently%20rejects%20yt-dlp%20requests%20with%20%60HTTP%20Error%20403%3A%20Forbidden%60.%20Pattern%20to%20recognize%3A%20failures%20hit%20DIFFERENT%20tracks%20each%20run%2C%20in%20bursts%20%E2%80%94%20that%27s%20IP%20throttling%20%2F%20bot%20detection%2C%20NOT%20a%20per-video%20block.%20A%20job%20can%20report%20%22done%22%20while%20silently%20skipping%20failed%20tracks%20%28see%20below%29.%0A%0A%23%23%20The%20fix%20stack%0A%0A1.%20%2A%2AUpgrade%20yt-dlp%20%2B%20install%20curl_cffi%20PINNED%20%60%3C0.16%60%2A%2A%3A%0A%20%20%20%60%60%60bash%0A%20%20%20pip%20install%20-U%20yt-dlp%20%22curl_cffi%3C0.16%22%0A%20%20%20%60%60%60%0A%20%20%20yt-dlp%202026.07%2B%20rejects%20curl_cffi%200.16.x%20%28%22Only%20curl_cffi%20versions%200.5.10%20and%200.10.x%20through%200.15.x%20are%20supported%22%29.%20When%20curl_cffi%20is%20the%20wrong%20version%2C%20ALL%20impersonate%20targets%20show%20%60%28unavailable%29%60%20in%20%60yt-dlp%20--list-impersonate-targets%60%20even%20though%20%60import%20curl_cffi%60%20works%20fine.%0A%0A2.%20%2A%2APin%20in%20requirements.txt%20too%2A%2A%20%E2%80%94%20%60curl_cffi%3C0.16%60.%20An%20unpinned%20entry%20silently%20reinstalls%20the%20broken%20latest%20version%20on%20every%20container%20restart%20%28services%20whose%20entrypoint%20runs%20%60pip%20install%20-r%20requirements.txt%60%29.%0A%0A3.%20%2A%2APython%20API%3A%20pass%20the%20ImpersonateTarget%20OBJECT%2C%20not%20a%20string%2A%2A%3A%0A%20%20%20%60%60%60python%0A%20%20%20from%20yt_dlp.networking.impersonate%20import%20ImpersonateTarget%0A%20%20%20ydl_opts%20%3D%20%7B%27impersonate%27%3A%20ImpersonateTarget.from_str%28%27chrome%27%29%7D%0A%20%20%20%60%60%60%0A%20%20%20A%20raw%20string%20%60%7B%27impersonate%27%3A%20%27chrome%27%7D%60%20raises%20%60AssertionError%3A%20%27%27%60%20%E2%80%94%20an%20EMPTY%20message%2C%20so%20the%20job%20fails%20at%20info-fetch%20with%20a%20blank%20error.%20The%20CLI%20converts%20strings%20for%20you%3B%20the%20YoutubeDL%28%29%20API%20does%20not.%0A%0A4.%20%2A%2AStale%20process%20trap%2A%2A%3A%20upgrading%2Fdowngrading%20curl_cffi%20while%20a%20service%20runs%20does%20NOT%20fix%20the%20running%20worker%20%E2%80%94%20it%20imported%20yt-dlp%20before%20the%20change.%20CLI%20tests%20pass%20but%20the%20service%20still%20errors.%20Always%20restart%20the%20container%20after%20version%20changes.%0A%0A%23%23%20Verifying%20the%20fix%0A%0A%60%60%60bash%0A%23%20targets%20usable%3F%0Ayt-dlp%20--list-impersonate-targets%0A%23%20single-track%20test%20%E2%80%94%20real%20googlevideo%20URL%20%3D%20fingerprint%20works%0Ayt-dlp%20--impersonate%20chrome%20-f%20bestaudio%20--get-url%20%22%3Curl%3E%22%0A%60%60%60%0A%0A%23%23%20Residual%20throttling%20%E2%86%92%20rotate%20%2B%20backoff%0A%0ASome%20tracks%20still%20403%20even%20with%20impersonation.%20Gap-fill%20strategy%20%28download%20ONLY%20missing%20tracks%2C%20don%27t%20re-run%20whole%20playlists%29%3A%0A-%20Rotate%20impersonation%20targets%20per%20attempt%3A%20%60chrome%60%2C%20%60chrome-136%60%2C%20%60chrome-133%60%2C%20%60safari-18.0%60%2C%20%60safari-17.2%60%0A-%20Rotate%20player%20clients%3A%20%60android%2Cweb%60%2C%20%60web%60%2C%20%60tv%2Cweb%60%2C%20%60android_vr%2Cweb%60%0A-%20Exponential%20backoff%3A%20%60%27retry_sleep_functions%27%3A%20%7B%27http%27%3A%20lambda%20n%3A%2025%20%2A%20%282%20%2A%2A%20min%28n%2C%204%29%29%7D%60%0A-%2060-90s%20sleeps%20between%20attempts%3B%20up%20to%208-12%20attempts%20per%20track%0A-%20Keep%20per-track%20metadata%20%28%60-metadata%20artist%2Falbum%2Ftrack%60%29%20and%20file%20naming%20identical%20to%20the%20service%27s%20output%20%28%60NN%20-%20Title.mp3%60%29%20so%20gap-fills%20blend%20in%0A%0A%23%23%20Pitfalls%0A%0A-%20%2A%2A%22Job%20done%22%20%E2%89%A0%20all%20tracks%20downloaded%2A%2A%3A%20services%20report%20%60Complete%21%20N%20tracks%20processed%60%20when%20the%20LOOP%20finishes%2C%20not%20when%20all%20succeeded.%20Always%20verify%20disk%20file%20count%20against%20playlist%20track%20count.%0A-%20%2A%2A%60docker%20exec%20-d%60%20swallows%20output%20redirects%2A%2A%3A%20%60docker%20exec%20-d%20%3Cc%3E%20python3%20x.py%20%3E%20%2Ftmp%2Fx.log%60%20writes%20the%20log%20on%20the%20HOST%20%28often%200%20bytes%29.%20Use%20%60docker%20exec%20-d%20%3Cc%3E%20sh%20-c%20%22python3%20-u%20x.py%20%3E%20%2Ftmp%2Fx.log%202%3E%261%22%60%20%E2%80%94%20and%20%60python3%20-u%60%20for%20unbuffered%20output.%0A-%20%2A%2ABlock-buffered%20stdout%2A%2A%3A%20service%20app%20stdout%20to%20docker%20logs%20lags%3B%20use%20jobs.json%20%2F%20event%20stores%20as%20source%20of%20truth%20for%20job%20state.%0A">[ DOWNLOAD SKILL.MD ]</a>
+<span id="copied-msg" style="color:#8affa8">&nbsp;</span>
+</div>
 </header>
 <main>
 
@@ -102,5 +112,73 @@ yt-dlp --impersonate chrome -f bestaudio --get-url &quot;&lt;url&gt;&quot;</code
 <div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : yt-dlp-anti-bot // media</div>
 <div>MIT — generated by tools/publish.py; source: skills/yt-dlp-anti-bot/SKILL.md</div>
 </footer>
+<pre id="raw" hidden>---
+name: yt-dlp-anti-bot
+description: When yt-dlp hits 403s, harden with impersonation + backoff.
+version: 1.0.0
+author: Hermes Agent
+license: MIT
+metadata:
+  hermes:
+    tags: [youtube, yt-dlp, download, 403]
+    category: media
+triggers:
+  - yt-dlp returns HTTP Error 403: Forbidden
+  - YouTube downloads intermittently fail or skip tracks
+  - user reports missing songs/tracks after a playlist download
+  - setting up impersonation / curl_cffi for yt-dlp
+---
+
+
+# yt-dlp Anti-Bot Hardening (YouTube 403s)
+
+YouTube intermittently rejects yt-dlp requests with `HTTP Error 403: Forbidden`. Pattern to recognize: failures hit DIFFERENT tracks each run, in bursts — that&#x27;s IP throttling / bot detection, NOT a per-video block. A job can report &quot;done&quot; while silently skipping failed tracks (see below).
+
+## The fix stack
+
+1. **Upgrade yt-dlp + install curl_cffi PINNED `&lt;0.16`**:
+   ```bash
+   pip install -U yt-dlp &quot;curl_cffi&lt;0.16&quot;
+   ```
+   yt-dlp 2026.07+ rejects curl_cffi 0.16.x (&quot;Only curl_cffi versions 0.5.10 and 0.10.x through 0.15.x are supported&quot;). When curl_cffi is the wrong version, ALL impersonate targets show `(unavailable)` in `yt-dlp --list-impersonate-targets` even though `import curl_cffi` works fine.
+
+2. **Pin in requirements.txt too** — `curl_cffi&lt;0.16`. An unpinned entry silently reinstalls the broken latest version on every container restart (services whose entrypoint runs `pip install -r requirements.txt`).
+
+3. **Python API: pass the ImpersonateTarget OBJECT, not a string**:
+   ```python
+   from yt_dlp.networking.impersonate import ImpersonateTarget
+   ydl_opts = {&#x27;impersonate&#x27;: ImpersonateTarget.from_str(&#x27;chrome&#x27;)}
+   ```
+   A raw string `{&#x27;impersonate&#x27;: &#x27;chrome&#x27;}` raises `AssertionError: &#x27;&#x27;` — an EMPTY message, so the job fails at info-fetch with a blank error. The CLI converts strings for you; the YoutubeDL() API does not.
+
+4. **Stale process trap**: upgrading/downgrading curl_cffi while a service runs does NOT fix the running worker — it imported yt-dlp before the change. CLI tests pass but the service still errors. Always restart the container after version changes.
+
+## Verifying the fix
+
+```bash
+# targets usable?
+yt-dlp --list-impersonate-targets
+# single-track test — real googlevideo URL = fingerprint works
+yt-dlp --impersonate chrome -f bestaudio --get-url &quot;&lt;url&gt;&quot;
+```
+
+## Residual throttling → rotate + backoff
+
+Some tracks still 403 even with impersonation. Gap-fill strategy (download ONLY missing tracks, don&#x27;t re-run whole playlists):
+- Rotate impersonation targets per attempt: `chrome`, `chrome-136`, `chrome-133`, `safari-18.0`, `safari-17.2`
+- Rotate player clients: `android,web`, `web`, `tv,web`, `android_vr,web`
+- Exponential backoff: `&#x27;retry_sleep_functions&#x27;: {&#x27;http&#x27;: lambda n: 25 * (2 ** min(n, 4))}`
+- 60-90s sleeps between attempts; up to 8-12 attempts per track
+- Keep per-track metadata (`-metadata artist/album/track`) and file naming identical to the service&#x27;s output (`NN - Title.mp3`) so gap-fills blend in
+
+## Pitfalls
+
+- **&quot;Job done&quot; ≠ all tracks downloaded**: services report `Complete! N tracks processed` when the LOOP finishes, not when all succeeded. Always verify disk file count against playlist track count.
+- **`docker exec -d` swallows output redirects**: `docker exec -d &lt;c&gt; python3 x.py &gt; /tmp/x.log` writes the log on the HOST (often 0 bytes). Use `docker exec -d &lt;c&gt; sh -c &quot;python3 -u x.py &gt; /tmp/x.log 2&gt;&amp;1&quot;` — and `python3 -u` for unbuffered output.
+- **Block-buffered stdout**: service app stdout to docker logs lags; use jobs.json / event stores as source of truth for job state.
+</pre>
+<script>
+function copyRaw(){var t=document.getElementById('raw').textContent;navigator.clipboard.writeText(t).then(function(){var m=document.getElementById('copied-msg');m.textContent='COPIED!';setTimeout(function(){m.textContent='';},2000);});}
+</script>
 </body>
 </html>
