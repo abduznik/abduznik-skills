@@ -576,6 +576,11 @@ def build_pixel_site(dst: Path, skills: list, prepared: list) -> None:
 </g>
 </svg>"""
     (docs / "favicon.svg").write_text(favicon_svg, encoding="utf-8")
+    # Also ship a copy next to the skill pages: browsers cache favicon
+    # resolution per-URL, and Github Pages caches HTML up to 10 min, so a
+    # visitor on stale HTML may still request skills/favicon.svg — make that
+    # resolve instead of 404ing.
+    (skills_dir_docs / "favicon.svg").write_text(favicon_svg, encoding="utf-8")
 
     catbtns = " ".join(
         f"<a class='btn' href='#cat-{c.replace(' ', '-')}'>{c.upper().replace('-', ' ')}</a>"
