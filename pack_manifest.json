@@ -363,6 +363,20 @@
       ],
       "license": "MIT",
       "author": "Hermes Agent"
+    },
+    {
+      "name": "retro-fansite",
+      "category": "creative",
+      "tags": [
+        "web",
+        "html",
+        "css",
+        "retro",
+        "fansite"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
     }
   ]
 }

@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>retro-fansite // SKILL</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}
+body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
+a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
+a:hover{background:#ffb000;color:#050a05}
+.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
+.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
+h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
+h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
+h2{font-size:14px;margin-top:34px;color:#44ff77}
+h3{font-size:11px;color:#ffb000}
+pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
+th{background:#0a2a0a;font-weight:bold}
+blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
+ul,ol{padding-left:26px}
+li{margin:3px 0}
+hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
+footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
+.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
+@keyframes blink{50%{opacity:0}}
+.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
+.catbtn{display:inline-block;border:2px solid #44ff77;color:#44ff77;background:#061106;padding:7px 13px;margin:5px 7px 5px 0;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(0,255,100,.2);text-transform:uppercase;text-decoration:none;letter-spacing:.5px}
+.catbtn:hover{background:#44ff77;color:#050a05}
+.logo{width:44px;height:44px;vertical-align:middle;image-rendering:pixelated;margin-right:12px}
+.get{margin:16px 0}
+</style>
+</head>
+<body>
+<header>
+<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
+<h1 class="px"><img class="logo" src="favicon.svg" alt="logo">retro-fansite</h1>
+<div><span class="badge" style="border-color:#ffb000;color:#ffb000">creative</span>
+<span class='tag' style='border-color:#44ff77'>web</span><span class='tag' style='border-color:#44ff77'>html</span><span class='tag' style='border-color:#44ff77'>css</span><span class='tag' style='border-color:#44ff77'>retro</span><span class='tag' style='border-color:#44ff77'>fansite</span></div>
+<p style="color:#8affa8">Use when building retro/2000s forum/fansite-styled sites.</p>
+<div class="get">
+<button class="catbtn" onclick="copyRaw()">[ COPY SKILL.MD ]</button>
+<a class="catbtn" download="SKILL.md" href="data:text/markdown;charset=utf-8,---%0Aname%3A%20retro-fansite%0Adescription%3A%20Use%20when%20building%20retro%2F2000s%20forum%2Ffansite-styled%20sites.%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%0Alicense%3A%20MIT%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Bweb%2C%20html%2C%20css%2C%20retro%2C%20fansite%5D%0A%20%20%20%20category%3A%20creative%0A---%0A%0A%0A%23%20Retro%20Fansite%20Aesthetic%0A%0AA%20from-scratch%2C%20hand-coded%20HTML%2FCSS%20style%20for%20static%20sites%20%28GitHub%20Pages%2C%20docs%20sites%2C%20project%0Alanding%20pages%29%20that%20genuinely%20reads%20as%20an%20early-2000s%20forum%20or%20fan-made%20project%20site%20%E2%80%94%20phpBB%2C%0AvBulletin%2C%20GeoCities%2C%20homebrew-scene%20fansites.%20This%20is%20a%20specific%2C%20opinionated%20look.%20It%20is%20%2A%2Anot%2A%2A%0A%22dark%20mode%20with%20retro%20colors%22%20%E2%80%94%20that%27s%20the%20single%20most%20common%20wrong%20turn%20%28see%20Anti-Patterns%20below%29.%0A%0AUse%20this%20skill%20whenever%20the%20user%20asks%20for%20a%20retro%2Fold-school%2F2000s%2Fforum-styled%20site%2C%20or%20names%20this%0Aaesthetic%20directly%20%28phpBB%2FvBulletin%2FGeoCities%20era%2C%20%22old%20forum%22%2C%20%22fansite%22%29.%0A%0A%23%23%20The%20Core%20Test%0A%0ABefore%20shipping%20any%20page%2C%20ask%3A%20%2A%2Acould%20this%20have%20existed%20as%20static%20HTML%20in%202004%2C%20no%20framework%2C%20no%0Abuild%20step%3F%2A%2A%20If%20the%20answer%20requires%20a%20modern%20CSS%20feature%20used%20for%20glow%2Fdepth%2Fmotion%2C%20cut%20it.%0A%0A%23%23%20Visual%20Rules%20%28non-negotiable%29%0A%0A-%20%2A%2ALight%20page%20background%2A%2A%2C%20not%20dark%20mode.%20Real%202000s%20sites%20were%20overwhelmingly%20light%20grey%2Fwhite%0A%20%20%28%60%23aab8cc%60-ish%20outer%20background%2C%20%60%23ffffff%60%20content%20well%29%20with%20a%20%2A%2Anavy%20or%20steel-blue%20header%0A%20%20band%2A%2A%20%E2%80%94%20not%20dark-themed%20throughout.%20Dark%20mode%20as%20a%20default%20aesthetic%20is%20itself%20a%202010s%2B%20pattern%3B%0A%20%20using%20it%20undercuts%20the%20%22old%22%20read%20even%20with%20period-correct%20colors.%0A-%20%2A%2AReal%20%60%3Ctable%3E%60%20layout%2A%2A%2C%20not%20CSS%20grid%2Fflexbox%20pretending%20to%20be%20tables.%20Use%20actual%20%60%3Ctable%0A%20%20class%3D%22layout%22%3E%60%2C%20nested%20%60%3Ctable%3E%60%20for%20the%20two-column%20nav%2Bcontent%20shell%2C%20and%20bordered%20%60%3Ctable%3E%60%0A%20%20elements%20for%20every%20content%20panel%2C%20data%20table%2C%20and%20feature%20list.%20This%20is%20the%20single%20highest-impact%0A%20%20authenticity%20signal%20%E2%80%94%20flexbox%2Fgrid%20dressed%20up%20with%20borders%20still%20reads%20as%20a%20modern%20site%20in%20a%0A%20%20costume.%0A-%20%2A%2AHard%201px%20borders%20everywhere%2A%2A%2C%20flat%20solid%20colors.%20Zero%20%60border-radius%60%2C%20zero%20%60box-shadow%60%2C%20zero%0A%20%20%60text-shadow%60%20glow%2C%20zero%20%60linear-gradient%60%20%28one%20narrow%20exception%3A%20a%20flat%20two-stop%20gradient%20on%20the%0A%20%20header%20band%20is%20period-plausible%20if%20you%20must%2C%20but%20flat%20is%20safer%29.%20If%20you%20catch%20yourself%20writing%0A%20%20%60box-shadow%60%20or%20a%20glow%20effect%20%22to%20make%20it%20pop%2C%22%20stop%20%E2%80%94%20that%27s%20the%20SaaS-landing-page%20instinct%0A%20%20bleeding%20in%2C%20not%20the%20target%20aesthetic.%0A-%20%2A%2AVerdana%2FArial%2FTahoma%20body%20text%2A%2A%2C%20no%20display%2Fpixel%20fonts%20except%20optionally%20in%20a%20small%20site%0A%20%20logo%20mark.%20Body%20font-size%20around%20%2A%2A13px%2A%2A%20%28not%2011-12px%20%E2%80%94%20too%20cramped%20reads%20as%20trying%20too%20hard%3B%0A%20%20too%20large%20loses%20density%29.%20Headers%20are%20the%20same%20font%20family%2C%20just%20bold%2C%20not%20a%20separate%20typeface.%0A-%20%2A%2AUnderlined%20default%20links%2A%2A%2C%20visited-link%20color%20distinct%20from%20unvisited%20%28%60%230000dd%60%20%2F%20%60%236a1fa0%60%20is%0A%20%20a%20safe%20period%20pair%29%2C%20hover%20color%20that%27s%20clearly%20different%20again%20%28e.g.%20red%20%60%23dd0000%60%29.%20This%20one%0A%20%20detail%20does%20a%20lot%20of%20authenticity%20work%20almost%20for%20free.%0A-%20%2A%2ADense%2C%20not%20spacious.%2A%2A%20Tight%20padding%20%284-9px%20in%20panels%2C%20not%2016-24px%29%2C%20multiple%20short%20bordered%0A%20%20panels%20stacked%20vertically%20rather%20than%20one%20page%20with%20generous%20whitespace.%20Real%20forum%2Fwiki%20pages%0A%20%20packed%20information%20in%3B%20generous%20whitespace%20reads%20as%20a%20modern%20landing%20page%20no%20matter%20the%20colors.%0A-%20%2A%2ANo%20hero%20sections%2C%20no%20big%20centered%20CTA%20buttons%2C%20no%20card%20grids.%2A%2A%20These%20are%20unambiguously%20modern%0A%20%20patterns.%20Feature%20lists%20go%20in%20a%20dense%20two-column%20bordered%20%60%3Ctable%3E%60%2C%20not%20a%20grid%20of%20elevated%20cards.%0A%20%20A%20%22download%22%20link%20is%20a%20normal%20%60%3Cinput%20type%3D%22button%22%3E%60%20or%20plain%20link%2C%20not%20a%20big%20colored%20pill.%0A-%20%2A%2ANo%20decorative%20filler%20that%20doesn%27t%20serve%20the%20content%2A%2A%3A%20skip%20hit%20counters%2C%20%22best%20viewed%20in%0A%20%20browser%20X%22%20badges%2C%20and%20similar%20unless%20the%20user%20explicitly%20asks%20for%20that%20specific%20joke%2Fflourish.%0A%20%20Content%20density%20and%20real%20information%20should%20carry%20the%20page%20%E2%80%94%20cheap%20nostalgia%20gags%20read%20as%0A%20%20padding%20and%20get%20called%20out.%0A%0A%23%23%20Structural%20Pattern%0A%0A%60%60%60%0A%3Ctable%20class%3D%22layout%22%3E%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20full%20page%2C%20~760-800px%20max-width%2C%20centered%0A%20%20%3Ctr%3E%3Ctd%20class%3D%22banner%22%3ESITE%20NAME%20%2B%20tagline%20%2B%20top%20link%20bar%3C%2Ftd%3E%3C%2Ftr%3E%0A%20%20%3Ctr%3E%3Ctd%20class%3D%22ticker%22%3E%3Cmarquee%3E...%3C%2Fmarquee%3E%3C%2Ftd%3E%3C%2Ftr%3E%20%20%20%20%20optional%2C%20real%20%3Cmarquee%3E%2C%20not%20a%20joke%0A%20%20%3Ctr%3E%3Ctd%3E%0A%20%20%20%20%3Ctable%20style%3D%22width%3A100%25%22%3E%0A%20%20%20%20%20%20%3Ctr%3E%0A%20%20%20%20%20%20%20%20%3Ctd%20class%3D%22navcol%22%3E%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20~130-150px%2C%20bordered%2C%20sidebar%20link%20list%0A%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22navhead%22%3ESECTION%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cul%3E%3Cli%3E%3Ca%3E...%3C%2Fa%3E%3C%2Fli%3E%3C%2Ful%3E%0A%20%20%20%20%20%20%20%20%3C%2Ftd%3E%0A%20%20%20%20%20%20%20%20%3Ctd%20class%3D%22maincol%22%3E%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20everything%20else%0A%20%20%20%20%20%20%20%20%20%20%3Ctable%20class%3D%22panel%22%3E%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20repeat%20per%20content%20section%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Ctr%3E%3Ctd%20class%3D%22panelhead%22%3ETitle%3C%2Ftd%3E%3C%2Ftr%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Ctr%3E%3Ctd%20class%3D%22panelbody%22%3Edense%20content%2C%20real%20prose%20%2B%20bordered%20sub-tables%3C%2Ftd%3E%3C%2Ftr%3E%0A%20%20%20%20%20%20%20%20%20%20%3C%2Ftable%3E%0A%20%20%20%20%20%20%20%20%3C%2Ftd%3E%0A%20%20%20%20%20%20%3C%2Ftr%3E%0A%20%20%20%20%3C%2Ftable%3E%0A%20%20%3C%2Ftd%3E%3C%2Ftr%3E%0A%20%20%3Ctr%3E%3Ctd%20class%3D%22footer%22%3Eplain%20text%20strip%20%E2%80%94%20license%2C%20copyright%2C%20links.%20no%20badges%2Fcounters.%3C%2Ftd%3E%3C%2Ftr%3E%0A%3C%2Ftable%3E%0A%60%60%60%0A%0AA%20real%20%60%3Cmarquee%3E%60%20tag%20for%20a%20%22what%27s%20new%22%20ticker%20is%20period-correct%20and%20still%20renders%20in%20modern%0Abrowsers%20%28deprecated%20but%20functional%29%20%E2%80%94%20prefer%20it%20over%20faking%20the%20scroll%20with%20CSS%20keyframes%3B%20the%0Areal%20tag%20is%20funnier%20and%20more%20honest%20to%20the%20bit.%0A%0A%23%23%20A%20Working%20Palette%20%28steal%20this%2C%20don%27t%20reinvent%29%0A%0A%60%60%60css%0Abody%20%20%20%20%20%20%20%20%20%20%20%20%7B%20background%3A%23aab8cc%3B%20color%3A%23101010%3B%20font%3A13px%20Verdana%2CArial%2Csans-serif%3B%20%7D%0Aa%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%20color%3A%230000dd%3B%20%7D%0Aa%3Avisited%20%20%20%20%20%20%20%7B%20color%3A%236a1fa0%3B%20%7D%0Aa%3Ahover%20%20%20%20%20%20%20%20%20%7B%20color%3A%23dd0000%3B%20%7D%0A.layout%20%20%20%20%20%20%20%20%20%7B%20background%3A%23ffffff%3B%20border%3A1px%20solid%20%2316294a%3B%20max-width%3A800px%3B%20%7D%0A.banner%20%20%20%20%20%20%20%20%20%7B%20background%3A%230f2148%3B%20color%3A%23fff%3B%20%7D%20%20%20%20%20%20%20%20%20%20%20%2F%2A%20header%20band%20%2A%2F%0A.navcol%20%20%20%20%20%20%20%20%20%7B%20background%3A%23dce4f1%3B%20border-right%3A1px%20solid%20%239fb0cc%3B%20%7D%0A.navhead%20%20%20%20%20%20%20%20%7B%20background%3A%2316294a%3B%20color%3A%23fff%3B%20%7D%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%2A%20sidebar%20section%20label%20%2A%2F%0A.panelhead%20%20%20%20%20%20%7B%20background%3A%23cddaee%3B%20color%3A%230f2148%3B%20%7D%20%20%20%20%20%20%20%20%20%20%2F%2A%20content%20panel%20title%20bar%20%2A%2F%0A.ticker%20%20%20%20%20%20%20%20%20%7B%20background%3A%23fff2b0%3B%20color%3A%235a0000%3B%20%7D%20%20%20%20%20%20%20%20%20%20%2F%2A%20marquee%20strip%20%2A%2F%0Atable.data%20th%20%20%20%7B%20background%3A%23cddaee%3B%20color%3A%230f2148%3B%20%7D%0Atable.data%20tr.alt%20td%20%7B%20background%3A%23eef2f8%3B%20%7D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%2A%20zebra-stripe%20alt%20rows%20%2A%2F%0A%60%60%60%0A%0AAdjust%20hue%20if%20the%20project%20has%20its%20own%20brand%20color%20%28swap%20the%20navy%20for%20a%20different%20dark%20accent%29%2C%20but%0Akeep%20the%20%2Astructure%2A%3A%20light%20outer%20bg%2C%20white%20content%20well%2C%20dark%20header%20band%2C%20pale-blue-grey%20panel%0Achrome%2C%20zebra-striped%20data%20tables.%0A%0A%23%23%20Code%20Blocks%20and%20Rich%20Content%20%28don%27t%20let%20%22retro%22%20mean%20%22shallow%22%29%0A%0AA%20real%20forum%2Fwiki-era%20site%20still%20had%20code%20snippets%2C%20data%20tables%2C%20and%20callout%20boxes%20%E2%80%94%20just%20styled%0Aflat.%20Don%27t%20drop%20content%20depth%20or%20technical%20detail%20to%20fit%20the%20aesthetic%3B%20style%20rich%20content%20%2Awithin%2A%0Ait%3A%0A%0A%60%60%60css%0Apre.code%20%20%20%7B%20background%3A%230c1424%3B%20color%3A%23cfe0ff%3B%20border%3A1px%20solid%20%2316294a%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20font%3A12.5px%20%22Courier%20New%22%2Cmonospace%3B%20padding%3A8px%2010px%3B%20%7D%0Atable.callout%20td.callouthead%20%7B%20background%3A%23fff2c0%3B%20color%3A%237a4b00%3B%20font-weight%3Abold%3B%20%7D%0Atable.callout%20td.calloutbody%20%7B%20background%3A%23fffbee%3B%20%7D%0A%60%60%60%0A%0AUse%20%60%3Cpre%20class%3D%22code%22%3E%60%20for%20real%20command%2Fcode%20examples%20%28not%20screenshots%29%2C%20and%20a%20%60table.callout%60%0A%28amber%20header%20bar%29%20for%20%22watch%20out%22%20%2F%20%22gotcha%22%20notes.%20Both%20stay%20flat%20and%20bordered%20%E2%80%94%20no%20syntax-%0Ahighlighting%20library%2C%20no%20glow.%0A%0A%23%23%20Content%20Philosophy%0A%0AIf%20the%20user%20says%20the%20site%20feels%20%22dry%22%20or%20%22thin%2C%22%20the%20fix%20is%20almost%20never%20more%20visual%20decoration%20%E2%80%94%0Ait%27s%20%2A%2Amore%20real%20information%2A%2A.%20Prefer%3A%0A-%20Actual%20code%2Fconfig%20samples%20over%20prose%20describing%20them.%0A-%20Real%20project%20stats%20%28line%20counts%2C%20module%20counts%2C%20version%2C%20project%20age%29%20pulled%20from%20the%20actual%20repo%0A%20%20%E2%80%94%20never%20invent%20numbers%2C%20and%20skip%20a%20stat%20if%20the%20honest%20number%20would%20look%20bad%20%28e.g.%20a%20very%20low%0A%20%20download%20count%29%20rather%20than%20omitting%20context%20that%20makes%20it%20misleading.%0A-%20Splitting%20one%20dense%20%22everything%22%20page%20into%20several%20linked%20pages%20under%20a%20shared%20sub-nav%20strip%0A%20%20%28breadcrumb-style%3A%20%60Section%3A%20A%20%C2%B7%20B%20%C2%B7%20C%20%C2%B7%20current%60%29%20once%20a%20topic%20has%20enough%20real%20depth%20%E2%80%94%20more%0A%20%20pages%20of%20real%20content%20beats%20one%20page%20of%20decoration.%0A-%20Multi-page%20technical%20documentation%20%28architecture%2C%20internals%2C%20gotchas%2Fpitfalls%29%20presented%20in%20full%0A%20%20on-site%2C%20not%20just%20linked%20out%20to%20an%20external%20repo%20%E2%80%94%20the%20%22A%20to%20Z%22%20test%3A%20could%20a%20newcomer%20learn%20the%0A%20%20whole%20system%20from%20this%20site%20alone%3F%0A%0A%23%23%20Anti-Patterns%20%28mistakes%20already%20made%20and%20corrected%20building%20this%20style%29%0A%0A1.%20%2A%2ADark%20mode%20as%20the%20default%20look.%2A%2A%20First%20draft%20used%20a%20near-black%20navy%20background%20with%20glowing%0A%20%20%20cyan%20headers%20and%20gradient%20buttons%20%E2%80%94%20got%20called%20out%20immediately%20as%20%22still%20modern...%20a%20Tailwind%0A%20%20%20wanna-be.%22%20Dark%20backgrounds%20read%20as%202015%2B%20dashboard%2FSaaS%20aesthetics%2C%20not%202004%20fansite.%20Default%20to%0A%20%20%20light.%0A2.%20%2A%2ACSS%20Grid%2FFlexbox%20%22card%22%20layouts%20even%20with%20retro%20colors.%2A%2A%20Bordered%20%60%3Cdiv%3E%60%20grids%20with%20padding%0A%20%20%20and%20subtle%20shadows%20still%20read%20as%20modern%20component%20design%20language.%20Use%20real%20%60%3Ctable%3E%60%20markup.%0A3.%20%2A%2AGlow%2C%20shadow%2C%20gradient%20buttons.%2A%2A%20%60text-shadow%60%20on%20headers%2C%20%60box-shadow%60%20on%20panels%2C%20gradient%0A%20%20%20%60%3Cbutton%3E%60%20fills%20%E2%80%94%20all%20instantly%20modern%20regardless%20of%20hue.%20Flat%20and%20hard-edged%20only.%0A4.%20%2A%2AHero%20sections%20and%20big%20CTA%20buttons.%2A%2A%20A%20centered%20pitch%20%2B%20giant%20colored%20%22Download%20Now%22%20button%20is%0A%20%20%20a%20landing-page%20pattern%20from%20the%202010s%20app-marketing%20playbook%2C%20not%20a%202000s%20info%20page.%0A5.%20%2A%2ADecorative%20filler%20standing%20in%20for%20content%2A%2A%20%28hit%20counters%2C%20%22best%20viewed%20at%201024x768%22%20badges%29%0A%20%20%20used%20as%20%2Apadding%2A%20rather%20than%20as%20an%20intentional%2C%20requested%20flourish%20%E2%80%94%20reads%20as%20low-effort%20once%20a%0A%20%20%20reader%20notices%20there%27s%20nothing%20real%20backing%20it%20up.%0A6.%20%2A%2AFont%20too%20small.%2A%2A%2011px%20body%20text%20read%20as%20cramped%2Fhard-to-read%20once%20actually%20reviewed%20%E2%80%94%2013px%20is%0A%20%20%20the%20sweet%20spot%20between%20authentic%20density%20and%20usability.%0A7.%20%2A%2ASummarizing%20deep%20technical%20content%20instead%20of%20presenting%20it.%2A%2A%20Linking%20out%20to%20%22full%20docs%0A%20%20%20elsewhere%22%20instead%20of%20bringing%20real%20depth%20onto%20the%20page%20itself%20makes%20the%20site%20feel%20thin%20no%20matter%0A%20%20%20how%20good%20the%20visual%20styling%20is.%0A%0A%23%23%20Process%20Note%0A%0ABuild%20one%20representative%20page%20first%20%28usually%20the%20homepage%29%20and%20check%20it%20in%20an%20actual%20browser%0Abefore%20replicating%20the%20pattern%20across%20every%20page%20%E2%80%94%20the%20visual%20calibration%20%28light%20vs%20dark%2C%20table%20vs%0Aflex%2C%20font%20size%2C%20density%29%20is%20the%20part%20most%20likely%20to%20need%20a%20correction%20round%2C%20and%20it%27s%20cheaper%20to%0Acorrect%20once%20than%20to%20redo%20N%20pages.">[ DOWNLOAD SKILL.MD ]</a>
+<span id="copied-msg" style="color:#8affa8">&nbsp;</span>
+</div>
+</header>
+<main>
+
+
+
+<h1>Retro Fansite Aesthetic</h1>
+
+<p>A from-scratch, hand-coded HTML/CSS style for static sites (GitHub Pages, docs sites, project</p>
+<p>landing pages) that genuinely reads as an early-2000s forum or fan-made project site — phpBB,</p>
+<p>vBulletin, GeoCities, homebrew-scene fansites. This is a specific, opinionated look. It is <strong>not</strong></p>
+<p>&quot;dark mode with retro colors&quot; — that&#x27;s the single most common wrong turn (see Anti-Patterns below).</p>
+
+<p>Use this skill whenever the user asks for a retro/old-school/2000s/forum-styled site, or names this</p>
+<p>aesthetic directly (phpBB/vBulletin/GeoCities era, &quot;old forum&quot;, &quot;fansite&quot;).</p>
+
+<h2>The Core Test</h2>
+
+<p>Before shipping any page, ask: **could this have existed as static HTML in 2004, no framework, no</p>
+<p>build step?** If the answer requires a modern CSS feature used for glow/depth/motion, cut it.</p>
+
+<h2>Visual Rules (non-negotiable)</h2>
+
+<ul>
+<li><strong>Light page background</strong>, not dark mode. Real 2000s sites were overwhelmingly light grey/white</li>
+</ul>
+<p>(<code>#aab8cc</code>-ish outer background, <code>#ffffff</code> content well) with a **navy or steel-blue header</p>
+<p>band** — not dark-themed throughout. Dark mode as a default aesthetic is itself a 2010s+ pattern;</p>
+<p>using it undercuts the &quot;old&quot; read even with period-correct colors.</p>
+<ul>
+<li><strong>Real <code>&lt;table&gt;</code> layout</strong>, not CSS grid/flexbox pretending to be tables. Use actual `&lt;table</li>
+</ul>
+<p>class=&quot;layout&quot;&gt;<code>, nested </code>&lt;table&gt;<code> for the two-column nav+content shell, and bordered </code>&lt;table&gt;`</p>
+<p>elements for every content panel, data table, and feature list. This is the single highest-impact</p>
+<p>authenticity signal — flexbox/grid dressed up with borders still reads as a modern site in a</p>
+<p>costume.</p>
+<ul>
+<li><strong>Hard 1px borders everywhere</strong>, flat solid colors. Zero <code>border-radius</code>, zero <code>box-shadow</code>, zero</li>
+</ul>
+<p><code>text-shadow</code> glow, zero <code>linear-gradient</code> (one narrow exception: a flat two-stop gradient on the</p>
+<p>header band is period-plausible if you must, but flat is safer). If you catch yourself writing</p>
+<p><code>box-shadow</code> or a glow effect &quot;to make it pop,&quot; stop — that&#x27;s the SaaS-landing-page instinct</p>
+<p>bleeding in, not the target aesthetic.</p>
+<ul>
+<li><strong>Verdana/Arial/Tahoma body text</strong>, no display/pixel fonts except optionally in a small site</li>
+</ul>
+<p>logo mark. Body font-size around <strong>13px</strong> (not 11-12px — too cramped reads as trying too hard;</p>
+<p>too large loses density). Headers are the same font family, just bold, not a separate typeface.</p>
+<ul>
+<li><strong>Underlined default links</strong>, visited-link color distinct from unvisited (<code>#0000dd</code> / <code>#6a1fa0</code> is</li>
+</ul>
+<p>a safe period pair), hover color that&#x27;s clearly different again (e.g. red <code>#dd0000</code>). This one</p>
+<p>detail does a lot of authenticity work almost for free.</p>
+<ul>
+<li><strong>Dense, not spacious.</strong> Tight padding (4-9px in panels, not 16-24px), multiple short bordered</li>
+</ul>
+<p>panels stacked vertically rather than one page with generous whitespace. Real forum/wiki pages</p>
+<p>packed information in; generous whitespace reads as a modern landing page no matter the colors.</p>
+<ul>
+<li><strong>No hero sections, no big centered CTA buttons, no card grids.</strong> These are unambiguously modern</li>
+</ul>
+<p>patterns. Feature lists go in a dense two-column bordered <code>&lt;table&gt;</code>, not a grid of elevated cards.</p>
+<p>A &quot;download&quot; link is a normal <code>&lt;input type=&quot;button&quot;&gt;</code> or plain link, not a big colored pill.</p>
+<ul>
+<li><strong>No decorative filler that doesn&#x27;t serve the content</strong>: skip hit counters, &quot;best viewed in</li>
+</ul>
+<p>browser X&quot; badges, and similar unless the user explicitly asks for that specific joke/flourish.</p>
+<p>Content density and real information should carry the page — cheap nostalgia gags read as</p>
+<p>padding and get called out.</p>
+
+<h2>Structural Pattern</h2>
+
+<pre class='code'><code>&lt;table class=&quot;layout&quot;&gt;                          full page, ~760-800px max-width, centered
+  &lt;tr&gt;&lt;td class=&quot;banner&quot;&gt;SITE NAME + tagline + top link bar&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td class=&quot;ticker&quot;&gt;&lt;marquee&gt;...&lt;/marquee&gt;&lt;/td&gt;&lt;/tr&gt;     optional, real &lt;marquee&gt;, not a joke
+  &lt;tr&gt;&lt;td&gt;
+    &lt;table style=&quot;width:100%&quot;&gt;
+      &lt;tr&gt;
+        &lt;td class=&quot;navcol&quot;&gt;                     ~130-150px, bordered, sidebar link list
+          &lt;div class=&quot;navhead&quot;&gt;SECTION&lt;/div&gt;
+          &lt;ul&gt;&lt;li&gt;&lt;a&gt;...&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+        &lt;/td&gt;
+        &lt;td class=&quot;maincol&quot;&gt;                    everything else
+          &lt;table class=&quot;panel&quot;&gt;                 repeat per content section
+            &lt;tr&gt;&lt;td class=&quot;panelhead&quot;&gt;Title&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td class=&quot;panelbody&quot;&gt;dense content, real prose + bordered sub-tables&lt;/td&gt;&lt;/tr&gt;
+          &lt;/table&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;
+  &lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td class=&quot;footer&quot;&gt;plain text strip — license, copyright, links. no badges/counters.&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+
+<p>A real <code>&lt;marquee&gt;</code> tag for a &quot;what&#x27;s new&quot; ticker is period-correct and still renders in modern</p>
+<p>browsers (deprecated but functional) — prefer it over faking the scroll with CSS keyframes; the</p>
+<p>real tag is funnier and more honest to the bit.</p>
+
+<h2>A Working Palette (steal this, don&#x27;t reinvent)</h2>
+
+<pre class='code'><code>body            { background:#aab8cc; color:#101010; font:13px Verdana,Arial,sans-serif; }
+a               { color:#0000dd; }
+a:visited       { color:#6a1fa0; }
+a:hover         { color:#dd0000; }
+.layout         { background:#ffffff; border:1px solid #16294a; max-width:800px; }
+.banner         { background:#0f2148; color:#fff; }           /* header band */
+.navcol         { background:#dce4f1; border-right:1px solid #9fb0cc; }
+.navhead        { background:#16294a; color:#fff; }             /* sidebar section label */
+.panelhead      { background:#cddaee; color:#0f2148; }          /* content panel title bar */
+.ticker         { background:#fff2b0; color:#5a0000; }          /* marquee strip */
+table.data th   { background:#cddaee; color:#0f2148; }
+table.data tr.alt td { background:#eef2f8; }                    /* zebra-stripe alt rows */</code></pre>
+
+<p>Adjust hue if the project has its own brand color (swap the navy for a different dark accent), but</p>
+<p>keep the <em>structure</em>: light outer bg, white content well, dark header band, pale-blue-grey panel</p>
+<p>chrome, zebra-striped data tables.</p>
+
+<h2>Code Blocks and Rich Content (don&#x27;t let &quot;retro&quot; mean &quot;shallow&quot;)</h2>
+
+<p>A real forum/wiki-era site still had code snippets, data tables, and callout boxes — just styled</p>
+<p>flat. Don&#x27;t drop content depth or technical detail to fit the aesthetic; style rich content <em>within</em></p>
+<p>it:</p>
+
+<pre class='code'><code>pre.code   { background:#0c1424; color:#cfe0ff; border:1px solid #16294a;
+             font:12.5px &quot;Courier New&quot;,monospace; padding:8px 10px; }
+table.callout td.callouthead { background:#fff2c0; color:#7a4b00; font-weight:bold; }
+table.callout td.calloutbody { background:#fffbee; }</code></pre>
+
+<p>Use <code>&lt;pre class=&quot;code&quot;&gt;</code> for real command/code examples (not screenshots), and a <code>table.callout</code></p>
+<p>(amber header bar) for &quot;watch out&quot; / &quot;gotcha&quot; notes. Both stay flat and bordered — no syntax-</p>
+<p>highlighting library, no glow.</p>
+
+<h2>Content Philosophy</h2>
+
+<p>If the user says the site feels &quot;dry&quot; or &quot;thin,&quot; the fix is almost never more visual decoration —</p>
+<p>it&#x27;s <strong>more real information</strong>. Prefer:</p>
+<ul>
+<li>Actual code/config samples over prose describing them.</li>
+<li>Real project stats (line counts, module counts, version, project age) pulled from the actual repo</li>
+</ul>
+<p>— never invent numbers, and skip a stat if the honest number would look bad (e.g. a very low</p>
+<p>download count) rather than omitting context that makes it misleading.</p>
+<ul>
+<li>Splitting one dense &quot;everything&quot; page into several linked pages under a shared sub-nav strip</li>
+</ul>
+<p>(breadcrumb-style: <code>Section: A · B · C · current</code>) once a topic has enough real depth — more</p>
+<p>pages of real content beats one page of decoration.</p>
+<ul>
+<li>Multi-page technical documentation (architecture, internals, gotchas/pitfalls) presented in full</li>
+</ul>
+<p>on-site, not just linked out to an external repo — the &quot;A to Z&quot; test: could a newcomer learn the</p>
+<p>whole system from this site alone?</p>
+
+<h2>Anti-Patterns (mistakes already made and corrected building this style)</h2>
+
+<ul>
+<li><strong>Dark mode as the default look.</strong> First draft used a near-black navy background with glowing</li>
+</ul>
+<p>cyan headers and gradient buttons — got called out immediately as &quot;still modern... a Tailwind</p>
+<p>wanna-be.&quot; Dark backgrounds read as 2015+ dashboard/SaaS aesthetics, not 2004 fansite. Default to</p>
+<p>light.</p>
+<ul>
+<li><strong>CSS Grid/Flexbox &quot;card&quot; layouts even with retro colors.</strong> Bordered <code>&lt;div&gt;</code> grids with padding</li>
+</ul>
+<p>and subtle shadows still read as modern component design language. Use real <code>&lt;table&gt;</code> markup.</p>
+<ul>
+<li><strong>Glow, shadow, gradient buttons.</strong> <code>text-shadow</code> on headers, <code>box-shadow</code> on panels, gradient</li>
+</ul>
+<p><code>&lt;button&gt;</code> fills — all instantly modern regardless of hue. Flat and hard-edged only.</p>
+<ul>
+<li><strong>Hero sections and big CTA buttons.</strong> A centered pitch + giant colored &quot;Download Now&quot; button is</li>
+</ul>
+<p>a landing-page pattern from the 2010s app-marketing playbook, not a 2000s info page.</p>
+<ul>
+<li><strong>Decorative filler standing in for content</strong> (hit counters, &quot;best viewed at 1024x768&quot; badges)</li>
+</ul>
+<p>used as <em>padding</em> rather than as an intentional, requested flourish — reads as low-effort once a</p>
+<p>reader notices there&#x27;s nothing real backing it up.</p>
+<ul>
+<li><strong>Font too small.</strong> 11px body text read as cramped/hard-to-read once actually reviewed — 13px is</li>
+</ul>
+<p>the sweet spot between authentic density and usability.</p>
+<ul>
+<li><strong>Summarizing deep technical content instead of presenting it.</strong> Linking out to &quot;full docs</li>
+</ul>
+<p>elsewhere&quot; instead of bringing real depth onto the page itself makes the site feel thin no matter</p>
+<p>how good the visual styling is.</p>
+
+<h2>Process Note</h2>
+
+<p>Build one representative page first (usually the homepage) and check it in an actual browser</p>
+<p>before replicating the pattern across every page — the visual calibration (light vs dark, table vs</p>
+<p>flex, font size, density) is the part most likely to need a correction round, and it&#x27;s cheaper to</p>
+<p>correct once than to redo N pages.</p>
+</main>
+<footer>
+<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : retro-fansite // creative</div>
+<div>MIT — generated by tools/publish.py; source: skills/retro-fansite/SKILL.md</div>
+</footer>
+<pre id="raw" hidden>---
+name: retro-fansite
+description: Use when building retro/2000s forum/fansite-styled sites.
+version: 1.0.0
+author: Hermes Agent
+license: MIT
+metadata:
+  hermes:
+    tags: [web, html, css, retro, fansite]
+    category: creative
+---
+
+
+# Retro Fansite Aesthetic
+
+A from-scratch, hand-coded HTML/CSS style for static sites (GitHub Pages, docs sites, project
+landing pages) that genuinely reads as an early-2000s forum or fan-made project site — phpBB,
+vBulletin, GeoCities, homebrew-scene fansites. This is a specific, opinionated look. It is **not**
+&quot;dark mode with retro colors&quot; — that&#x27;s the single most common wrong turn (see Anti-Patterns below).
+
+Use this skill whenever the user asks for a retro/old-school/2000s/forum-styled site, or names this
+aesthetic directly (phpBB/vBulletin/GeoCities era, &quot;old forum&quot;, &quot;fansite&quot;).
+
+## The Core Test
+
+Before shipping any page, ask: **could this have existed as static HTML in 2004, no framework, no
+build step?** If the answer requires a modern CSS feature used for glow/depth/motion, cut it.
+
+## Visual Rules (non-negotiable)
+
+- **Light page background**, not dark mode. Real 2000s sites were overwhelmingly light grey/white
+  (`#aab8cc`-ish outer background, `#ffffff` content well) with a **navy or steel-blue header
+  band** — not dark-themed throughout. Dark mode as a default aesthetic is itself a 2010s+ pattern;
+  using it undercuts the &quot;old&quot; read even with period-correct colors.
+- **Real `&lt;table&gt;` layout**, not CSS grid/flexbox pretending to be tables. Use actual `&lt;table
+  class=&quot;layout&quot;&gt;`, nested `&lt;table&gt;` for the two-column nav+content shell, and bordered `&lt;table&gt;`
+  elements for every content panel, data table, and feature list. This is the single highest-impact
+  authenticity signal — flexbox/grid dressed up with borders still reads as a modern site in a
+  costume.
+- **Hard 1px borders everywhere**, flat solid colors. Zero `border-radius`, zero `box-shadow`, zero
+  `text-shadow` glow, zero `linear-gradient` (one narrow exception: a flat two-stop gradient on the
+  header band is period-plausible if you must, but flat is safer). If you catch yourself writing
+  `box-shadow` or a glow effect &quot;to make it pop,&quot; stop — that&#x27;s the SaaS-landing-page instinct
+  bleeding in, not the target aesthetic.
+- **Verdana/Arial/Tahoma body text**, no display/pixel fonts except optionally in a small site
+  logo mark. Body font-size around **13px** (not 11-12px — too cramped reads as trying too hard;
+  too large loses density). Headers are the same font family, just bold, not a separate typeface.
+- **Underlined default links**, visited-link color distinct from unvisited (`#0000dd` / `#6a1fa0` is
+  a safe period pair), hover color that&#x27;s clearly different again (e.g. red `#dd0000`). This one
+  detail does a lot of authenticity work almost for free.
+- **Dense, not spacious.** Tight padding (4-9px in panels, not 16-24px), multiple short bordered
+  panels stacked vertically rather than one page with generous whitespace. Real forum/wiki pages
+  packed information in; generous whitespace reads as a modern landing page no matter the colors.
+- **No hero sections, no big centered CTA buttons, no card grids.** These are unambiguously modern
+  patterns. Feature lists go in a dense two-column bordered `&lt;table&gt;`, not a grid of elevated cards.
+  A &quot;download&quot; link is a normal `&lt;input type=&quot;button&quot;&gt;` or plain link, not a big colored pill.
+- **No decorative filler that doesn&#x27;t serve the content**: skip hit counters, &quot;best viewed in
+  browser X&quot; badges, and similar unless the user explicitly asks for that specific joke/flourish.
+  Content density and real information should carry the page — cheap nostalgia gags read as
+  padding and get called out.
+
+## Structural Pattern
+
+```
+&lt;table class=&quot;layout&quot;&gt;                          full page, ~760-800px max-width, centered
+  &lt;tr&gt;&lt;td class=&quot;banner&quot;&gt;SITE NAME + tagline + top link bar&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td class=&quot;ticker&quot;&gt;&lt;marquee&gt;...&lt;/marquee&gt;&lt;/td&gt;&lt;/tr&gt;     optional, real &lt;marquee&gt;, not a joke
+  &lt;tr&gt;&lt;td&gt;
+    &lt;table style=&quot;width:100%&quot;&gt;
+      &lt;tr&gt;
+        &lt;td class=&quot;navcol&quot;&gt;                     ~130-150px, bordered, sidebar link list
+          &lt;div class=&quot;navhead&quot;&gt;SECTION&lt;/div&gt;
+          &lt;ul&gt;&lt;li&gt;&lt;a&gt;...&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+        &lt;/td&gt;
+        &lt;td class=&quot;maincol&quot;&gt;                    everything else
+          &lt;table class=&quot;panel&quot;&gt;                 repeat per content section
+            &lt;tr&gt;&lt;td class=&quot;panelhead&quot;&gt;Title&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td class=&quot;panelbody&quot;&gt;dense content, real prose + bordered sub-tables&lt;/td&gt;&lt;/tr&gt;
+          &lt;/table&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;
+  &lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td class=&quot;footer&quot;&gt;plain text strip — license, copyright, links. no badges/counters.&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+```
+
+A real `&lt;marquee&gt;` tag for a &quot;what&#x27;s new&quot; ticker is period-correct and still renders in modern
+browsers (deprecated but functional) — prefer it over faking the scroll with CSS keyframes; the
+real tag is funnier and more honest to the bit.
+
+## A Working Palette (steal this, don&#x27;t reinvent)
+
+```css
+body            { background:#aab8cc; color:#101010; font:13px Verdana,Arial,sans-serif; }
+a               { color:#0000dd; }
+a:visited       { color:#6a1fa0; }
+a:hover         { color:#dd0000; }
+.layout         { background:#ffffff; border:1px solid #16294a; max-width:800px; }
+.banner         { background:#0f2148; color:#fff; }           /* header band */
+.navcol         { background:#dce4f1; border-right:1px solid #9fb0cc; }
+.navhead        { background:#16294a; color:#fff; }             /* sidebar section label */
+.panelhead      { background:#cddaee; color:#0f2148; }          /* content panel title bar */
+.ticker         { background:#fff2b0; color:#5a0000; }          /* marquee strip */
+table.data th   { background:#cddaee; color:#0f2148; }
+table.data tr.alt td { background:#eef2f8; }                    /* zebra-stripe alt rows */
+```
+
+Adjust hue if the project has its own brand color (swap the navy for a different dark accent), but
+keep the *structure*: light outer bg, white content well, dark header band, pale-blue-grey panel
+chrome, zebra-striped data tables.
+
+## Code Blocks and Rich Content (don&#x27;t let &quot;retro&quot; mean &quot;shallow&quot;)
+
+A real forum/wiki-era site still had code snippets, data tables, and callout boxes — just styled
+flat. Don&#x27;t drop content depth or technical detail to fit the aesthetic; style rich content *within*
+it:
+
+```css
+pre.code   { background:#0c1424; color:#cfe0ff; border:1px solid #16294a;
+             font:12.5px &quot;Courier New&quot;,monospace; padding:8px 10px; }
+table.callout td.callouthead { background:#fff2c0; color:#7a4b00; font-weight:bold; }
+table.callout td.calloutbody { background:#fffbee; }
+```
+
+Use `&lt;pre class=&quot;code&quot;&gt;` for real command/code examples (not screenshots), and a `table.callout`
+(amber header bar) for &quot;watch out&quot; / &quot;gotcha&quot; notes. Both stay flat and bordered — no syntax-
+highlighting library, no glow.
+
+## Content Philosophy
+
+If the user says the site feels &quot;dry&quot; or &quot;thin,&quot; the fix is almost never more visual decoration —
+it&#x27;s **more real information**. Prefer:
+- Actual code/config samples over prose describing them.
+- Real project stats (line counts, module counts, version, project age) pulled from the actual repo
+  — never invent numbers, and skip a stat if the honest number would look bad (e.g. a very low
+  download count) rather than omitting context that makes it misleading.
+- Splitting one dense &quot;everything&quot; page into several linked pages under a shared sub-nav strip
+  (breadcrumb-style: `Section: A · B · C · current`) once a topic has enough real depth — more
+  pages of real content beats one page of decoration.
+- Multi-page technical documentation (architecture, internals, gotchas/pitfalls) presented in full
+  on-site, not just linked out to an external repo — the &quot;A to Z&quot; test: could a newcomer learn the
+  whole system from this site alone?
+
+## Anti-Patterns (mistakes already made and corrected building this style)
+
+1. **Dark mode as the default look.** First draft used a near-black navy background with glowing
+   cyan headers and gradient buttons — got called out immediately as &quot;still modern... a Tailwind
+   wanna-be.&quot; Dark backgrounds read as 2015+ dashboard/SaaS aesthetics, not 2004 fansite. Default to
+   light.
+2. **CSS Grid/Flexbox &quot;card&quot; layouts even with retro colors.** Bordered `&lt;div&gt;` grids with padding
+   and subtle shadows still read as modern component design language. Use real `&lt;table&gt;` markup.
+3. **Glow, shadow, gradient buttons.** `text-shadow` on headers, `box-shadow` on panels, gradient
+   `&lt;button&gt;` fills — all instantly modern regardless of hue. Flat and hard-edged only.
+4. **Hero sections and big CTA buttons.** A centered pitch + giant colored &quot;Download Now&quot; button is
+   a landing-page pattern from the 2010s app-marketing playbook, not a 2000s info page.
+5. **Decorative filler standing in for content** (hit counters, &quot;best viewed at 1024x768&quot; badges)
+   used as *padding* rather than as an intentional, requested flourish — reads as low-effort once a
+   reader notices there&#x27;s nothing real backing it up.
+6. **Font too small.** 11px body text read as cramped/hard-to-read once actually reviewed — 13px is
+   the sweet spot between authentic density and usability.
+7. **Summarizing deep technical content instead of presenting it.** Linking out to &quot;full docs
+   elsewhere&quot; instead of bringing real depth onto the page itself makes the site feel thin no matter
+   how good the visual styling is.
+
+## Process Note
+
+Build one representative page first (usually the homepage) and check it in an actual browser
+before replicating the pattern across every page — the visual calibration (light vs dark, table vs
+flex, font size, density) is the part most likely to need a correction round, and it&#x27;s cheaper to
+correct once than to redo N pages.</pre>
+<script>
+function copyRaw(){var t=document.getElementById('raw').textContent;navigator.clipboard.writeText(t).then(function(){var m=document.getElementById('copied-msg');m.textContent='COPIED!';setTimeout(function(){m.textContent='';},2000);});}
+</script>
+</body>
+</html>

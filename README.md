@@ -13,6 +13,7 @@ not a hand-maintained copy.
 
 | Category | Skill | Description |
 |---|---|---|
+| creative | `retro-fansite` | Use when building retro/2000s forum/fansite-styled sites. |
 | devops | `ad-hoc-script-verification` | Use when verifying a script with no CI suite. |
 | devops | `docker-container-update-check` | Use when checking Docker containers for newer images. |
 | devops | `ephemeral-file-sharing` | Expiring public web links for files, CLI-only (gofile.io). |
