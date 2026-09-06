@@ -347,7 +347,7 @@ RETRO_SKILL = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{name} // SKILL</title>
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <style>{css}</style>
 </head>
 <body>
