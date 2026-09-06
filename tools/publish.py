@@ -250,40 +250,51 @@ def run_scrub(text: str, where: str, exclusions: tuple = ()) -> list:
 # Self-contained mini markdown renderer — no external dependencies.
 # ---------------------------------------------------------------------------
 
-PIXEL_CSS = """\
+RETRO_CSS = """\
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-*{box-sizing:border-box}
-body{background:#050a05;color:#44ff77;font:15px/1.7 'Courier New',monospace;margin:0;padding:28px 18px 60px;max-width:900px;margin:0 auto}
-body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,100,.05) 0 1px,transparent 1px 3px)}
-.px{font-family:'Press Start 2P',monospace;letter-spacing:1px;text-transform:uppercase}
-a{color:#ffb000;text-decoration:none;border-bottom:1px dashed #ffb000}
-a:hover{background:#ffb000;color:#050a05}
-.tag{display:inline-block;border:1px solid;padding:2px 7px;margin:2px 4px 2px 0;font-size:12px;letter-spacing:.5px}
-.card{border:2px solid #44ff77;padding:14px 16px;margin:12px 0;background:#061106;box-shadow:5px 5px 0 rgba(0,255,100,.18)}
-h1,h2,h3{font-family:'Press Start 2P',monospace;text-transform:uppercase;line-height:1.5}
-h1{font-size:20px;color:#ffb000;text-shadow:3px 3px 0 #1a4a1a}
-h2{font-size:14px;margin-top:34px;color:#44ff77}
-h3{font-size:11px;color:#ffb000}
-pre.code{background:#020402;border:1px dashed #44ff77;padding:10px;overflow-x:auto;font-size:13px}
-code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font-size:13px}
-table{border-collapse:collapse;margin:12px 0;width:100%}
-th,td{border:1px solid #2a5a2a;padding:5px 9px;text-align:left;vertical-align:top}
-th{background:#0a2a0a;font-weight:bold}
-blockquote{border-left:3px solid #ffb000;margin:10px 0;padding:2px 12px;color:#8affa8}
-ul,ol{padding-left:26px}
+body{background:#040804;color:#9fffb5;font:13px Verdana,Arial,sans-serif;margin:0;padding:18px 0 40px}
+a{color:#8adf8a;text-decoration:underline}
+a:visited{color:#aa88ff}
+a:hover{color:#ffb000}
+.layout{background:#0a120a;border:1px solid #2a5a2a;max-width:820px;margin:0 auto}
+.logo{width:26px;height:26px;vertical-align:middle;image-rendering:pixelated;margin-right:10px}
+.banner{background:#0d2a0d;color:#d8ffe6;padding:10px 14px;border-bottom:1px solid #2a5a2a}
+.site{font-family:'Press Start 2P',monospace;font-size:14px;letter-spacing:1px;color:#44ff77}
+.tagline{font-size:11px;color:#8affa8}
+.ticker{background:#123412;color:#aaffcc;border-bottom:1px solid #2a5a2a;padding:3px 10px;font:12px 'Courier New',monospace}
+.navcol{width:150px;background:#0a160a;border-right:1px solid #2a5a2a;vertical-align:top;padding:0}
+.navcol ul{list-style:none;margin:0;padding:5px 0}
+.navcol li{margin:0}
+.navcol a{display:block;padding:4px 10px;text-decoration:none;color:#8affa8;border-bottom:1px dotted #1a3a1a}
+.navcol a:hover{background:#123412;color:#ffb000}
+.navhead{background:#123412;color:#44ff77;font-weight:bold;padding:5px 10px;border-bottom:1px solid #2a5a2a;text-transform:uppercase;font-size:11px;letter-spacing:.5px}
+.maincol{vertical-align:top;padding:10px}
+.panel{width:100%;margin:0 0 12px;border:1px solid #2a5a2a;border-collapse:collapse}
+.panelhead{background:#123a12;color:#aaffcc;font-weight:bold;padding:5px 9px;border-bottom:1px solid #2a5a2a;text-transform:uppercase;font-size:11px;letter-spacing:.5px}
+.panelbody{background:#0a120a;padding:9px;vertical-align:top}
+table.data{border-collapse:collapse;width:100%}
+table.data th{background:#143414;color:#aaffcc;border:1px solid #2a5a2a;padding:5px 8px;text-align:left;font-size:11px;text-transform:uppercase}
+table.data td{border:1px solid #1f4a1f;padding:5px 8px;vertical-align:top}
+table.data tr.alt td{background:#0e1a0e}
+h1,h2,h3{font-family:Verdana,Arial,sans-serif;font-weight:bold}
+h1{font-size:18px;color:#44ff77}
+h2{font-size:15px;color:#8affa8;border-bottom:1px dashed #2a5a2a;padding-bottom:3px;margin:18px 0 8px}
+h3{font-size:13px;color:#ffb000}
+pre.code{background:#020402;color:#c8ffd8;border:1px solid #2a5a2a;padding:9px 11px;overflow-x:auto;font:12.5px 'Courier New',monospace}
+code{background:#020402;padding:1px 4px;border:1px solid #1a3a1a;font:12.5px 'Courier New',monospace}
+blockquote{border:1px solid #2a5a2a;border-left:4px solid #ffb000;background:#0d1a0d;margin:10px 0;padding:4px 12px;color:#8affa8}
+ul,ol{padding-left:24px}
 li{margin:3px 0}
-hr{border:none;border-top:2px dashed #2a5a2a;margin:22px 0}
-footer{margin-top:50px;border-top:1px dashed #2a5a2a;padding-top:14px;color:#2a8a2a;font-size:13px}
-.cursor::after{content:"_";animation:blink 1.1s steps(1) infinite;color:#ffb000}
-@keyframes blink{50%{opacity:0}}
-.badge{font-size:11px;border:1px solid;padding:3px 8px;display:inline-block}
-.catbtn{display:inline-block;border:2px solid #44ff77;color:#44ff77;background:#061106;padding:7px 13px;margin:5px 7px 5px 0;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;box-shadow:3px 3px 0 rgba(0,255,100,.2);text-transform:uppercase;text-decoration:none;letter-spacing:.5px}
-.catbtn:hover{background:#44ff77;color:#050a05}
-.logo{width:44px;height:44px;vertical-align:middle;image-rendering:pixelated;margin-right:12px}
-.get{margin:16px 0}
+hr{border:none;border-top:1px solid #2a5a2a;margin:16px 0}
+.tag{display:inline-block;border:1px solid #2a5a2a;padding:1px 6px;margin:1px 3px 1px 0;font-size:11px;color:#ffb000}
+.btn{display:inline-block;border:1px solid #44ff77;background:#0d2a0d;color:#44ff77;padding:5px 10px;font:11px 'Courier New',monospace;text-decoration:none;cursor:pointer;text-transform:uppercase;letter-spacing:.5px}
+.btn:hover{background:#44ff77;color:#020402}
+.footer{background:#0a160a;border-top:1px solid #2a5a2a;color:#2f9a4f;font-size:11px;padding:8px 14px}
+.cat{color:#44ff77}
+.meta{font-size:11px;color:#8affa8}
 """
 
-PIXEL_INDEX = """<!doctype html>
+RETRO_INDEX = """<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -293,25 +304,44 @@ PIXEL_INDEX = """<!doctype html>
 <style>{css}</style>
 </head>
 <body>
-<header>
-<h1 class="px"><img class="logo" src="favicon.svg" alt="logo">// ABDUZNIK SKILLS</h1>
-<p>> curated skill library — scrubbed, tested, free.</p>
-<p class="cursor px" style="color:#8affa8">&gt; {count} SKILLS ONLINE</p>
-<div class="get">{catbtns}</div>
-</header>
-<main>
+<table class="layout"><tr><td>
+<table style="width:100%;border-collapse:collapse"><tr>
+<td class="banner">
+<span class="site"><img class="logo" src="favicon.svg" alt="logo">ABDUZNIK SKILLS</span><br>
+<span class="tagline">curated skill library &mdash; scrubbed, tested, free</span>
+</td>
+</tr></table>
+</td></tr>
+<tr><td class="ticker"><marquee scrollamount="3" behavior="scroll">&gt;&gt; WHAT'S NEW : {count} SKILLS ONLINE ::: EVERY SKILL PASSED A FAIL-CLOSED PRIVACY GATE (HOSTS / PATHS / IDENTITIES ABORT THE BUILD) ::: NEW SKILL &mdash; RETRO-FANSITE : EARLY-2000s FORUM/FANSITE STYLING, REAL &lt;TABLE&gt; LAYOUT ::: FREE TO USE, MIT LICENSE :::</marquee></td></tr>
+<tr><td>
+<table style="width:100%;border-collapse:collapse">
+<tr>
+<td class="navcol">
+<div class="navhead">SECTIONS</div>
+<ul>{catlinks}</ul>
+<div class="navhead">ACTIONS</div>
+<ul>
+<li><a href="https://github.com/abduznik/abduznik-skills" target="_blank" rel="noopener">GITHUB REPO</a></li>
+<li><a href="https://github.com/sponsors/abduznik" target="_blank" rel="noopener">SPONSOR THIS PACK</a></li>
+</ul>
+</td>
+<td class="maincol">
+<table class="panel">
+<tr><td class="panelhead">JUMP TO SECTION</td></tr>
+<tr><td class="panelbody">{catbtns}</td></tr>
+</table>
 {body}
-</main>
-<footer>
-<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : static site auto-generated by tools/publish.py</div>
-<div>every skill passed a fail-closed privacy gate (hosts / paths / identities abort the build).</div>
-<div class="get"><a class="catbtn" href="https://github.com/sponsors/abduznik" target="_blank" rel="noopener">[ SPONSOR THIS PACK ]</a></div>
-</footer>
+</td>
+</tr>
+</table>
+</td></tr>
+<tr><td class="footer">ABDUZNIK SKILLS // MIT LICENSE // static site auto-generated by tools/publish.py &mdash; no trackers, no frameworks, one copy button</td></tr>
+</table>
 </body>
 </html>
 """
 
-PIXEL_SKILL = """<!doctype html>
+RETRO_SKILL = """<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -321,25 +351,46 @@ PIXEL_SKILL = """<!doctype html>
 <style>{css}</style>
 </head>
 <body>
-<header>
-<p><a href="index.html">&lt;-- BACK TO INDEX</a></p>
-<h1 class="px"><img class="logo" src="favicon.svg" alt="logo">{name}</h1>
-<div><span class="badge" style="border-color:#ffb000;color:#ffb000">{category}</span>
-{tags}</div>
-<p style="color:#8affa8">{desc}</p>
-<div class="get">
-<button class="catbtn" onclick="copyRaw()">[ COPY SKILL.MD ]</button>
-<a class="catbtn" download="SKILL.md" href="data:text/markdown;charset=utf-8,{daturl}">[ DOWNLOAD SKILL.MD ]</a>
-<span id="copied-msg" style="color:#8affa8">&nbsp;</span>
-</div>
-</header>
-<main>
+<table class="layout"><tr><td>
+<table style="width:100%;border-collapse:collapse"><tr>
+<td class="banner">
+<span class="site"><img class="logo" src="favicon.svg" alt="logo">{name}</span><br>
+<span class="tagline">{desc}</span>
+</td>
+</tr></table>
+</td></tr>
+<tr><td class="ticker"><marquee scrollamount="3" behavior="scroll">&gt;&gt; SKILL : {name} ::: CATEGORY : {category} ::: MIT LICENSE ::: GENERATED BY TOOLS/PUBLISH.PY :::</marquee></td></tr>
+<tr><td>
+<table style="width:100%;border-collapse:collapse">
+<tr>
+<td class="navcol">
+<div class="navhead">SITE</div>
+<ul>
+<li><a href="../index.html">&lt;-- INDEX</a></li>
+</ul>
+<div class="navhead">{category}</div>
+<ul>{siblings}</ul>
+<div class="navhead">GET THIS SKILL</div>
+<ul>
+<li><a href="#" onclick="copyRaw();return false;">COPY SKILL.MD</a><br><span id="copied-msg" class="meta">&nbsp;</span></li>
+<li><a href="data:text/markdown;charset=utf-8,{daturl}" download="SKILL.md">DOWNLOAD SKILL.MD</a></li>
+</ul>
+</td>
+<td class="maincol">
+<table class="panel">
+<tr><td class="panelhead">{name} // {category}</td></tr>
+<tr><td class="panelbody">
+<p class="meta">category: {category} &nbsp;|&nbsp; license: MIT &nbsp;|&nbsp; author: Hermes Agent</p>
+<p>{tags}</p>
 {body}
-</main>
-<footer>
-<div class="px" style="font-size:10px;color:#2a8a2a">&gt; SYS.OP : {name} // {category}</div>
-<div>MIT — generated by tools/publish.py; source: skills/{name}/SKILL.md</div>
-</footer>
+</td></tr>
+</table>
+</td>
+</tr>
+</table>
+</td></tr>
+<tr><td class="footer">ABDUZNIK SKILLS // MIT // <a href="../index.html">back to index</a> &mdash; no trackers, one copy button</td></tr>
+</table>
 <pre id="raw" hidden>{raw}</pre>
 <script>
 function copyRaw(){var t=document.getElementById('raw').textContent;navigator.clipboard.writeText(t).then(function(){var m=document.getElementById('copied-msg');m.textContent='COPIED!';setTimeout(function(){m.textContent='';},2000);});}
@@ -478,7 +529,7 @@ def build_pixel_site(dst: Path, skills: list, prepared: list) -> None:
         shutil.rmtree(docs)
     skills_dir_docs.mkdir(parents=True, exist_ok=True)
 
-    cards: list[str] = []
+    panels: list[str] = []
     by_cat: dict[str, list] = {}
     for entry in skills:
         name = entry["name"]
@@ -486,22 +537,30 @@ def build_pixel_site(dst: Path, skills: list, prepared: list) -> None:
         by_cat.setdefault(cat, []).append(entry)
 
     for cat in sorted(by_cat):
-        accent = CATEGORY_ACCENT.get(cat, "#44ff77")
-        cards.append(f"<h2 class='px' id='cat-{cat.replace(' ', '-')}' style='color:{accent}'>// {cat.upper()}</h2>")
-        for entry in sorted(by_cat[cat], key=lambda e: e["name"]):
+        rows: list[str] = []
+        for idx, entry in enumerate(sorted(by_cat[cat], key=lambda e: e["name"])):
             name = entry["name"]
             content = next(c for n, c, _x in prepared if n == name)
             fm = parse_fm_lines(extract_frontmatter(content)[0])
             desc = html.escape(next(e["clean_val"] for e in fm if e["key"] == "description"))
             tag_html = "".join(
-                f"<span class='tag' style='border-color:{accent}'>{html.escape(t)}</span>"
-                for t in _skill_tags(fm)
+                f"<span class='tag'>{html.escape(t)}</span>" for t in _skill_tags(fm)
             )
-            cards.append(
-                f"<div class='card' style='border-color:{accent}'><a class='px' "
-                f"style='font-size:12px' href='skills/{name}.html'>{name}</a><br>"
-                f"<span>{desc}</span><br>{tag_html}</div>"
+            alt = " class='alt'" if idx % 2 else ""
+            rows.append(
+                f"<tr{alt}><td><a href='skills/{name}.html'><strong>{name}</strong></a></td>"
+                f"<td>{desc}</td><td>{tag_html}</td></tr>"
             )
+        panels.append(
+            f"<table class='panel' id='cat-{cat.replace(' ', '-')}'>"
+            f"<tr><td class='panelhead'>// {cat.upper()} <span class='cat'>({len(by_cat[cat])})</span></td></tr>"
+            f"<tr><td class='panelbody'>"
+            f"<table class='data'><thead><tr>"
+            f"<th style='width:26%'>SKILL</th><th>DESCRIPTION</th><th style='width:24%'>TAGS</th>"
+            f"</tr></thead><tbody>"
+            + "".join(rows) +
+            f"</tbody></table></td></tr></table>"
+        )
 
     favicon_svg = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" shape-rendering="crispEdges">
 <rect width="64" height="64" rx="14" fill="#0b0f0b"/>
@@ -519,39 +578,47 @@ def build_pixel_site(dst: Path, skills: list, prepared: list) -> None:
     (docs / "favicon.svg").write_text(favicon_svg, encoding="utf-8")
 
     catbtns = " ".join(
-        f"<a class='catbtn' href='#cat-{c.replace(' ', '-')}'>{c.upper().replace('-', ' ')}</a>"
+        f"<a class='btn' href='#cat-{c.replace(' ', '-')}'>{c.upper().replace('-', ' ')}</a>"
+        for c in sorted(by_cat)
+    )
+    catlinks = "".join(
+        f"<li><a href='#cat-{c.replace(' ', '-')}'>{c.upper().replace('-', ' ')}</a></li>"
         for c in sorted(by_cat)
     )
     (docs / "index.html").write_text(
-        PIXEL_INDEX.replace("{css}", PIXEL_CSS)
+        RETRO_INDEX.replace("{css}", RETRO_CSS)
         .replace("{count}", str(len(skills)))
         .replace("{catbtns}", catbtns)
-        .replace("{body}", "\n".join(cards)),
+        .replace("{catlinks}", catlinks)
+        .replace("{body}", "\n".join(panels)),
         encoding="utf-8",
     )
 
     for entry in skills:
         name = entry["name"]
         cat = entry.get("category", "general")
-        accent = CATEGORY_ACCENT.get(cat, "#44ff77")
         content = next(c for n, c, _x in prepared if n == name)
         fm = parse_fm_lines(extract_frontmatter(content)[0])
         desc = html.escape(next(e["clean_val"] for e in fm if e["key"] == "description"))
         tag_html = "".join(
-            f"<span class='tag' style='border-color:{accent}'>{html.escape(t)}</span>"
-            for t in _skill_tags(fm)
+            f"<span class='tag'>{html.escape(t)}</span>" for t in _skill_tags(fm)
+        )
+        siblings_html = "".join(
+            f"<li><a href='{sib}.html'>{sib}</a></li>"
+            for sib in sorted(s["name"] for s in by_cat.get(cat, []) if s["name"] != name)
         )
         body = extract_frontmatter(content)[1]
         raw = html.escape(content)
         daturl = urllib.parse.quote(content, safe="")
         page = (
-            PIXEL_SKILL.replace("{css}", PIXEL_CSS)
+            RETRO_SKILL.replace("{css}", RETRO_CSS)
             .replace("{name}", html.escape(name))
             .replace("{category}", html.escape(cat))
             .replace("{tags}", tag_html)
             .replace("{desc}", desc)
             .replace("{daturl}", daturl)
             .replace("{raw}", raw)
+            .replace("{siblings}", siblings_html)
             .replace("{body}", md_to_html(body))
         )
         (skills_dir_docs / f"{name}.html").write_text(page, encoding="utf-8")
