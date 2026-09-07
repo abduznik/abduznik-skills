@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-and-scrub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: pip install pytest
+
+      - name: Run publish.py unit tests
+        run: pytest tests/ -v
+
+      - name: Re-scan shipped skills/docs for denylisted terms
+        run: python3 tools/rescan.py
+
+      - name: Validate pack_manifest.json matches skills/ on disk
+        run: python3 tools/check_manifest_sync.py
