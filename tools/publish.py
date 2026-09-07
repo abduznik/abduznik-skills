@@ -312,7 +312,7 @@ RETRO_INDEX = """<!doctype html>
 </td>
 </tr></table>
 </td></tr>
-<tr><td class="ticker"><marquee scrollamount="3" behavior="scroll">&gt;&gt; WHAT'S NEW : {count} SKILLS ONLINE ::: EVERY SKILL PASSED A FAIL-CLOSED PRIVACY GATE (HOSTS / PATHS / IDENTITIES ABORT THE BUILD) ::: NEW SKILL &mdash; RETRO-FANSITE : EARLY-2000s FORUM/FANSITE STYLING, REAL &lt;TABLE&gt; LAYOUT ::: FREE TO USE, MIT LICENSE :::</marquee></td></tr>
+<tr><td class="ticker"><marquee scrollamount="3" behavior="scroll">&gt;&gt; WHAT'S NEW : {count} SKILLS ONLINE ::: EVERY SKILL PASSED A FAIL-CLOSED PRIVACY GATE (HOSTS / PATHS / IDENTITIES ABORT THE BUILD) ::: {newest_ticker} ::: FREE TO USE, MIT LICENSE :::</marquee></td></tr>
 <tr><td>
 <table style="width:100%;border-collapse:collapse">
 <tr>
@@ -590,11 +590,27 @@ def build_pixel_site(dst: Path, skills: list, prepared: list) -> None:
         f"<li><a href='#cat-{c.replace(' ', '-')}'>{c.upper().replace('-', ' ')}</a></li>"
         for c in sorted(by_cat)
     )
+    # Manifest list order == addition order (skills are appended, never
+    # reordered, by the publish workflow) — last entry is always the newest
+    # skill. Deriving the ticker text from it instead of hardcoding a skill
+    # name means the "what's new" banner can't silently go stale.
+    newest = skills[-1] if skills else None
+    if newest is not None:
+        newest_name = newest["name"]
+        newest_content = next(c for n, c, _x in prepared if n == newest_name)
+        newest_fm = parse_fm_lines(extract_frontmatter(newest_content)[0])
+        newest_desc = next((e["clean_val"] for e in newest_fm if e["key"] == "description"), "")
+        newest_ticker = (
+            f"NEW SKILL &mdash; {newest_name.upper()} : {html.escape(newest_desc.upper())}"
+        )
+    else:
+        newest_ticker = "NO SKILLS PUBLISHED YET"
     (docs / "index.html").write_text(
         RETRO_INDEX.replace("{css}", RETRO_CSS)
         .replace("{count}", str(len(skills)))
         .replace("{catbtns}", catbtns)
         .replace("{catlinks}", catlinks)
+        .replace("{newest_ticker}", newest_ticker)
         .replace("{body}", "\n".join(panels)),
         encoding="utf-8",
     )

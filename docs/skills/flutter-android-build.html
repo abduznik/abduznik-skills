@@ -53,7 +53,7 @@ hr{border:none;border-top:1px solid #2a5a2a;margin:16px 0}
 <table style="width:100%;border-collapse:collapse"><tr>
 <td class="banner">
 <span class="site"><img class="logo" src="favicon.svg" alt="logo">flutter-android-build</span><br>
-<span class="tagline">Build Flutter APKs and modify Glance widgets.</span>
+<span class="tagline">Use when building Flutter APKs for Android or modifying Glance-based home screen widgets.</span>
 </td>
 </tr></table>
 </td></tr>
@@ -71,7 +71,7 @@ hr{border:none;border-top:1px solid #2a5a2a;margin:16px 0}
 <div class="navhead">GET THIS SKILL</div>
 <ul>
 <li><a href="#" onclick="copyRaw();return false;">COPY SKILL.MD</a><br><span id="copied-msg" class="meta">&nbsp;</span></li>
-<li><a href="data:text/markdown;charset=utf-8,---%0Aname%3A%20flutter-android-build%0Adescription%3A%20Build%20Flutter%20APKs%20and%20modify%20Glance%20widgets.%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%0Alicense%3A%20MIT%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Bflutter%2C%20android%2C%20build%2C%20apk%5D%0A%20%20%20%20category%3A%20software-development%0A---%0A%0A%0A%23%20Flutter%20Android%20Build%0A%0ABuild%20Flutter%20APKs%20and%20modify%20Glance-based%20home%20screen%20widgets.%0A%0A%23%23%20Version%20Bumping%0A%0AUpdate%20both%20pubspec.yaml%20and%20android%2Flocal.properties.%20Both%20must%20match.%0A%0A%23%23%20Dart%20Pitfall%0A%0AsubstringAfter%28%29%20does%20not%20exist%20in%20Dart.%20Use%20.split%28%22x%22%29.last%20instead.%0A" download="SKILL.md">DOWNLOAD SKILL.MD</a></li>
+<li><a href="data:text/markdown;charset=utf-8,---%0Aname%3A%20flutter-android-build%0Adescription%3A%20Use%20when%20building%20Flutter%20APKs%20for%20Android%20or%20modifying%20Glance-based%20home%20screen%20widgets.%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%0Alicense%3A%20MIT%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Bflutter%2C%20android%2C%20build%2C%20apk%2C%20glance%2C%20widgets%5D%0A%20%20%20%20category%3A%20software-development%0A---%0A%0A%0A%0A%23%20Flutter%20Android%20Build%0A%0A%23%23%20Overview%0A%0ABuilding%20Flutter%20APKs%20for%20Android%20and%20modifying%20Glance-based%20home%20screen%0Awidgets%20%28Jetpack%20Glance%2C%20the%20Compose-style%20widget%20toolkit%20Android%20apps%20use%0Afor%20%60home_widget%60-style%20integrations%29.%0A%0A%23%23%20When%20to%20Use%0A%0A-%20Cutting%20a%20release%2Fdebug%20APK%20build%20for%20an%20Android%20Flutter%20app%0A-%20Bumping%20the%20app%20version%20ahead%20of%20a%20release%0A-%20Editing%20or%20debugging%20a%20Glance%20home%20screen%20widget%20shipped%20alongside%20the%20app%0A-%20Don%27t%20use%20for%3A%20iOS%20builds%2C%20or%20general%20Dart%2FUI%20rendering%20issues%20%28see%0A%20%20%60flutter-content-rendering%60%20for%20HTML%2FPDF%2FWebView%20content%20quirks%29%0A%0A%23%23%20Version%20Bumping%0A%0AUpdate%20%2A%2Aboth%2A%2A%20of%20these%20together%20%E2%80%94%20they%20drift%20independently%20and%20Android%20will%0Ahappily%20build%20with%20mismatched%20values%2C%20so%20nothing%20fails%20until%20a%20store%20upload%0Aor%20a%20widget%20update%20check%20compares%20them%3A%0A%0A-%20%60pubspec.yaml%60%20%E2%80%94%20the%20%60version%3A%20X.Y.Z%2BN%60%20line%20%28%60X.Y.Z%60%20is%20the%20display%0A%20%20version%2C%20%60N%60%20after%20the%20%60%2B%60%20is%20the%20build%20number%20%2F%20%60versionCode%60%29.%0A-%20%60android%2Flocal.properties%60%20%E2%80%94%20Flutter%27s%20Gradle%20plugin%20reads%20%60flutter.versionName%60%0A%20%20%2F%20%60flutter.versionCode%60%20overrides%20from%20here%20if%20present%3B%20if%20the%20file%20pins%20a%0A%20%20version%20it%20will%20silently%20take%20precedence%20over%20%60pubspec.yaml%60%20at%20build%20time.%0A%0AIf%20a%20build%20ships%20with%20the%20old%20version%20despite%20a%20%60pubspec.yaml%60%20bump%2C%20check%0A%60local.properties%60%20first%20before%20suspecting%20a%20Gradle%20cache%20issue.%0A%0A%23%23%20Build%20Commands%0A%0A%60%60%60bash%0Aflutter%20clean%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20when%20in%20doubt%20after%20a%20version%2Fdependency%20change%0Aflutter%20pub%20get%0Aflutter%20build%20apk%20--release%20%20%20%20%20%20%20%20%23%20single%20universal%20APK%0Aflutter%20build%20apk%20--release%20--split-per-abi%20%20%20%23%20smaller%20per-ABI%20APKs%0Aflutter%20build%20appbundle%20--release%20%20%23%20.aab%20for%20Play%20Store%20upload%0A%60%60%60%0A%0A-%20%60--split-per-abi%60%20produces%20%60app-armeabi-v7a-release.apk%60%2C%0A%20%20%60app-arm64-v8a-release.apk%60%2C%20%60app-x86_64-release.apk%60%20separately%20under%0A%20%20%60build%2Fapp%2Foutputs%2Fflutter-apk%2F%60%20%E2%80%94%20don%27t%20sideload%20the%20wrong%20ABI%20onto%20a%20test%0A%20%20device.%0A-%20A%20release%20build%20requires%20a%20signing%20config%20%28%60android%2Fkey.properties%60%20%2B%0A%20%20matching%20%60signingConfigs%60%20block%20in%20%60android%2Fapp%2Fbuild.gradle%60%29%3B%20without%20it%0A%20%20Gradle%20falls%20back%20to%20the%20debug%20keystore%20and%20the%20APK%20will%20fail%20to%20update%0A%20%20over%20an%20existing%20store%20install%20%28signature%20mismatch%29.%0A%0A%23%23%20Glance%20Widget%20Pitfalls%0A%0A-%20Glance%20widgets%20are%20native%20Kotlin%2FCompose%20code%20living%20under%0A%20%20%60android%2Fapp%2Fsrc%2Fmain%2Fkotlin%2F%2A%2A%2Fwidget%2F%60%2C%20not%20Dart%20%E2%80%94%20Flutter%20hot%20reload%20does%0A%20%20%2A%2Anot%2A%2A%20touch%20them.%20Rebuild%20and%20reinstall%20the%20APK%20to%20see%20widget%20changes.%0A%20%20A%20pure%20Dart-side%20hot%20reload%20will%20make%20it%20look%20like%20your%20widget%20edit%20%22did%0A%20%20nothing.%22%0A-%20Widget%20state%20updates%20from%20the%20Dart%20side%20%28e.g.%20via%20%60home_widget%60%20plugin%29%0A%20%20only%20take%20effect%20after%20you%20explicitly%20call%20the%20widget%20update%20trigger%20from%0A%20%20Dart%3B%20changing%20shared%20prefs%2Ffiles%20alone%20does%20not%20refresh%20a%20placed%20widget.%0A-%20Test%20widget%20layout%20changes%20on-device%20or%20via%20Android%20Studio%27s%20widget%0A%20%20preview%20%E2%80%94%20the%20Flutter%20app%27s%20own%20UI%20preview%20tools%20don%27t%20render%20Glance%0A%20%20widgets.%0A%0A%23%23%20Dart%20Pitfall%0A%0A%60substringAfter%28%29%60%20does%20not%20exist%20in%20Dart%27s%20%60String%60%20API%20%28it%27s%20a%0AKotlin%2FGuava-ism%29.%20Use%20%60.split%28%22x%22%29.last%60%20instead%2C%20e.g.%0A%60%22foo%3Dbar%22.split%28%22%3D%22%29.last%60%20%E2%86%92%20%60%22bar%22%60.%0A%0A%23%23%20Common%20Pitfalls%0A%0A1.%20%2A%2AVersion%20mismatch%20between%20%60pubspec.yaml%60%20and%20%60android%2Flocal.properties%60.%2A%2A%0A%20%20%20See%20Version%20Bumping%20above%20%E2%80%94%20always%20grep%20both%20before%20assuming%20a%20version%20bug%0A%20%20%20is%20a%20build-cache%20issue.%0A2.%20%2A%2AExpecting%20hot%20reload%20to%20update%20a%20Glance%20widget.%2A%2A%20It%20won%27t%20%E2%80%94%20widgets%20are%0A%20%20%20native%20code%2C%20not%20Dart.%0A3.%20%2A%2ASideloading%20the%20wrong%20split%20APK.%2A%2A%20Match%20the%20device%27s%20ABI%0A%20%20%20%28%60arm64-v8a%60%20for%20virtually%20all%20modern%20phones%29%20or%20install%20the%20universal%0A%20%20%20%60app-release.apk%60%20instead.%0A4.%20%2A%2AMissing%20signing%20config%20on%20release%20builds.%2A%2A%20Falls%20back%20to%20the%20debug%0A%20%20%20keystore%20silently%3B%20only%20surfaces%20as%20a%20signature-mismatch%20failure%20when%0A%20%20%20updating%20an%20existing%20store%20install.%0A%0A%23%23%20Verification%20Checklist%0A%0A-%20%5B%20%5D%20%60pubspec.yaml%60%20version%20and%20%60android%2Flocal.properties%60%20%28if%20present%29%20agree%0A-%20%5B%20%5D%20%60flutter%20build%20apk%20--release%60%20%28or%20%60appbundle%60%29%20completes%20with%20no%20errors%0A-%20%5B%20%5D%20Release%20build%20is%20signed%20with%20the%20real%20keystore%2C%20not%20the%20debug%20fallback%0A-%20%5B%20%5D%20If%20a%20Glance%20widget%20was%20touched%3A%20APK%20reinstalled%20on-device%2C%20not%20just%0A%20%20%20%20%20%20hot-reloaded%2C%20before%20judging%20the%20change%0A" download="SKILL.md">DOWNLOAD SKILL.MD</a></li>
 </ul>
 </td>
 <td class="maincol">
@@ -79,21 +79,126 @@ hr{border:none;border-top:1px solid #2a5a2a;margin:16px 0}
 <tr><td class="panelhead">flutter-android-build // software-development</td></tr>
 <tr><td class="panelbody">
 <p class="meta">category: software-development &nbsp;|&nbsp; license: MIT &nbsp;|&nbsp; author: Hermes Agent</p>
-<p><span class='tag'>flutter</span><span class='tag'>android</span><span class='tag'>build</span><span class='tag'>apk</span></p>
+<p><span class='tag'>flutter</span><span class='tag'>android</span><span class='tag'>build</span><span class='tag'>apk</span><span class='tag'>glance</span><span class='tag'>widgets</span></p>
+
 
 
 
 <h1>Flutter Android Build</h1>
 
-<p>Build Flutter APKs and modify Glance-based home screen widgets.</p>
+<h2>Overview</h2>
+
+<p>Building Flutter APKs for Android and modifying Glance-based home screen</p>
+<p>widgets (Jetpack Glance, the Compose-style widget toolkit Android apps use</p>
+<p>for <code>home_widget</code>-style integrations).</p>
+
+<h2>When to Use</h2>
+
+<ul>
+<li>Cutting a release/debug APK build for an Android Flutter app</li>
+<li>Bumping the app version ahead of a release</li>
+<li>Editing or debugging a Glance home screen widget shipped alongside the app</li>
+<li>Don&#x27;t use for: iOS builds, or general Dart/UI rendering issues (see</li>
+</ul>
+<p><code>flutter-content-rendering</code> for HTML/PDF/WebView content quirks)</p>
 
 <h2>Version Bumping</h2>
 
-<p>Update both pubspec.yaml and android/local.properties. Both must match.</p>
+<p>Update <strong>both</strong> of these together — they drift independently and Android will</p>
+<p>happily build with mismatched values, so nothing fails until a store upload</p>
+<p>or a widget update check compares them:</p>
+
+<ul>
+<li><code>pubspec.yaml</code> — the <code>version: X.Y.Z+N</code> line (<code>X.Y.Z</code> is the display</li>
+</ul>
+<p>version, <code>N</code> after the <code>+</code> is the build number / <code>versionCode</code>).</p>
+<ul>
+<li><code>android/local.properties</code> — Flutter&#x27;s Gradle plugin reads <code>flutter.versionName</code></li>
+</ul>
+<p>/ <code>flutter.versionCode</code> overrides from here if present; if the file pins a</p>
+<p>version it will silently take precedence over <code>pubspec.yaml</code> at build time.</p>
+
+<p>If a build ships with the old version despite a <code>pubspec.yaml</code> bump, check</p>
+<p><code>local.properties</code> first before suspecting a Gradle cache issue.</p>
+
+<h2>Build Commands</h2>
+
+<pre class='code'><code>flutter clean                      # when in doubt after a version/dependency change
+flutter pub get
+flutter build apk --release        # single universal APK
+flutter build apk --release --split-per-abi   # smaller per-ABI APKs
+flutter build appbundle --release  # .aab for Play Store upload</code></pre>
+
+<ul>
+<li><code>--split-per-abi</code> produces <code>app-armeabi-v7a-release.apk</code>,</li>
+</ul>
+<p><code>app-arm64-v8a-release.apk</code>, <code>app-x86_64-release.apk</code> separately under</p>
+<p><code>build/app/outputs/flutter-apk/</code> — don&#x27;t sideload the wrong ABI onto a test</p>
+<p>device.</p>
+<ul>
+<li>A release build requires a signing config (<code>android/key.properties</code> +</li>
+</ul>
+<p>matching <code>signingConfigs</code> block in <code>android/app/build.gradle</code>); without it</p>
+<p>Gradle falls back to the debug keystore and the APK will fail to update</p>
+<p>over an existing store install (signature mismatch).</p>
+
+<h2>Glance Widget Pitfalls</h2>
+
+<ul>
+<li>Glance widgets are native Kotlin/Compose code living under</li>
+</ul>
+<p><code>android/app/src/main/kotlin/**/widget/</code>, not Dart — Flutter hot reload does</p>
+<p><strong>not</strong> touch them. Rebuild and reinstall the APK to see widget changes.</p>
+<p>A pure Dart-side hot reload will make it look like your widget edit &quot;did</p>
+<p>nothing.&quot;</p>
+<ul>
+<li>Widget state updates from the Dart side (e.g. via <code>home_widget</code> plugin)</li>
+</ul>
+<p>only take effect after you explicitly call the widget update trigger from</p>
+<p>Dart; changing shared prefs/files alone does not refresh a placed widget.</p>
+<ul>
+<li>Test widget layout changes on-device or via Android Studio&#x27;s widget</li>
+</ul>
+<p>preview — the Flutter app&#x27;s own UI preview tools don&#x27;t render Glance</p>
+<p>widgets.</p>
 
 <h2>Dart Pitfall</h2>
 
-<p>substringAfter() does not exist in Dart. Use .split(&quot;x&quot;).last instead.</p>
+<p><code>substringAfter()</code> does not exist in Dart&#x27;s <code>String</code> API (it&#x27;s a</p>
+<p>Kotlin/Guava-ism). Use <code>.split(&quot;x&quot;).last</code> instead, e.g.</p>
+<p><code>&quot;foo=bar&quot;.split(&quot;=&quot;).last</code> → <code>&quot;bar&quot;</code>.</p>
+
+<h2>Common Pitfalls</h2>
+
+<ul>
+<li><strong>Version mismatch between <code>pubspec.yaml</code> and <code>android/local.properties</code>.</strong></li>
+</ul>
+<p>See Version Bumping above — always grep both before assuming a version bug</p>
+<p>is a build-cache issue.</p>
+<ul>
+<li><strong>Expecting hot reload to update a Glance widget.</strong> It won&#x27;t — widgets are</li>
+</ul>
+<p>native code, not Dart.</p>
+<ul>
+<li><strong>Sideloading the wrong split APK.</strong> Match the device&#x27;s ABI</li>
+</ul>
+<p>(<code>arm64-v8a</code> for virtually all modern phones) or install the universal</p>
+<p><code>app-release.apk</code> instead.</p>
+<ul>
+<li><strong>Missing signing config on release builds.</strong> Falls back to the debug</li>
+</ul>
+<p>keystore silently; only surfaces as a signature-mismatch failure when</p>
+<p>updating an existing store install.</p>
+
+<h2>Verification Checklist</h2>
+
+<ul>
+<li>[ ] <code>pubspec.yaml</code> version and <code>android/local.properties</code> (if present) agree</li>
+<li>[ ] <code>flutter build apk --release</code> (or <code>appbundle</code>) completes with no errors</li>
+<li>[ ] Release build is signed with the real keystore, not the debug fallback</li>
+<li>[ ] If a Glance widget was touched: APK reinstalled on-device, not just</li>
+</ul>
+<p>hot-reloaded, before judging the change</p>
 
 </td></tr>
 </table>
@@ -105,28 +210,109 @@ hr{border:none;border-top:1px solid #2a5a2a;margin:16px 0}
 </table>
 <pre id="raw" hidden>---
 name: flutter-android-build
-description: Build Flutter APKs and modify Glance widgets.
+description: Use when building Flutter APKs for Android or modifying Glance-based home screen widgets.
 version: 1.0.0
 author: Hermes Agent
 license: MIT
 metadata:
   hermes:
-    tags: [flutter, android, build, apk]
+    tags: [flutter, android, build, apk, glance, widgets]
     category: software-development
 ---
 
 
+
 # Flutter Android Build
 
-Build Flutter APKs and modify Glance-based home screen widgets.
+## Overview
+
+Building Flutter APKs for Android and modifying Glance-based home screen
+widgets (Jetpack Glance, the Compose-style widget toolkit Android apps use
+for `home_widget`-style integrations).
+
+## When to Use
+
+- Cutting a release/debug APK build for an Android Flutter app
+- Bumping the app version ahead of a release
+- Editing or debugging a Glance home screen widget shipped alongside the app
+- Don&#x27;t use for: iOS builds, or general Dart/UI rendering issues (see
+  `flutter-content-rendering` for HTML/PDF/WebView content quirks)
 
 ## Version Bumping
 
-Update both pubspec.yaml and android/local.properties. Both must match.
+Update **both** of these together — they drift independently and Android will
+happily build with mismatched values, so nothing fails until a store upload
+or a widget update check compares them:
+
+- `pubspec.yaml` — the `version: X.Y.Z+N` line (`X.Y.Z` is the display
+  version, `N` after the `+` is the build number / `versionCode`).
+- `android/local.properties` — Flutter&#x27;s Gradle plugin reads `flutter.versionName`
+  / `flutter.versionCode` overrides from here if present; if the file pins a
+  version it will silently take precedence over `pubspec.yaml` at build time.
+
+If a build ships with the old version despite a `pubspec.yaml` bump, check
+`local.properties` first before suspecting a Gradle cache issue.
+
+## Build Commands
+
+```bash
+flutter clean                      # when in doubt after a version/dependency change
+flutter pub get
+flutter build apk --release        # single universal APK
+flutter build apk --release --split-per-abi   # smaller per-ABI APKs
+flutter build appbundle --release  # .aab for Play Store upload
+```
+
+- `--split-per-abi` produces `app-armeabi-v7a-release.apk`,
+  `app-arm64-v8a-release.apk`, `app-x86_64-release.apk` separately under
+  `build/app/outputs/flutter-apk/` — don&#x27;t sideload the wrong ABI onto a test
+  device.
+- A release build requires a signing config (`android/key.properties` +
+  matching `signingConfigs` block in `android/app/build.gradle`); without it
+  Gradle falls back to the debug keystore and the APK will fail to update
+  over an existing store install (signature mismatch).
+
+## Glance Widget Pitfalls
+
+- Glance widgets are native Kotlin/Compose code living under
+  `android/app/src/main/kotlin/**/widget/`, not Dart — Flutter hot reload does
+  **not** touch them. Rebuild and reinstall the APK to see widget changes.
+  A pure Dart-side hot reload will make it look like your widget edit &quot;did
+  nothing.&quot;
+- Widget state updates from the Dart side (e.g. via `home_widget` plugin)
+  only take effect after you explicitly call the widget update trigger from
+  Dart; changing shared prefs/files alone does not refresh a placed widget.
+- Test widget layout changes on-device or via Android Studio&#x27;s widget
+  preview — the Flutter app&#x27;s own UI preview tools don&#x27;t render Glance
+  widgets.
 
 ## Dart Pitfall
 
-substringAfter() does not exist in Dart. Use .split(&quot;x&quot;).last instead.
+`substringAfter()` does not exist in Dart&#x27;s `String` API (it&#x27;s a
+Kotlin/Guava-ism). Use `.split(&quot;x&quot;).last` instead, e.g.
+`&quot;foo=bar&quot;.split(&quot;=&quot;).last` → `&quot;bar&quot;`.
+
+## Common Pitfalls
+
+1. **Version mismatch between `pubspec.yaml` and `android/local.properties`.**
+   See Version Bumping above — always grep both before assuming a version bug
+   is a build-cache issue.
+2. **Expecting hot reload to update a Glance widget.** It won&#x27;t — widgets are
+   native code, not Dart.
+3. **Sideloading the wrong split APK.** Match the device&#x27;s ABI
+   (`arm64-v8a` for virtually all modern phones) or install the universal
+   `app-release.apk` instead.
+4. **Missing signing config on release builds.** Falls back to the debug
+   keystore silently; only surfaces as a signature-mismatch failure when
+   updating an existing store install.
+
+## Verification Checklist
+
+- [ ] `pubspec.yaml` version and `android/local.properties` (if present) agree
+- [ ] `flutter build apk --release` (or `appbundle`) completes with no errors
+- [ ] Release build is signed with the real keystore, not the debug fallback
+- [ ] If a Glance widget was touched: APK reinstalled on-device, not just
+      hot-reloaded, before judging the change
 </pre>
 <script>
 function copyRaw(){var t=document.getElementById('raw').textContent;navigator.clipboard.writeText(t).then(function(){var m=document.getElementById('copied-msg');m.textContent='COPIED!';setTimeout(function(){m.textContent='';},2000);});}

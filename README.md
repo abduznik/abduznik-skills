@@ -30,7 +30,7 @@ not a hand-maintained copy.
 | media | `yt-dlp-anti-bot` | When yt-dlp hits 403s, harden with impersonation + backoff. |
 | software-development | `circuit-design` | Design electrical circuits programmatically — SKiDL netlist generation, custom SVG schematic rendere |
 | software-development | `embedded-porting-patterns` | Porting C/C++ CMake+SDL2 applications to new embedded/handheld platforms (PSP, Vita, 3DS, etc.) by f |
-| software-development | `flutter-android-build` | Build Flutter APKs and modify Glance widgets. |
+| software-development | `flutter-android-build` | Use when building Flutter APKs for Android or modifying Glance-based home screen widgets. |
 | software-development | `flutter-content-rendering` | Show HTML/links/PDFs in Flutter — viewers, clickable URLs. |
 | software-development | `pdf-flatten` | Use when flattening PDFs to page images or raster PDFs. |
 | software-development | `plan` | Write a markdown plan to .hermes/plans/; no execution. |
