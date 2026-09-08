@@ -759,10 +759,17 @@ def main() -> int:
         return 1
     if skills_dir.exists():
         shutil.rmtree(skills_dir)
+    # GUARD: tools/ may hold files that do NOT belong to this generator
+    # (e.g. CI helpers like check_manifest_sync.py / rescan.py added by the
+    # repo owner directly). Only the generator's own copy is replaced —
+    # foreign files are preserved, never deleted.
+    own_tool = tools_dir / "publish.py"
     if tools_dir.exists():
-        shutil.rmtree(tools_dir)
+        if own_tool.exists():
+            own_tool.unlink()
+    else:
+        tools_dir.mkdir(parents=True, exist_ok=True)
     skills_dir.mkdir(parents=True, exist_ok=True)
-    tools_dir.mkdir(parents=True, exist_ok=True)
 
     # skills
     table_rows = []
