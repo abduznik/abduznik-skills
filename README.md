@@ -28,6 +28,7 @@ not a hand-maintained copy.
 | hermes | `hermes-gateway-slash-command` | Add a gateway-available slash command with message tracking and batch deletion capabilities. Covers  |
 | media | `jellyseerr-watch-suggestions` | Use when suggesting watch picks filtered by your library. |
 | media | `yt-dlp-anti-bot` | When yt-dlp hits 403s, harden with impersonation + backoff. |
+| software-development | `cadquery-enclosure-design` | Use when designing 3D-printed enclosures for boards. |
 | software-development | `circuit-design` | Design electrical circuits programmatically — SKiDL netlist generation, custom SVG schematic rendere |
 | software-development | `embedded-porting-patterns` | Porting C/C++ CMake+SDL2 applications to new embedded/handheld platforms (PSP, Vita, 3DS, etc.) by f |
 | software-development | `flutter-android-build` | Build Flutter APKs and modify Glance widgets. |

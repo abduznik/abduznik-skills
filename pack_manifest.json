@@ -377,6 +377,22 @@
       "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
+    },
+    {
+      "name": "cadquery-enclosure-design",
+      "category": "software-development",
+      "tags": [
+        "cadquery",
+        "enclosure",
+        "3d-print",
+        "stl",
+        "electronics"
+      ],
+      "extra_files": [
+        "scripts/sanity_check.py"
+      ],
+      "license": "MIT",
+      "author": "Hermes Agent"
     }
   ]
 }
