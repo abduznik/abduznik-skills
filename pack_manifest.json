@@ -393,6 +393,19 @@
       ],
       "license": "MIT",
       "author": "Hermes Agent"
+    },
+    {
+      "name": "goatcounter-analytics",
+      "category": "devops",
+      "tags": [
+        "analytics",
+        "goatcounter",
+        "visitor-stats",
+        "api"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
     }
   ]
 }

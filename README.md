@@ -17,6 +17,7 @@ not a hand-maintained copy.
 | devops | `ad-hoc-script-verification` | Use when verifying a script with no CI suite. |
 | devops | `docker-container-update-check` | Use when checking Docker containers for newer images. |
 | devops | `ephemeral-file-sharing` | Expiring public web links for files, CLI-only (gofile.io). |
+| devops | `goatcounter-analytics` | Query GoatCounter visitor analytics via the REST API. |
 | devops | `google-oauth-file-poll` | Use when Google API OAuth needs a headless file-poll flow. |
 | devops | `reverse-proxy-websocket-debugging` | Use when WebSockets die behind a reverse proxy (close 1006). |
 | devops | `windows-crash-forensics` | PC crash/freeze forensics via event logs, blame attribution. |
