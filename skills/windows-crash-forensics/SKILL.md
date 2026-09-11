@@ -12,6 +12,8 @@ metadata:
 ---
 
 
+
+
 # Windows Crash Forensics
 
 Diagnose a "my PC crashed / froze / rebooted" report BEFORE blaming anything.

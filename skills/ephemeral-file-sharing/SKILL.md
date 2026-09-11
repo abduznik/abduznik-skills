@@ -12,6 +12,8 @@ tags: file-sharing, upload, gofile, expiry, download-link
 ---
 
 
+
+
 # Ephemeral File Sharing
 
 Give the user a public download link that expires on its own — no account, pure CLI. Use when they say "upload X to the web", "send someone a limited link", "a link that expires in a week". Sibling of `homelab-file-hosting` (self-hosted permanent links); use THIS skill for external hosts with built-in expiry.

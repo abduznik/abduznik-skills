@@ -21,14 +21,23 @@ not a hand-maintained copy.
 | devops | `google-oauth-file-poll` | Use when Google API OAuth needs a headless file-poll flow. |
 | devops | `reverse-proxy-websocket-debugging` | Use when WebSockets die behind a reverse proxy (close 1006). |
 | devops | `windows-crash-forensics` | PC crash/freeze forensics via event logs, blame attribution. |
+| devops | `windows-cron-console-hide` | Suppress console window flashes on Windows — covers both Python subprocess creationflags AND VBS wra |
 | github | `github-code-review` | Review PRs: diffs, inline comments via gh or REST. |
 | github | `maintained-fork-publishing` | Publish/maintain OSS forks; contribute upstream via PRs. |
 | hardware | `usb-device-enumeration` | Use when a USB device is invisible on Windows. |
 | hermes | `debugging-hermes-tui-commands` | Debug Hermes TUI slash commands: Python, gateway, Ink UI. |
 | hermes | `hermes-agent-skill-authoring` | Author in-repo SKILL.md: frontmatter, validator, structure. |
 | hermes | `hermes-gateway-slash-command` | Add a gateway-available slash command with message tracking and batch deletion capabilities. Covers  |
+| media | `canonical-thumbnail` | Generate YourChannel canonical video thumbnails with hero renders. Takes hero name, layout (A=hero l |
 | media | `jellyseerr-watch-suggestions` | Use when suggesting watch picks filtered by your library. |
+| media | `skit-thumbnail` | Generate YouTube thumbnails for skit videos. Extracts a frame (random or specific timestamp), crops  |
 | media | `yt-dlp-anti-bot` | When yt-dlp hits 403s, harden with impersonation + backoff. |
+| media | `yt-music-downloader` | Search YouTube Music for album playlists and push them to a download server for offline storage. |
+| productivity | `document-to-action-items` | Extract cited obligations, deadlines, tasks from documents. |
+| productivity | `meeting-action-items` | Turn meeting notes into cited decisions, owners, tickets. |
+| productivity | `product-price-monitor` | Watch product, flight, or listing prices; alert on target. |
+| productivity | `steamrip-downloader` | Find games via SteamRIP's exposed WP REST API; auto-download mega & BuzzHeavier/bzzhr links, hand ot |
+| productivity | `weekly-review-planning` | Weekly reset: commitments, stalled work, next-week plan. |
 | software-development | `cadquery-enclosure-design` | Use when designing 3D-printed enclosures for boards. |
 | software-development | `circuit-design` | Design electrical circuits programmatically — SKiDL netlist generation, custom SVG schematic rendere |
 | software-development | `embedded-porting-patterns` | Porting C/C++ CMake+SDL2 applications to new embedded/handheld platforms (PSP, Vita, 3DS, etc.) by f |
@@ -36,6 +45,8 @@ not a hand-maintained copy.
 | software-development | `flutter-content-rendering` | Show HTML/links/PDFs in Flutter — viewers, clickable URLs. |
 | software-development | `pdf-flatten` | Use when flattening PDFs to page images or raster PDFs. |
 | software-development | `plan` | Write a markdown plan to .hermes/plans/; no execution. |
+| software-development | `psp-development` | Cross-compile, debug, and test PSP homebrew using the pspdev toolchain and PPSSPP emulator. Covers C |
+| software-development | `psp-homebrew-testing` | Test and debug PSP homebrew on PPSSPP emulator for Windows — deploy EBOOT, capture screenshots, read |
 | software-development | `psp-prx-plugin-maintenance` | Use when building/debugging PSP prx kernel plugins. |
 | software-development | `python-debugpy` | Debug Python: pdb REPL + debugpy remote (DAP). |
 | software-development | `python-webapp-patterns` | Build Python web apps with FastAPI or Flask — static file serving, search-index frontends, PDF/binar |
@@ -43,6 +54,7 @@ not a hand-maintained copy.
 | software-development | `spike` | Throwaway experiments to validate an idea before build. |
 | software-development | `subagent-driven-development` | Execute plans via delegate_task subagents (2-stage review). |
 | software-development | `test-driven-development` | TDD: enforce RED-GREEN-REFACTOR, tests before code. |
+| software-development | `wiki-media-asset-pipeline` | Scrape structured image asset data from Fandom/MediaWiki APIs, build dual-resolution dictionaries (i |
 | software-development | `writing-plans` | Write implementation plans: bite-sized tasks, paths, code. |
 
 ## Install

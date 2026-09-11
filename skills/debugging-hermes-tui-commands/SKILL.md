@@ -12,6 +12,8 @@ metadata:
 ---
 
 
+
+
 # Debugging Hermes TUI Slash Commands
 
 ## Overview

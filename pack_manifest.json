@@ -406,6 +406,163 @@
       "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
+    },
+    {
+      "name": "canonical-thumbnail",
+      "category": "media",
+      "tags": [
+        "thumbnails",
+        "video",
+        "youtube",
+        "content-creation"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "document-to-action-items",
+      "category": "productivity",
+      "tags": [
+        "documents",
+        "ocr",
+        "action-items",
+        "deadlines"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "meeting-action-items",
+      "category": "productivity",
+      "tags": [
+        "meetings",
+        "action-items",
+        "follow-up"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "product-price-monitor",
+      "category": "productivity",
+      "tags": [
+        "prices",
+        "shopping",
+        "alerts",
+        "monitoring"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "psp-development",
+      "category": "software-development",
+      "tags": [
+        "psp",
+        "homebrew",
+        "pspdev",
+        "ppsspp",
+        "cross-compile"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "psp-homebrew-testing",
+      "category": "software-development",
+      "tags": [
+        "psp",
+        "testing",
+        "ppsspp",
+        "emulator"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "skit-thumbnail",
+      "category": "media",
+      "tags": [
+        "thumbnails",
+        "youtube",
+        "video",
+        "content-creation"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "steamrip-downloader",
+      "category": "productivity",
+      "tags": [
+        "gaming",
+        "download",
+        "mega",
+        "automation"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "weekly-review-planning",
+      "category": "productivity",
+      "tags": [
+        "weekly-review",
+        "planning",
+        "productivity",
+        "tasks"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "wiki-media-asset-pipeline",
+      "category": "software-development",
+      "tags": [
+        "mediawiki",
+        "fandom",
+        "web-scraping",
+        "image-processing"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "windows-cron-console-hide",
+      "category": "devops",
+      "tags": [
+        "windows",
+        "cron",
+        "vbs",
+        "console",
+        "scheduled-tasks"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "yt-music-downloader",
+      "category": "media",
+      "tags": [
+        "youtube-music",
+        "download",
+        "albums",
+        "yt-dlp"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
     }
   ]
 }

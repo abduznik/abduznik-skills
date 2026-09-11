@@ -11,6 +11,8 @@ metadata:
 ---
 
 
+
+
 # Parametric 3D-printed enclosure design (CadQuery)
 
 Class of task: design a printable case/box for a microcontroller board + display/module, iterate with the user over STLs until print-ready. Deliverable = watertight STLs + STEP + per-part renders, verified against the drawn concept.

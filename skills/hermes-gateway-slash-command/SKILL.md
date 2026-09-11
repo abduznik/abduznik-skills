@@ -12,6 +12,8 @@ metadata:
 ---
 
 
+
+
 # Hermes Gateway Slash Commands
 
 How to add a new slash command to the Hermes gateway (Telegram, Discord, etc.) that can also batch-delete tracked bot messages — e.g. a `/clear` command that wipes the chat UI and starts a fresh session while preserving backend history.

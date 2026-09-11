@@ -16,6 +16,8 @@ triggers:
 ---
 
 
+
+
 # yt-dlp Anti-Bot Hardening (YouTube 403s)
 
 YouTube intermittently rejects yt-dlp requests with `HTTP Error 403: Forbidden`. Pattern to recognize: failures hit DIFFERENT tracks each run, in bursts — that's IP throttling / bot detection, NOT a per-video block. A job can report "done" while silently skipping failed tracks (see below).
