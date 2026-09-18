@@ -23,7 +23,6 @@ triggers:
 ---
 
 
-
 # PSP Homebrew Development
 
 ## Session Start-up Procedure
@@ -38,7 +37,7 @@ Before doing any work on a PSP port project:
 
 4. **Ask the user before proceeding past the gate.** Report what you found — the state, the gate, what's blocking — and explicitly wait for a verdict. Do not keep working past a visual gate on the assumption it's fine.
 
-5. **Never narrate visual success** ("it renders in colour now", "the background looks correct") from log data, return codes, or hope. That claim requires user confirmation via Telegram.
+5. **Never narrate visual success** ("it renders in colour now", "the background looks correct") from log data, return codes, or hope. That claim requires user confirmation.
 
 6. **Update WORKING_NOTES.md** when you discover new process discipline during a session — keep it short and durable, not a per-task log.
 
@@ -161,7 +160,7 @@ Start-Sleep 1
 Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName System.Windows.Forms
 $bmp = [System.Windows.Forms.Clipboard]::GetImage()
-$bmp.Save("/path/to/screenshot.png", [System.Drawing.Imaging.ImageFormat]::Png)
+$bmp.Save("/tmp/screenshot.png", [System.Drawing.Imaging.ImageFormat]::Png)
 ```
 
 **Full desktop capture (larger files, more context):**
@@ -172,7 +171,7 @@ $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
 $bmp = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
 $g = [System.Drawing.Graphics]::FromImage($bmp)
 $g.CopyFromScreen(0, 0, 0, 0, $bounds.Size)
-$bmp.Save("/path/to/screenshot.png", [System.Drawing.Imaging.ImageFormat]::Png)
+$bmp.Save("/tmp/screenshot.png", [System.Drawing.Imaging.ImageFormat]::Png)
 $g.Dispose(); $bmp.Dispose()
 ```
 
@@ -226,7 +225,7 @@ PPSSPP's built-in FPS counter is an **emulator overlay** rendered by PPSSPP's ow
 
 **Enabling the FPS counter:**
 
-Add this setting under `[Graphics]` in `/path/to/emulators\ppsspp\memstick\PSP\SYSTEM\ppsspp.ini`:
+Add this setting under `[Graphics]` in `/path/to/ppsspp.ini`:
 ```ini
 iShowFPSCounter = 1
 ```
@@ -292,7 +291,7 @@ static void psp_debug_log(const char* msg) {
 }
 ```
 
-Add a marker before each call in `svga_init()` / `createRenderer()`. After running on PPSSPP, check `/path/to/emulators\ppsspp\memstick\psp_debug.txt`. The FAILED marker tells you the exact failing call.
+Add a marker before each call in `svga_init()` / `createRenderer()`. After running on PPSSPP, check `/path/to/psp_debug.txt`. The FAILED marker tells you the exact failing call.
 
 **Known result from Fallout 1 CE PSP port:** Calls 1-2 (SDL_InitSubSystem, SDL_CreateWindow) succeed. The failure is at **Call 3 — `SDL_CreateTexture`** with `SDL_PIXELFORMAT_RGB888` at 640×480. The PSP SDL2 renderer has a hard **512×512 texture dimension limit** (Media Engine GPU constraint). Error: `"Texture dimensions are limited to 512x512"`.
 

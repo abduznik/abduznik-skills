@@ -11,8 +11,6 @@ metadata:
 ---
 
 
-
-
 # Reverse-Proxy WebSocket Debugging
 
 Symptom signature: pages load fine through the proxy, but WS-dependent features are dead. Browser console shows `WebSocket Error` then `Closed WebSocket ... code: 1006` with reconnect loops; apps show banners like "This websocket connection has been closed. Are you using a reverse proxy?" (Crafty) or just silently no live data. Note: dashboard numbers may still appear — they can be server-rendered at page load, not WS evidence.

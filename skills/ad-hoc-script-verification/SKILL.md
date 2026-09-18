@@ -12,8 +12,6 @@ metadata:
 ---
 
 
-
-
 # Ad-Hoc Script Verification (no CI)
 
 There is no canonical test suite for `data/scripts` (and many homelab/cron

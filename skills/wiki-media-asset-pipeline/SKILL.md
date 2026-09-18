@@ -20,7 +20,6 @@ tags:
 ---
 
 
-
 # Wiki Media Asset Pipeline
 
 Extract hero/character image assets from Fandom/MediaWiki APIs, organize into dual-resolution dictionaries (small icon + full render), compress for web, and deploy.
@@ -191,4 +190,4 @@ When users can submit content (fan art, roster applications):
 - **Wiki URL changes:** Fandom wiki image URLs include a CDN hash (`images/a/a9/`) and a revision timestamp (`?cb=...`). The hash can change if the file is re-uploaded. Store both URLs in the dictionary so you can update individually.
 - **Fandom API rate limits:** The API has no documented rate limit but batch queries with 50+ titles can fail. Split into batches of 24-30 titles when querying `imageinfo`.
 - **URL encoding:** Hero names with special characters (Lúcio, Torbjörn) need URL encoding (`L%C3%BAcio`) in API queries but can use the plain name in the dictionary and HTML.
-- **Pillow on Windows:** Use the system Python (e.g. `<user-path>\AppData\Local\Programs\Python\Python311\python.exe`) not the sandbox Python for image processing, since the sandbox may lack PIL.
+- **Pillow on Windows:** Use the system Python (e.g. `/home\<user>\AppData\Local\Programs\Python\Python311\python.exe`) not the sandbox Python for image processing, since the sandbox may lack PIL.

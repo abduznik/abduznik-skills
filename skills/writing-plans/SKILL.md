@@ -12,8 +12,6 @@ metadata:
 ---
 
 
-
-
 # Writing Implementation Plans
 
 ## Overview

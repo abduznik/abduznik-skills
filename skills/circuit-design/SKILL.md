@@ -15,8 +15,6 @@ metadata:
 ---
 
 
-
-
 # Circuit Design (Programmatic)
 
 Three approaches for generating electrical circuit schematics from code, 

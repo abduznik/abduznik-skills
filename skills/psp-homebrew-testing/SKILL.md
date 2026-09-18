@@ -11,14 +11,13 @@ metadata:
 ---
 
 
-
 # PSP Homebrew Testing (PPSSPP on Windows)
 
 Test workflow for PSP homebrew builds using PPSSPP on Windows. Covers deploying EBOOTs, capturing visual output, reading debug logs, and managing PPSSPP process lifecycle.
 
 ## Prerequisites
 
-- PPSSPP installed on Windows (`/path/to/emulators\ppsspp\PPSSPPWindows64.exe`)
+- PPSSPP installed on Windows (`/path/to/PPSSPP.exe`)
 - PSP homebrew EBOOT.PBP built with pspdev toolchain
 - Game data files (CRITTER.DAT, MASTER.DAT, DATA/ etc.) alongside EBOOT
 

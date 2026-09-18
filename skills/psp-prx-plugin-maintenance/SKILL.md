@@ -11,8 +11,6 @@ metadata:
 ---
 
 
-
-
 # PSP PRX Plugin Maintenance
 
 Building and debugging PSP **kernel plugins (.prx)** — cheat devices, VSH tools, sysmon overlays — especially when rebuilding legacy codebases with modern toolchains. Homebrew EBOOT ports are `psp-development`'s territory; this skill covers prx plugins and real-hardware validation.

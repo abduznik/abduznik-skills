@@ -1,6 +1,6 @@
 ---
 name: skit-thumbnail
-description: Generate YouTube thumbnails for skit videos. Extracts a frame (random or specific timestamp), crops it into a rounded-rect polaroid with drop shadow, SKIT label bar above, title+subtitle on the right, YourChannel logo below. Everything auto-fits within margins.
+description: Generate YouTube thumbnails for skit videos. Extracts a frame (random or specific timestamp), crops it into a rounded-rect polaroid with drop shadow, SKIT label bar above, title+subtitle on the right, channel logo below. Everything auto-fits within margins.
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -15,15 +15,14 @@ usage: |
 ---
 
 
-
 # Skit Thumbnail Generator
 
 ## Location
-Script: `/path/to/media\overwatch\videos\overwatch vids\scripts\skit_thumbnail.py`
+Script: `/path/to/scripts/skit_thumbnail.py`
 
 ## Usage
 ```bash
-cd "/path/to/your/media/overwatch/videos/overwatch vids"
+cd "/path/to/project"
 python scripts/skit_thumbnail.py path/to/clip.mp4 --title "Title Text" --subtitle "Subtitle Text"
 ```
 
@@ -38,7 +37,7 @@ python scripts/skit_thumbnail.py path/to/clip.mp4 --title "Title Text" --subtitl
 
 ## Design
 - **Left stack**: Red SKIT bar (rounded pill, left-aligned text) → 4px gap → Photo (rounded-rect, white border, drop shadow)
-- **Right column**: Title (red) + Subtitle (white) at same font size (determined by longer string) → accent line → YourChannel logo (scaled to fill)
+- **Right column**: Title (red) + Subtitle (white) at same font size (determined by longer string) → accent line → channel logo (scaled to fill)
 - **Background**: Dark slate with diagonal stripe accents, red top/bottom bars
 - **Margins**: 50px left, 25px all other sides, 28px gap between frame and text
 
@@ -57,17 +56,17 @@ python scripts/skit_thumbnail.py path/to/clip.mp4 --title "Title Text" --subtitl
 
 ## YouTube upload after thumbnail
 
-After the user picks a thumbnail, upload the video to YourChannel channel:
+After the user picks a thumbnail, upload the video to the channel:
 
 ```bash
-cd "/path/to/hermes/data/skills/media/youtube-upload/scripts"
+cd "/path/to/scripts-upload/scripts"
 python yt_upload.py "path/to/video.mp4" \
-  --title "SkitName In Overwatch | YourChannel" \
+  --title "SkitName In Overwatch | My Channel" \
   --thumbnail "path/to/thumb.png" \
   --private --schedule "YYYY-MM-DDT14:00:00Z"
 ```
 
-**Title convention (YourChannel skits):** `"[Skit Name] In Overwatch | YourChannel"` — always this format for skit videos. The subtitle (e.g. "Overwatch") goes in the thumbnail only, not the YouTube title.
+**Title convention (channel skits):** `"[Skit Name] In Overwatch | My Channel"` — always this format for skit videos. The subtitle (e.g. "Overwatch") goes in the thumbnail only, not the YouTube title.
 
 **Schedule:** User's timezone is IDT (UTC+3). 5pm IDT = 14:00 UTC. Ask the user what time to publish.
 

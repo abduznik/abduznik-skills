@@ -12,8 +12,6 @@ metadata:
 ---
 
 
-
-
 # Google API OAuth: Headless File-Poll Flow
 
 ## Overview

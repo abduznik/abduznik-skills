@@ -11,8 +11,6 @@ license: MIT
 ---
 
 
-
-
 # USB Device Enumeration & Gadget Mode (Windows host)
 
 Class: making a USB-connected device (Raspberry Pi Zero, ESP32, Arduino, any SBC) visible to and reachable from the Windows PC — or diagnosing why it isn't.

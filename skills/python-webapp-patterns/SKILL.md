@@ -15,8 +15,6 @@ tags: [fastapi, flask, web, frontend, windows, search, pdf]
 ---
 
 
-
-
 # Python Web App Patterns
 
 Reusable patterns for building self-hosted Python web apps with FastAPI (or Flask)

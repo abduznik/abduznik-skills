@@ -12,8 +12,6 @@ metadata:
 ---
 
 
-
-
 # Maintained Fork Publishing
 
 Turn a private fork of an abandoned/slow upstream project into a public,

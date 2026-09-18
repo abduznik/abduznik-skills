@@ -12,8 +12,6 @@ metadata:
 ---
 
 
-
-
 # PDF Flatten
 
 ## Overview

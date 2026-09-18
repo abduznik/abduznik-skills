@@ -12,8 +12,6 @@ metadata:
 ---
 
 
-
-
 # Subagent-Driven Development
 
 ## Overview

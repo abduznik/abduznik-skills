@@ -499,19 +499,6 @@
       "author": "Hermes Agent"
     },
     {
-      "name": "steamrip-downloader",
-      "category": "productivity",
-      "tags": [
-        "gaming",
-        "download",
-        "mega",
-        "automation"
-      ],
-      "extra_files": [],
-      "license": "MIT",
-      "author": "Hermes Agent"
-    },
-    {
       "name": "weekly-review-planning",
       "category": "productivity",
       "tags": [
@@ -538,27 +525,230 @@
       "author": "Hermes Agent"
     },
     {
-      "name": "windows-cron-console-hide",
-      "category": "devops",
+      "name": "architecture-diagram",
+      "category": "creative",
       "tags": [
-        "windows",
-        "cron",
-        "vbs",
-        "console",
-        "scheduled-tasks"
+        "diagrams",
+        "svg",
+        "architecture"
       ],
       "extra_files": [],
       "license": "MIT",
       "author": "Hermes Agent"
     },
     {
-      "name": "yt-music-downloader",
-      "category": "media",
+      "name": "excalidraw",
+      "category": "creative",
       "tags": [
-        "youtube-music",
-        "download",
-        "albums",
-        "yt-dlp"
+        "diagrams",
+        "hand-drawn",
+        "flowcharts"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "sketch",
+      "category": "creative",
+      "tags": [
+        "mockups",
+        "html",
+        "prototyping"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "blocked-page-recovery",
+      "category": "web",
+      "tags": [
+        "web-scraping",
+        "403",
+        "429",
+        "waf"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "competitor-news-monitor",
+      "category": "research",
+      "tags": [
+        "news",
+        "monitoring",
+        "competitors"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "grounded-citations",
+      "category": "research",
+      "tags": [
+        "citations",
+        "sources",
+        "research"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "rss-feeds",
+      "category": "research",
+      "tags": [
+        "rss",
+        "atom",
+        "feeds"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "component-alternatives",
+      "category": "software-development",
+      "tags": [
+        "components",
+        "alternatives",
+        "obsolete"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "flash-game-research",
+      "category": "software-development",
+      "tags": [
+        "flash",
+        "swf",
+        "ruffle"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "github",
+      "category": "software-development",
+      "tags": [
+        "github",
+        "gh-cli"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "pdf-surgical-edits",
+      "category": "software-development",
+      "tags": [
+        "pdf",
+        "redact",
+        "annotate",
+        "pymupdf"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "docx",
+      "category": "productivity",
+      "tags": [
+        "word",
+        "docx",
+        "documents"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "obsidian-maps",
+      "category": "productivity",
+      "tags": [
+        "obsidian",
+        "maps",
+        "geospatial"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "pdf",
+      "category": "productivity",
+      "tags": [
+        "pdf",
+        "merge",
+        "fill",
+        "ocr"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "email-inbox-triage",
+      "category": "email",
+      "tags": [
+        "email",
+        "inbox",
+        "triage"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "reddit-reading",
+      "category": "social-media",
+      "tags": [
+        "reddit",
+        "subreddits"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "native-mcp",
+      "category": "mcp",
+      "tags": [
+        "mcp",
+        "servers",
+        "tools"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "hermes-gateway-supervision",
+      "category": "devops",
+      "tags": [
+        "hermes",
+        "gateway",
+        "monitoring"
+      ],
+      "extra_files": [],
+      "license": "MIT",
+      "author": "Hermes Agent"
+    },
+    {
+      "name": "windows-c-build-toolchain",
+      "category": "devops",
+      "tags": [
+        "windows",
+        "c-cpp",
+        "msys2",
+        "mingw"
       ],
       "extra_files": [],
       "license": "MIT",

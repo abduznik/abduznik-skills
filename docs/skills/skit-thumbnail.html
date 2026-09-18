@@ -53,7 +53,7 @@ hr{border:none;border-top:1px solid #2a5a2a;margin:16px 0}
 <table style="width:100%;border-collapse:collapse"><tr>
 <td class="banner">
 <span class="site"><img class="logo" src="favicon.svg" alt="logo">skit-thumbnail</span><br>
-<span class="tagline">Generate YouTube thumbnails for skit videos. Extracts a frame (random or specific timestamp), crops it into a rounded-rect polaroid with drop shadow, SKIT label bar above, title+subtitle on the right, YourChannel logo below. Everything auto-fits within margins.</span>
+<span class="tagline">Generate YouTube thumbnails for skit videos. Extracts a frame (random or specific timestamp), crops it into a rounded-rect polaroid with drop shadow, SKIT label bar above, title+subtitle on the right, channel logo below. Everything auto-fits within margins.</span>
 </td>
 </tr></table>
 </td></tr>
@@ -67,11 +67,11 @@ hr{border:none;border-top:1px solid #2a5a2a;margin:16px 0}
 <li><a href="../index.html">&lt;-- INDEX</a></li>
 </ul>
 <div class="navhead">media</div>
-<ul><li><a href='canonical-thumbnail.html'>canonical-thumbnail</a></li><li><a href='jellyseerr-watch-suggestions.html'>jellyseerr-watch-suggestions</a></li><li><a href='yt-dlp-anti-bot.html'>yt-dlp-anti-bot</a></li><li><a href='yt-music-downloader.html'>yt-music-downloader</a></li></ul>
+<ul><li><a href='canonical-thumbnail.html'>canonical-thumbnail</a></li><li><a href='jellyseerr-watch-suggestions.html'>jellyseerr-watch-suggestions</a></li><li><a href='yt-dlp-anti-bot.html'>yt-dlp-anti-bot</a></li></ul>
 <div class="navhead">GET THIS SKILL</div>
 <ul>
 <li><a href="#" onclick="copyRaw();return false;">COPY SKILL.MD</a><br><span id="copied-msg" class="meta">&nbsp;</span></li>
-<li><a href="data:text/markdown;charset=utf-8,---%0Aname%3A%20skit-thumbnail%0Adescription%3A%20Generate%20YouTube%20thumbnails%20for%20skit%20videos.%20Extracts%20a%20frame%20%28random%20or%20specific%20timestamp%29%2C%20crops%20it%20into%20a%20rounded-rect%20polaroid%20with%20drop%20shadow%2C%20SKIT%20label%20bar%20above%2C%20title%2Bsubtitle%20on%20the%20right%2C%20YourChannel%20logo%20below.%20Everything%20auto-fits%20within%20margins.%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%0Alicense%3A%20MIT%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Bthumbnails%2C%20youtube%2C%20video%2C%20content-creation%5D%0A%20%20%20%20category%3A%20media%0Ausage%3A%20%7C%0A%20%20python%20skit_thumbnail.py%20clip.mp4%20--title%20%22Excuse%20Me%2C%20Sir%22%20--subtitle%20%22Overwatch%22%0A%20%20python%20skit_thumbnail.py%20clip.mp4%20--title%20%22Short%20Title%22%20--subtitle%20%22%22%20--output%20custom.png%0A%20%20python%20skit_thumbnail.py%20clip.mp4%20--title%20%22My%20Title%22%20--subtitle%20%22Sub%22%20--frame-time%200%0A---%0A%0A%0A%0A%23%20Skit%20Thumbnail%20Generator%0A%0A%23%23%20Location%0AScript%3A%20%60%2Fpath%2Fto%2Fmedia%5Coverwatch%5Cvideos%5Coverwatch%20vids%5Cscripts%5Cskit_thumbnail.py%60%0A%0A%23%23%20Usage%0A%60%60%60bash%0Acd%20%22%2Fpath%2Fto%2Fyour%2Fmedia%2Foverwatch%2Fvideos%2Foverwatch%20vids%22%0Apython%20scripts%2Fskit_thumbnail.py%20path%2Fto%2Fclip.mp4%20--title%20%22Title%20Text%22%20--subtitle%20%22Subtitle%20Text%22%0A%60%60%60%0A%0A%23%23%20Arguments%0A%7C%20Arg%20%7C%20Description%20%7C%0A%7C-----%7C-------------%7C%0A%7C%20%60video%60%20%7C%20Path%20to%20the%20skit%20video%20clip%20%28positional%2C%20required%29%20%7C%0A%7C%20%60--title%60%20%7C%20Title%20text%20in%20red%20%28auto-sized%20to%20fit%20column%29%20%7C%0A%7C%20%60--subtitle%60%20%7C%20Subtitle%20text%20in%20white%2C%20same%20font%20size%20as%20title%20%7C%0A%7C%20%60--frame-time%60%20%7C%20Timestamp%20in%20seconds%20for%20frame%20extraction%20%28default%3A%20random%29.%20Use%20%600%60%20for%20the%20very%20first%20frame.%20%7C%0A%7C%20%60--output%60%20%7C%20Custom%20output%20path%20%28default%3A%20auto-named%20in%20%60skit_thumbnails%2F%60%29%20%7C%0A%0A%23%23%20Design%0A-%20%2A%2ALeft%20stack%2A%2A%3A%20Red%20SKIT%20bar%20%28rounded%20pill%2C%20left-aligned%20text%29%20%E2%86%92%204px%20gap%20%E2%86%92%20Photo%20%28rounded-rect%2C%20white%20border%2C%20drop%20shadow%29%0A-%20%2A%2ARight%20column%2A%2A%3A%20Title%20%28red%29%20%2B%20Subtitle%20%28white%29%20at%20same%20font%20size%20%28determined%20by%20longer%20string%29%20%E2%86%92%20accent%20line%20%E2%86%92%20YourChannel%20logo%20%28scaled%20to%20fill%29%0A-%20%2A%2ABackground%2A%2A%3A%20Dark%20slate%20with%20diagonal%20stripe%20accents%2C%20red%20top%2Fbottom%20bars%0A-%20%2A%2AMargins%2A%2A%3A%2050px%20left%2C%2025px%20all%20other%20sides%2C%2028px%20gap%20between%20frame%20and%20text%0A%0A%23%23%20Pitfalls%20%28learned%20the%20hard%20way%29%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20use%20full-bleed%20blurred%20frame%20as%20background%2A%2A%20%E2%80%94%20user%20rejected%20it%2C%20prefers%20clean%20dark%20slate%20with%20diagonal%20stripes%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20put%20SKIT%20label%20inside%20the%20photo%2A%2A%20%E2%80%94%20it%20goes%20ABOVE%20in%20a%20separate%20red%20bar%20%28pill%20shape%2C%20left-aligned%20text%29%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20add%20a%20second%20SKIT%20badge%20in%20the%20right%20zone%2A%2A%20%E2%80%94%20one%20is%20enough%20%28the%20bar%20above%20the%20photo%29%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20under-size%20text%20to%20leave%20empty%20space%2A%2A%20%E2%80%94%20title%20%2B%20subtitle%20should%20be%20the%20same%20large%20font%2C%20auto-determined%20by%20the%20longer%20string%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20use%20tiny%20corner%20logos%2A%2A%20%E2%80%94%20logo%20must%20be%20large%20%28200-440px%29%20and%20centered%20in%20remaining%20space%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20redesign%20from%20scratch%2A%2A%20%E2%80%94%20user%20prefers%20iterative%20refinement%20of%20the%20existing%20polaroid%20layout%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20guess%20the%20title%2Fsubtitle%2A%2A%20%E2%80%94%20ask%20the%20user%20what%20text%20they%20want%2C%20or%20if%20they%20already%20told%20you%2C%20use%20exactly%20what%20they%20said%20%28subtitle%20is%20often%20just%20%22Overwatch%22%20for%20Overwatch%20skits%29%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20extract%20from%20a%20random%20frame%20without%20asking%2A%2A%20%E2%80%94%20always%20ask%20the%20user%20which%20frame%20they%20want%2C%20then%20use%20%60--frame-time%60%20to%20pin%20it%20%280%20%3D%20first%20frame%2C%20or%20a%20specific%20second%29%0A-%20%E2%9C%85%20SKIT%20bar%20text%20at%2045px%20%281.5x%20of%20initial%20try%29%2C%20left-aligned%20with%2015px%20padding%0A-%20%E2%9C%85%20Title%20%26%20subtitle%20share%20ONE%20font%20size%20via%20calc_font_size%20%28binary%20search%20on%20longer%20string%29%0A-%20%E2%9C%85%20Everything%20auto-fits%20within%20margins%3A%2050px%20left%2C%2025px%20elsewhere%0A%0A%23%23%20YouTube%20upload%20after%20thumbnail%0A%0AAfter%20the%20user%20picks%20a%20thumbnail%2C%20upload%20the%20video%20to%20YourChannel%20channel%3A%0A%0A%60%60%60bash%0Acd%20%22%2Fpath%2Fto%2Fhermes%2Fdata%2Fskills%2Fmedia%2Fyoutube-upload%2Fscripts%22%0Apython%20yt_upload.py%20%22path%2Fto%2Fvideo.mp4%22%20%5C%0A%20%20--title%20%22SkitName%20In%20Overwatch%20%7C%20YourChannel%22%20%5C%0A%20%20--thumbnail%20%22path%2Fto%2Fthumb.png%22%20%5C%0A%20%20--private%20--schedule%20%22YYYY-MM-DDT14%3A00%3A00Z%22%0A%60%60%60%0A%0A%2A%2ATitle%20convention%20%28YourChannel%20skits%29%3A%2A%2A%20%60%22%5BSkit%20Name%5D%20In%20Overwatch%20%7C%20YourChannel%22%60%20%E2%80%94%20always%20this%20format%20for%20skit%20videos.%20The%20subtitle%20%28e.g.%20%22Overwatch%22%29%20goes%20in%20the%20thumbnail%20only%2C%20not%20the%20YouTube%20title.%0A%0A%2A%2ASchedule%3A%2A%2A%20User%27s%20timezone%20is%20IDT%20%28UTC%2B3%29.%205pm%20IDT%20%3D%2014%3A00%20UTC.%20Ask%20the%20user%20what%20time%20to%20publish.%0A%0A%23%23%20Workflow%20patterns%0A%0A%2A%2AQuick%20single%20thumbnail%3A%2A%2A%0A%60%60%60%0Apython%20scripts%2Fskit_thumbnail.py%20clip.mp4%20--title%20%22Title%22%20--subtitle%20%22Subtitle%22%0A%60%60%60%0APicks%20a%20random%20mid-clip%20frame.%20Re-run%20if%20user%20doesn%27t%20like%20the%20result.%0A%0A%2A%2ABatch%20comparison%20%28user-picky%20workflow%29%3A%2A%2A%0AGenerate%203%20thumbnails%20at%20different%20timestamps%2C%20show%20them%20inline%2C%20let%20the%20user%20pick.%0A%0A1.%20Check%20video%20duration%3A%20%60ffprobe%20-v%20error%20-show_entries%20format%3Dduration%20-of%20csv%3Dp%3D0%20clip.mp4%60%0A2.%20Pick%203%20spread-out%20timestamps%20%28e.g.%20early%2Fmid%2Flate%20thirds%20minus%20margins%29%0A3.%20Generate%20each%3A%0A%20%20%20%60%60%60%0A%20%20%20python%20scripts%2Fskit_thumbnail.py%20clip.mp4%20--title%20%22T%22%20--subtitle%20%22S%22%20--frame-time%203%20--output%20%22skit_thumbnails%2Fclip_t1.png%22%0A%20%20%20python%20scripts%2Fskit_thumbnail.py%20clip.mp4%20--title%20%22T%22%20--subtitle%20%22S%22%20--frame-time%2012%20--output%20%22skit_thumbnails%2Fclip_t2.png%22%0A%20%20%20python%20scripts%2Fskit_thumbnail.py%20clip.mp4%20--title%20%22T%22%20--subtitle%20%22S%22%20--frame-time%2022%20--output%20%22skit_thumbnails%2Fclip_t3.png%22%0A%20%20%20%60%60%60%0A4.%20Present%20all%203%20inline%20via%20%60MEDIA%3A%60%20paths%0A5.%20If%20none%20works%2C%20iterate%20with%203%20more%20timestamps%0A6.%20Once%20picked%2C%20that%20PNG%20is%20the%20final%20thumbnail%20for%20the%20upload%20step%0A%0A%23%23%20Script%20maintenance%20notes%0A-%20%60--frame-time%60%20was%20added%20retrospectively%20%28original%20script%20only%20had%20random%20extraction%29.%20If%20you%20patch%20the%20script%2C%20the%20function%20to%20modify%20is%20%60extract_frame%28video_path%2C%20timestamp%3DNone%29%60%20%E2%80%94%20it%20replaces%20the%20old%20%60extract_random_frame%28%29%60.%20Argparse%20entry%20in%20%60main%28%29%60%20needs%20both%20the%20new%20flag%20in%20the%20parser%20and%20passing%20it%20through%20to%20%60make_skit_thumbnail%28%29%60.%0A%0A%23%23%20Output%0A1280%C3%97720%20PNG%2C%20saved%20to%20%60skit_thumbnails%2F%3Cclipname%3E_skit_thumb.png%60.%0A" download="SKILL.md">DOWNLOAD SKILL.MD</a></li>
+<li><a href="data:text/markdown;charset=utf-8,---%0Aname%3A%20skit-thumbnail%0Adescription%3A%20Generate%20YouTube%20thumbnails%20for%20skit%20videos.%20Extracts%20a%20frame%20%28random%20or%20specific%20timestamp%29%2C%20crops%20it%20into%20a%20rounded-rect%20polaroid%20with%20drop%20shadow%2C%20SKIT%20label%20bar%20above%2C%20title%2Bsubtitle%20on%20the%20right%2C%20channel%20logo%20below.%20Everything%20auto-fits%20within%20margins.%0Aversion%3A%201.0.0%0Aauthor%3A%20Hermes%20Agent%0Alicense%3A%20MIT%0Ametadata%3A%0A%20%20hermes%3A%0A%20%20%20%20tags%3A%20%5Bthumbnails%2C%20youtube%2C%20video%2C%20content-creation%5D%0A%20%20%20%20category%3A%20media%0Ausage%3A%20%7C%0A%20%20python%20skit_thumbnail.py%20clip.mp4%20--title%20%22Excuse%20Me%2C%20Sir%22%20--subtitle%20%22Overwatch%22%0A%20%20python%20skit_thumbnail.py%20clip.mp4%20--title%20%22Short%20Title%22%20--subtitle%20%22%22%20--output%20custom.png%0A%20%20python%20skit_thumbnail.py%20clip.mp4%20--title%20%22My%20Title%22%20--subtitle%20%22Sub%22%20--frame-time%200%0A---%0A%0A%0A%23%20Skit%20Thumbnail%20Generator%0A%0A%23%23%20Location%0AScript%3A%20%60%2Fpath%2Fto%2Fscripts%2Fskit_thumbnail.py%60%0A%0A%23%23%20Usage%0A%60%60%60bash%0Acd%20%22%2Fpath%2Fto%2Fproject%22%0Apython%20scripts%2Fskit_thumbnail.py%20path%2Fto%2Fclip.mp4%20--title%20%22Title%20Text%22%20--subtitle%20%22Subtitle%20Text%22%0A%60%60%60%0A%0A%23%23%20Arguments%0A%7C%20Arg%20%7C%20Description%20%7C%0A%7C-----%7C-------------%7C%0A%7C%20%60video%60%20%7C%20Path%20to%20the%20skit%20video%20clip%20%28positional%2C%20required%29%20%7C%0A%7C%20%60--title%60%20%7C%20Title%20text%20in%20red%20%28auto-sized%20to%20fit%20column%29%20%7C%0A%7C%20%60--subtitle%60%20%7C%20Subtitle%20text%20in%20white%2C%20same%20font%20size%20as%20title%20%7C%0A%7C%20%60--frame-time%60%20%7C%20Timestamp%20in%20seconds%20for%20frame%20extraction%20%28default%3A%20random%29.%20Use%20%600%60%20for%20the%20very%20first%20frame.%20%7C%0A%7C%20%60--output%60%20%7C%20Custom%20output%20path%20%28default%3A%20auto-named%20in%20%60skit_thumbnails%2F%60%29%20%7C%0A%0A%23%23%20Design%0A-%20%2A%2ALeft%20stack%2A%2A%3A%20Red%20SKIT%20bar%20%28rounded%20pill%2C%20left-aligned%20text%29%20%E2%86%92%204px%20gap%20%E2%86%92%20Photo%20%28rounded-rect%2C%20white%20border%2C%20drop%20shadow%29%0A-%20%2A%2ARight%20column%2A%2A%3A%20Title%20%28red%29%20%2B%20Subtitle%20%28white%29%20at%20same%20font%20size%20%28determined%20by%20longer%20string%29%20%E2%86%92%20accent%20line%20%E2%86%92%20channel%20logo%20%28scaled%20to%20fill%29%0A-%20%2A%2ABackground%2A%2A%3A%20Dark%20slate%20with%20diagonal%20stripe%20accents%2C%20red%20top%2Fbottom%20bars%0A-%20%2A%2AMargins%2A%2A%3A%2050px%20left%2C%2025px%20all%20other%20sides%2C%2028px%20gap%20between%20frame%20and%20text%0A%0A%23%23%20Pitfalls%20%28learned%20the%20hard%20way%29%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20use%20full-bleed%20blurred%20frame%20as%20background%2A%2A%20%E2%80%94%20user%20rejected%20it%2C%20prefers%20clean%20dark%20slate%20with%20diagonal%20stripes%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20put%20SKIT%20label%20inside%20the%20photo%2A%2A%20%E2%80%94%20it%20goes%20ABOVE%20in%20a%20separate%20red%20bar%20%28pill%20shape%2C%20left-aligned%20text%29%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20add%20a%20second%20SKIT%20badge%20in%20the%20right%20zone%2A%2A%20%E2%80%94%20one%20is%20enough%20%28the%20bar%20above%20the%20photo%29%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20under-size%20text%20to%20leave%20empty%20space%2A%2A%20%E2%80%94%20title%20%2B%20subtitle%20should%20be%20the%20same%20large%20font%2C%20auto-determined%20by%20the%20longer%20string%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20use%20tiny%20corner%20logos%2A%2A%20%E2%80%94%20logo%20must%20be%20large%20%28200-440px%29%20and%20centered%20in%20remaining%20space%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20redesign%20from%20scratch%2A%2A%20%E2%80%94%20user%20prefers%20iterative%20refinement%20of%20the%20existing%20polaroid%20layout%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20guess%20the%20title%2Fsubtitle%2A%2A%20%E2%80%94%20ask%20the%20user%20what%20text%20they%20want%2C%20or%20if%20they%20already%20told%20you%2C%20use%20exactly%20what%20they%20said%20%28subtitle%20is%20often%20just%20%22Overwatch%22%20for%20Overwatch%20skits%29%0A-%20%E2%9D%8C%20%2A%2ADon%27t%20extract%20from%20a%20random%20frame%20without%20asking%2A%2A%20%E2%80%94%20always%20ask%20the%20user%20which%20frame%20they%20want%2C%20then%20use%20%60--frame-time%60%20to%20pin%20it%20%280%20%3D%20first%20frame%2C%20or%20a%20specific%20second%29%0A-%20%E2%9C%85%20SKIT%20bar%20text%20at%2045px%20%281.5x%20of%20initial%20try%29%2C%20left-aligned%20with%2015px%20padding%0A-%20%E2%9C%85%20Title%20%26%20subtitle%20share%20ONE%20font%20size%20via%20calc_font_size%20%28binary%20search%20on%20longer%20string%29%0A-%20%E2%9C%85%20Everything%20auto-fits%20within%20margins%3A%2050px%20left%2C%2025px%20elsewhere%0A%0A%23%23%20YouTube%20upload%20after%20thumbnail%0A%0AAfter%20the%20user%20picks%20a%20thumbnail%2C%20upload%20the%20video%20to%20the%20channel%3A%0A%0A%60%60%60bash%0Acd%20%22%2Fpath%2Fto%2Fscripts-upload%2Fscripts%22%0Apython%20yt_upload.py%20%22path%2Fto%2Fvideo.mp4%22%20%5C%0A%20%20--title%20%22SkitName%20In%20Overwatch%20%7C%20My%20Channel%22%20%5C%0A%20%20--thumbnail%20%22path%2Fto%2Fthumb.png%22%20%5C%0A%20%20--private%20--schedule%20%22YYYY-MM-DDT14%3A00%3A00Z%22%0A%60%60%60%0A%0A%2A%2ATitle%20convention%20%28channel%20skits%29%3A%2A%2A%20%60%22%5BSkit%20Name%5D%20In%20Overwatch%20%7C%20My%20Channel%22%60%20%E2%80%94%20always%20this%20format%20for%20skit%20videos.%20The%20subtitle%20%28e.g.%20%22Overwatch%22%29%20goes%20in%20the%20thumbnail%20only%2C%20not%20the%20YouTube%20title.%0A%0A%2A%2ASchedule%3A%2A%2A%20User%27s%20timezone%20is%20IDT%20%28UTC%2B3%29.%205pm%20IDT%20%3D%2014%3A00%20UTC.%20Ask%20the%20user%20what%20time%20to%20publish.%0A%0A%23%23%20Workflow%20patterns%0A%0A%2A%2AQuick%20single%20thumbnail%3A%2A%2A%0A%60%60%60%0Apython%20scripts%2Fskit_thumbnail.py%20clip.mp4%20--title%20%22Title%22%20--subtitle%20%22Subtitle%22%0A%60%60%60%0APicks%20a%20random%20mid-clip%20frame.%20Re-run%20if%20user%20doesn%27t%20like%20the%20result.%0A%0A%2A%2ABatch%20comparison%20%28user-picky%20workflow%29%3A%2A%2A%0AGenerate%203%20thumbnails%20at%20different%20timestamps%2C%20show%20them%20inline%2C%20let%20the%20user%20pick.%0A%0A1.%20Check%20video%20duration%3A%20%60ffprobe%20-v%20error%20-show_entries%20format%3Dduration%20-of%20csv%3Dp%3D0%20clip.mp4%60%0A2.%20Pick%203%20spread-out%20timestamps%20%28e.g.%20early%2Fmid%2Flate%20thirds%20minus%20margins%29%0A3.%20Generate%20each%3A%0A%20%20%20%60%60%60%0A%20%20%20python%20scripts%2Fskit_thumbnail.py%20clip.mp4%20--title%20%22T%22%20--subtitle%20%22S%22%20--frame-time%203%20--output%20%22skit_thumbnails%2Fclip_t1.png%22%0A%20%20%20python%20scripts%2Fskit_thumbnail.py%20clip.mp4%20--title%20%22T%22%20--subtitle%20%22S%22%20--frame-time%2012%20--output%20%22skit_thumbnails%2Fclip_t2.png%22%0A%20%20%20python%20scripts%2Fskit_thumbnail.py%20clip.mp4%20--title%20%22T%22%20--subtitle%20%22S%22%20--frame-time%2022%20--output%20%22skit_thumbnails%2Fclip_t3.png%22%0A%20%20%20%60%60%60%0A4.%20Present%20all%203%20inline%20via%20%60MEDIA%3A%60%20paths%0A5.%20If%20none%20works%2C%20iterate%20with%203%20more%20timestamps%0A6.%20Once%20picked%2C%20that%20PNG%20is%20the%20final%20thumbnail%20for%20the%20upload%20step%0A%0A%23%23%20Script%20maintenance%20notes%0A-%20%60--frame-time%60%20was%20added%20retrospectively%20%28original%20script%20only%20had%20random%20extraction%29.%20If%20you%20patch%20the%20script%2C%20the%20function%20to%20modify%20is%20%60extract_frame%28video_path%2C%20timestamp%3DNone%29%60%20%E2%80%94%20it%20replaces%20the%20old%20%60extract_random_frame%28%29%60.%20Argparse%20entry%20in%20%60main%28%29%60%20needs%20both%20the%20new%20flag%20in%20the%20parser%20and%20passing%20it%20through%20to%20%60make_skit_thumbnail%28%29%60.%0A%0A%23%23%20Output%0A1280%C3%97720%20PNG%2C%20saved%20to%20%60skit_thumbnails%2F%3Cclipname%3E_skit_thumb.png%60.%0A" download="SKILL.md">DOWNLOAD SKILL.MD</a></li>
 </ul>
 </td>
 <td class="maincol">
@@ -83,14 +83,13 @@ hr{border:none;border-top:1px solid #2a5a2a;margin:16px 0}
 
 
 
-
 <h1>Skit Thumbnail Generator</h1>
 
 <h2>Location</h2>
-<p>Script: <code>/path/to/media\overwatch\videos\overwatch vids\scripts\skit_thumbnail.py</code></p>
+<p>Script: <code>/path/to/scripts/skit_thumbnail.py</code></p>
 
 <h2>Usage</h2>
-<pre class='code'><code>cd &quot;/path/to/your/media/overwatch/videos/overwatch vids&quot;
+<pre class='code'><code>cd &quot;/path/to/project&quot;
 python scripts/skit_thumbnail.py path/to/clip.mp4 --title &quot;Title Text&quot; --subtitle &quot;Subtitle Text&quot;</code></pre>
 
 <h2>Arguments</h2>
@@ -99,7 +98,7 @@ python scripts/skit_thumbnail.py path/to/clip.mp4 --title &quot;Title Text&quot;
 <h2>Design</h2>
 <ul>
 <li><strong>Left stack</strong>: Red SKIT bar (rounded pill, left-aligned text) → 4px gap → Photo (rounded-rect, white border, drop shadow)</li>
-<li><strong>Right column</strong>: Title (red) + Subtitle (white) at same font size (determined by longer string) → accent line → YourChannel logo (scaled to fill)</li>
+<li><strong>Right column</strong>: Title (red) + Subtitle (white) at same font size (determined by longer string) → accent line → channel logo (scaled to fill)</li>
 <li><strong>Background</strong>: Dark slate with diagonal stripe accents, red top/bottom bars</li>
 <li><strong>Margins</strong>: 50px left, 25px all other sides, 28px gap between frame and text</li>
 </ul>
@@ -121,15 +120,15 @@ python scripts/skit_thumbnail.py path/to/clip.mp4 --title &quot;Title Text&quot;
 
 <h2>YouTube upload after thumbnail</h2>
 
-<p>After the user picks a thumbnail, upload the video to YourChannel channel:</p>
+<p>After the user picks a thumbnail, upload the video to the channel:</p>
 
-<pre class='code'><code>cd &quot;/path/to/hermes/data/skills/media/youtube-upload/scripts&quot;
+<pre class='code'><code>cd &quot;/path/to/scripts-upload/scripts&quot;
 python yt_upload.py &quot;path/to/video.mp4&quot; \
-  --title &quot;SkitName In Overwatch | YourChannel&quot; \
+  --title &quot;SkitName In Overwatch | My Channel&quot; \
   --thumbnail &quot;path/to/thumb.png&quot; \
   --private --schedule &quot;YYYY-MM-DDT14:00:00Z&quot;</code></pre>
 
-<p><strong>Title convention (YourChannel skits):</strong> <code>&quot;[Skit Name] In Overwatch | YourChannel&quot;</code> — always this format for skit videos. The subtitle (e.g. &quot;Overwatch&quot;) goes in the thumbnail only, not the YouTube title.</p>
+<p><strong>Title convention (channel skits):</strong> <code>&quot;[Skit Name] In Overwatch | My Channel&quot;</code> — always this format for skit videos. The subtitle (e.g. &quot;Overwatch&quot;) goes in the thumbnail only, not the YouTube title.</p>
 
 <p><strong>Schedule:</strong> User&#x27;s timezone is IDT (UTC+3). 5pm IDT = 14:00 UTC. Ask the user what time to publish.</p>
 
@@ -174,7 +173,7 @@ python yt_upload.py &quot;path/to/video.mp4&quot; \
 </table>
 <pre id="raw" hidden>---
 name: skit-thumbnail
-description: Generate YouTube thumbnails for skit videos. Extracts a frame (random or specific timestamp), crops it into a rounded-rect polaroid with drop shadow, SKIT label bar above, title+subtitle on the right, YourChannel logo below. Everything auto-fits within margins.
+description: Generate YouTube thumbnails for skit videos. Extracts a frame (random or specific timestamp), crops it into a rounded-rect polaroid with drop shadow, SKIT label bar above, title+subtitle on the right, channel logo below. Everything auto-fits within margins.
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -189,15 +188,14 @@ usage: |
 ---
 
 
-
 # Skit Thumbnail Generator
 
 ## Location
-Script: `/path/to/media\overwatch\videos\overwatch vids\scripts\skit_thumbnail.py`
+Script: `/path/to/scripts/skit_thumbnail.py`
 
 ## Usage
 ```bash
-cd &quot;/path/to/your/media/overwatch/videos/overwatch vids&quot;
+cd &quot;/path/to/project&quot;
 python scripts/skit_thumbnail.py path/to/clip.mp4 --title &quot;Title Text&quot; --subtitle &quot;Subtitle Text&quot;
 ```
 
@@ -212,7 +210,7 @@ python scripts/skit_thumbnail.py path/to/clip.mp4 --title &quot;Title Text&quot;
 
 ## Design
 - **Left stack**: Red SKIT bar (rounded pill, left-aligned text) → 4px gap → Photo (rounded-rect, white border, drop shadow)
-- **Right column**: Title (red) + Subtitle (white) at same font size (determined by longer string) → accent line → YourChannel logo (scaled to fill)
+- **Right column**: Title (red) + Subtitle (white) at same font size (determined by longer string) → accent line → channel logo (scaled to fill)
 - **Background**: Dark slate with diagonal stripe accents, red top/bottom bars
 - **Margins**: 50px left, 25px all other sides, 28px gap between frame and text
 
@@ -231,17 +229,17 @@ python scripts/skit_thumbnail.py path/to/clip.mp4 --title &quot;Title Text&quot;
 
 ## YouTube upload after thumbnail
 
-After the user picks a thumbnail, upload the video to YourChannel channel:
+After the user picks a thumbnail, upload the video to the channel:
 
 ```bash
-cd &quot;/path/to/hermes/data/skills/media/youtube-upload/scripts&quot;
+cd &quot;/path/to/scripts-upload/scripts&quot;
 python yt_upload.py &quot;path/to/video.mp4&quot; \
-  --title &quot;SkitName In Overwatch | YourChannel&quot; \
+  --title &quot;SkitName In Overwatch | My Channel&quot; \
   --thumbnail &quot;path/to/thumb.png&quot; \
   --private --schedule &quot;YYYY-MM-DDT14:00:00Z&quot;
 ```
 
-**Title convention (YourChannel skits):** `&quot;[Skit Name] In Overwatch | YourChannel&quot;` — always this format for skit videos. The subtitle (e.g. &quot;Overwatch&quot;) goes in the thumbnail only, not the YouTube title.
+**Title convention (channel skits):** `&quot;[Skit Name] In Overwatch | My Channel&quot;` — always this format for skit videos. The subtitle (e.g. &quot;Overwatch&quot;) goes in the thumbnail only, not the YouTube title.
 
 **Schedule:** User&#x27;s timezone is IDT (UTC+3). 5pm IDT = 14:00 UTC. Ask the user what time to publish.
 

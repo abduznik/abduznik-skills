@@ -11,8 +11,6 @@ metadata:
 ---
 
 
-
-
 # Embedded / Game-Engine Platform Porting Patterns
 
 Class of work: taking an existing C/C++ application (CMake + SDL2) that ships for desktop/mobile and adding support for a new embedded/handheld platform. The canonical example is porting `fallout1-ce` (or similar) to PSP/Vita/3DS by adding a platform branch — never modifying core game logic.

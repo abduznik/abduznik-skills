@@ -12,8 +12,6 @@ metadata:
 ---
 
 
-
-
 # Simplify Code — Parallel Review & Cleanup
 
 Review your recent code changes with four focused reviewers running in

@@ -11,8 +11,6 @@ metadata:
 ---
 
 
-
-
 # Retro Fansite Aesthetic
 
 A from-scratch, hand-coded HTML/CSS style for static sites (GitHub Pages, docs sites, project

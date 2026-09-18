@@ -11,8 +11,6 @@ license: MIT
 ---
 
 
-
-
 # Docker Container Update Check
 
 ## When to Use
